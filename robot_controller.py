@@ -8,6 +8,7 @@ import fnmatch
 import functools
 
 from tkinter import *
+#Tkinter with python 2
 
 directory='/dev'
 UP    ="\xFF\x55\x01\xFE\x00\xFF"
