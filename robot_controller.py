@@ -7,7 +7,7 @@ import os
 import fnmatch
 import functools
 
-from tkinter import *
+from Tkinter import *
 #Tkinter with python 2
 
 directory='/dev'
@@ -44,7 +44,7 @@ _4L    ="\xFF\x55\x84\x7B\x00\xFF"
 _4R    ="\xFF\x55\x88\x77\x00\xFF"
 
 
-STOP  ="\xFF\x55\x00\xFF\x00\xFF"
+STOP  ="\xFF\x55\x00\xFF\x00\xFF"cd
 
 def move(event, key):
     ser.write(key.encode('iso-8859-1'))
@@ -54,7 +54,7 @@ def move(event, key):
 # Get Port name
 for root, dirs, files in os.walk(directory):
     for filename in files:
-        for filename in fnmatch.filter(files,'tty.usbserial'+'*'):          
+        for filename in fnmatch.filter(files,'ttyUSB'+'*'):          
             usbserialport=directory+'/'+filename
             pass
 
@@ -77,6 +77,8 @@ ser = serial.Serial(
     xonxoff=1
 )
 
+
+
 ser.close()
 ser.open()
 ser.isOpen()
@@ -87,6 +89,8 @@ root = Tk()
 root.title("Simple GUI")
 root.geometry("600x600+100+100")
 label1= Label(root, text='Robot Controller GUI',fg='darkgrey').pack()
+
+
 
 #UP DOWN LEFT RIGHT BUTTONS
 
@@ -240,6 +244,7 @@ root.bind('f',functools.partial(move, key=_3R))
 
 # 4 + arrows BUTTONS
 
+
 button1U=Button(root, text='[4+U]  H')
 button1U.place(x="100",y="500")
 button1U.bind("<Button-1>",functools.partial(move, key=_4U))
@@ -265,3 +270,6 @@ root.bind('j',functools.partial(move, key=_4D))
 root.bind('k',functools.partial(move, key=_4L))
 root.bind('l',functools.partial(move, key=_4R))
 
+functools.partial(move, key=_4U)
+
+print("done this")
