@@ -3,35 +3,12 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
-// #include <zigbee.h>
 
-/* baudrate settings are defined in <asm/termbits.h>, which is
-included by <termios.h> */
-#define BAUDRATE B57600            
-/* change this definition for the correct port */
-#define MODEMDEVICE "/dev/ttyUSB0"
-#define _POSIX_SOURCE 1 /* POSIX compliant source */
-
-#define FALSE 0
-#define TRUE 1
-
-#define DEFAULT_DEVICEINDEX 0
-#define TIMEOUT_TIME    1000 // msec
-
-// calculate more inputs by adding previous ones; ie: _R = 8, _U = 1, so _UR = 9
-#define _U    1
-#define _D    2
-#define _UD   3
-#define _L    4
-#define _UL   5
-#define _DL   6
-#define _UDL  7
-#define _R    8
-#define _1    16
+#include "tx_serial.h"
 
 volatile int STOP=FALSE; 
 
-main()
+int tx_data(int command_key)
 {
   int fd,c, res;
   struct termios oldtio,newtio;
@@ -108,43 +85,22 @@ main()
   In this example, inputting a 'z' at the beginning of a line will 
   exit the program.
 */
- while (STOP==FALSE) {     /* loop until we have a terminating condition */
- /* read blocks program execution until a line terminating character is 
-    input, even if more than 255 chars are input. If the number
-    of characters read is smaller than the number of chars available,
-    subsequent reads will return the remaining chars. res will be set
-    to the actual number of characters actually read */
 
-    // res = read(fd,buf,255); 
-    // buf[res]=0;             /* set end of string, so we can printf */
-    // printf(":%s:%d", buf, res);
-    // if (buf[0]=='z') STOP=TRUE;
-    int  number;
-    printf("Type in a number \n");
-    scanf("%d", &number);
-    printf("Wrote: %d\n", number);
 
-    if(number == 1){
-      if (tx_data(fd,1))
-        fputs("success!\n", stderr);   
-      else
-        fputs("failure :(\n", stderr);
-
-    }
-
-    if(number == 2){
-      if (tx_data(fd,2))
-        fputs("success!\n", stderr);
-      else
-        fputs("failure :(\n", stderr);
-    }
+  if (encode_data(fd,command_key)){
+    /* restore the old port settings */
+    tcsetattr(fd,TCSANOW,&oldtio);
+   return 1;
+  }
+  else {
+    /* restore the old port settings */
+    tcsetattr(fd,TCSANOW,&oldtio);
+    return 0;
   }
 
- /* restore the old port settings */
-  tcsetattr(fd,TCSANOW,&oldtio);
 }
 
-int tx_data(int fd, int data)
+int encode_data(int fd, int data)
 {
   unsigned char SndPacket[6];
   unsigned short word = (unsigned short)data;
