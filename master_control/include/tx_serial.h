@@ -15,8 +15,10 @@ int write_tx(int fd, unsigned char *pPacket, int numPacket);
 /* baudrate settings are defined in <asm/termbits.h>, which is
 included by <termios.h> */
 #define BAUDRATE B57600            
+
 /* change this definition for the correct port */
 #define MODEMDEVICE "/dev/ttyUSB0"
+
 #define _POSIX_SOURCE 1 /* POSIX compliant source */
 
 #define FALSE 0

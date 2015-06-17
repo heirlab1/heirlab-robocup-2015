@@ -1,16 +1,20 @@
 # heirlab-robocup-2015
 
-Setup instructions:
+##How to test setup and test your CM-700 connection
 
-1. Install Python 3.3.3
+First, plug in the LN-101 to your computer, and into the CM-700. Then, type in your terminal
+''' 
+$ dmesg | grep tty
+'''
 
-1. Install pyserial
-https://learn.adafruit.com/arduino-lesson-17-email-sending-movement-detector/installing-python-and-pyserial
+The last device on the list should be the LN-101, which should appear as "ttyUSBx" where x is some number.
 
-2. Install tkinter
+To ensure the CM-700 is connected properly, use
+'''
+$ screen /dev/ttyUSBx 57600
+'''
+where x is the number in the device address you saw in the output dmesg
 
--. Make sure RoboPlus files are downloaded onto CM-700
+Switch your CM-700 to play mode, and press start. You should get a solid green light, and some output should appear on the terminal
 
--. run robot_controller.py
-	either from terminal with $python robot_controller.py
-	or in IDLE from the taskbar: Run -> Run module
+(To quit out of screen use ''ctrl-a+d'')
