@@ -1,15 +1,16 @@
-TARGET		= write_serial
-OBJS		= write_serial.o
+TARGET		= libtxd.a
+OBJS		= tx_serial.o
 SRCS		= $(OBJS:.o=.c)
 INCLUDEDIRS	+= -I../include
-LIBDIRS		+= -L../lib
+LIBDIRS		+=
 CFLAGS		= $(INCLUDEDIRS) -W -Wall -O2
-LDFLAGS		= $(LIBDIRS) -lm -lzgb
 
 CC			= gcc
+AR 			= ar
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(AR) rs $@ $^
+	cp $(TARGET) ../lib
 	
 .c.o:
 	$(CC) -c $< $(CFLAGS)
