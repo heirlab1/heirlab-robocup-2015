@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
-#include <zigbee.h>
+// #include <zigbee.h>
 
 /* baudrate settings are defined in <asm/termbits.h>, which is
 included by <termios.h> */
@@ -14,42 +14,20 @@ included by <termios.h> */
 
 #define FALSE 0
 #define TRUE 1
+
 #define DEFAULT_DEVICEINDEX 0
+#define TIMEOUT_TIME    1000 // msec
 
-// #define UP    "\xFF\x55\x01\xFE\x00\xFF"
-// #define DOWN  "\xFF\x55\x02\xFD\x00\xFF"
-// #define LEFT  "\xFF\x55\x04\xFB\x00\xFF"
-// #define RIGHT "\xFF\x55\x08\xF7\x00\xFF"
-
-// #define _6    "\xFF\x55\x00\xFF\x00\xFF"
-// #define _5    "\xFF\x55\x00\xFF\x01\xFE"
-// #define _4    "\xFF\x55\x80\x7F\x00\xFF"
-// #define _3    "\xFF\x55\x40\xBF\x00\xFF"
-// #define _2    "\xFF\x55\x20\xDF\x00\xFF"
-// #define _1    "\xFF\x55\x10\xEF\x00\xFF"
-
-// #define _1U   "\xFF\x55\x11\xEE\x00\xFF"
-// #define _1D   "\xFF\x55\x12\xED\x00\xFF"
-// #define _1L   "\xFF\x55\x14\xEB\x00\xFF"
-// #define _1R   "\xFF\x55\x18\xEF\x00\xFF"
-
-// #define _2U   "\xFF\x55\x21\xDE\x00\xFF"
-// #define _2D   "\xFF\x55\x22\xDD\x00\xFF"
-// #define _2L   "\xFF\x55\x24\xDB\x00\xFF"
-// #define _2R   "\xFF\x55\x28\xD7\x00\xFF"
-
-// #define _3U   "\xFF\x55\x41\xBE\x00\xFF"
-// #define _3D   "\xFF\x55\x42\xBD\x00\xFF"
-// #define _3L   "\xFF\x55\x44\xBB\x00\xFF"
-// #define _3R   "\xFF\x55\x48\xB7\x00\xFF"
-
-// #define _4U   "\xFF\x55\x81\x7E\x00\xFF"
-// #define _4D   "\xFF\x55\x82\x7D\x00\xFF"
-// #define _4L   "\xFF\x55\x84\x7B\x00\xFF"
-// #define _4R   "\xFF\x55\x88\x77\x00\xFF"
-
-
-// #define STOP  "\xFF\x55\x00\xFF\x00\xFF"
+// calculate more inputs by adding previous ones; ie: _R = 8, _U = 1, so _UR = 9
+#define _U    1
+#define _D    2
+#define _UD   3
+#define _L    4
+#define _UL   5
+#define _DL   6
+#define _UDL  7
+#define _R    8
+#define _1    16
 
 volatile int STOP=FALSE; 
 
@@ -57,7 +35,6 @@ main()
 {
   int fd,c, res;
   struct termios oldtio,newtio;
-  char buf[255];
 /* 
   Open modem device for reading and writing and not as controlling tty
   because we don't want to get killed if linenoise sends CTRL-C.
@@ -146,22 +123,48 @@ main()
     printf("Type in a number \n");
     scanf("%d", &number);
     printf("Wrote: %d\n", number);
-    int n;
 
-    if(number = 1){
-      n = write(fd, "ATZ\r", 4);
-      if (n < 0)
-        fputs("write() of 4 bytes failed!\n", stderr);
+    if(number == 1){
+      if (tx_data(fd,1))
+        fputs("success!\n", stderr);   
+      else
+        fputs("failure :(\n", stderr);
+
     }
 
-    if(number = 2){
-
-      n = write(fd, "ATZ\r", 4);
-      if (n < 0)
-        fputs("write() of 4 bytes failed!\n", stderr);
+    if(number == 2){
+      if (tx_data(fd,2))
+        fputs("success!\n", stderr);
+      else
+        fputs("failure :(\n", stderr);
     }
+  }
 
-}
  /* restore the old port settings */
   tcsetattr(fd,TCSANOW,&oldtio);
+}
+
+int tx_data(int fd, int data)
+{
+  unsigned char SndPacket[6];
+  unsigned short word = (unsigned short)data;
+  unsigned char lowbyte = (unsigned char)(word & 0xff);
+  unsigned char highbyte = (unsigned char)((word >> 8) & 0xff);
+
+  SndPacket[0] = 0xff;
+  SndPacket[1] = 0x55;
+  SndPacket[2] = lowbyte;
+  SndPacket[3] = ~lowbyte;
+  SndPacket[4] = highbyte;
+  SndPacket[5] = ~highbyte;
+
+  if(write_tx(fd, SndPacket, 6 ) != 6 )
+    return 0;
+
+  return 1;
+}
+
+int write_tx(int fd, unsigned char *pPacket, int numPacket )
+{
+  return write(fd, pPacket, numPacket);
 }
