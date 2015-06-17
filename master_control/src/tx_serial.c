@@ -3,6 +3,9 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "tx_serial.h"
 
@@ -10,7 +13,7 @@ volatile int STOP=FALSE;
 
 int tx_data(int command_key)
 {
-  int fd,c, res;
+  int fd;
   struct termios oldtio,newtio;
 /* 
   Open modem device for reading and writing and not as controlling tty
