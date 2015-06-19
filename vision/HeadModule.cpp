@@ -14,11 +14,10 @@
 
 
 void HeadModule::scan() {
-	bool hasFinished = false;
 
 	cv::Point moveToPos = cv::Point(0,0);
 	cv::Point currentPos = cv::Point(0,0);
-	while(!hasFinished) {
+	while (1) {
 			usleep(50*1000);
 		if(!motorsCheckMoving()) {
 			usleep(1000*100);
@@ -27,7 +26,7 @@ void HeadModule::scan() {
 			std::cout<<"MotorMatrix "<<motorMatrix[upperLimit][rightLimit]<<std::endl;
 			moveToPos = BFSmotorMatrix(currentPos);
 			if(moveToPos.x == -1 && moveToPos.y == -1)
-				hasFinished=true;
+				break;
 			else
 				motorsMoveTo(moveToPos);
 		}
