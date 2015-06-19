@@ -392,40 +392,6 @@ o begin
 o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
 o end
 - 
-o function faddr_src:InitializationGyro
-o begin
-o load param_dest:var:FBBalCenter param_src:dec_num:0
-o load param_dest:var:RLBalCenter param_src:dec_num:0
-- 
-o for param_var:i param_src:dec_num:1 param_src:dec_num:10
-o begin
-o load param_dest:var:FBBalData param_src:aux:3:67
-o load param_dest:var:RLBalData param_src:aux:4:67
-- 
-o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:+ param_src:var:FBBalData
-o compute param_dest:var:RLBalCenter param_src:var:RLBalCenter aop:+ param_src:var:RLBalData
-- 
-o load param_dest:cm:5 param_src:timer_num:1
-o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
-o end
-- 
-o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:/ param_src:dec_num:10
-o compute param_dest:var:RLBalCenter param_src:var:RLBalCenter aop:/ param_src:dec_num:10
-- 
-o load param_dest:var:ExistGyro param_src:bool_num:1
-o if param_src:var:FBBalCenter lop:> param_src:dec_num:330 rop:|| param_src:var:FBBalCenter lop:< param_src:dec_num:230 rop:then
-o load param_dest:var:ExistGyro param_src:bool_num:0
-o if param_src:var:RLBalCenter lop:> param_src:dec_num:330 rop:|| param_src:var:RLBalCenter lop:< param_src:dec_num:230 rop:then
-o load param_dest:var:ExistGyro param_src:bool_num:0
-- 
-o if param_src:var:ExistGyro lop:== param_src:bool_num:0 rop:then
-o begin
-- 
-- 
-o end
-o load param_dest:var:GyroUse param_src:bool_num:1
-o load param_dest:var:Slip param_src:dec_num:0
-o end
 - 
 o callback
 o begin
