@@ -1,5 +1,5 @@
 TARGET		= libtxd.a
-OBJS		= tx_serial.o
+OBJS		= tx_serial.o open_serial.o
 SRCS		= $(OBJS:.o=.c)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+=

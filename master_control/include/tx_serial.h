@@ -7,9 +7,15 @@ extern "C" {
 #endif
 
 // communication methods
-int tx_data(int command_key);
+int tx_data(int fd, int command_key);
 int encode_data(int fd, int data);
 int write_tx(int fd, unsigned char *pPacket, int numPacket);
+
+int open_port();
+
+int rx_check(int fd);
+int rx_data();
+int hal_rx();
 
 
 /* baudrate settings are defined in <asm/termbits.h>, which is

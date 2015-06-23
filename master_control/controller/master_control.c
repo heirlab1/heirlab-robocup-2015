@@ -3,6 +3,8 @@
 
 int main(){
 
+  int port = open_port();
+  
 	while (1) {
     int  number;
     printf("Type in a number \n");
@@ -11,7 +13,7 @@ int main(){
       printf("Wrote: %d\n", number);
 
       if(number == 1){
-        if (tx_data(FORWARD))
+        if (tx_data(port, FORWARD))
           fputs("success!\n", stderr);   
         else
           fputs("failure :(\n", stderr);
@@ -19,7 +21,7 @@ int main(){
       }
 
       if(number == 2){
-        if (tx_data(BACKWARD))
+        if (tx_data(port, BACKWARD))
           fputs("success!\n", stderr);
         else
           fputs("failure :(\n", stderr);

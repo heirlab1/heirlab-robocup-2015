@@ -26,7 +26,7 @@ int rx_check()
 	// Fill packet buffer
 	if(gbRcvPacketNum < 6)
 	{
-		RcvNum = zgb_hal_rx( &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
+		RcvNum = hal_rx( &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
 		if( RcvNum != -1 )
 			gbRcvPacketNum += RcvNum;
 	}
