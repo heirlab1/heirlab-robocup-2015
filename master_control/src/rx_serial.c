@@ -14,11 +14,13 @@ unsigned char gbRcvPacketNum;
 unsigned short gwRcvData;
 unsigned char gbRcvFlag;
 
-int rx_check()
+int rx_check(int fd)
 {
+
 	int RcvNum;
 	unsigned char checksum;
 	int i, j;
+
 
 	if(gbRcvFlag == 1)
 		return 1;
@@ -26,10 +28,12 @@ int rx_check()
 	// Fill packet buffer
 	if(gbRcvPacketNum < 6)
 	{
-		RcvNum = zgb_hal_rx( &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
+		RcvNum = hal_rx(fd, &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
 		if( RcvNum != -1 )
 			gbRcvPacketNum += RcvNum;
 	}
+
+	printf("got here weirdo\n");
 
 	// Find header
 	if(gbRcvPacketNum >= 2)
@@ -64,6 +68,8 @@ int rx_check()
 		}
 	}
 
+
+
 	// Verify packet
 	if(gbRcvPacketNum == 6)
 	{
@@ -89,14 +95,13 @@ int rx_check()
 	return gbRcvFlag;
 }
 
-int rx_data()
-{
+int rx_data(){
 	gbRcvFlag = 0;
 	return (int)gwRcvData;
 }
 
-int hal_rx( unsigned char *pPacket, int numPacket )
-{
+int hal_rx(int fd, unsigned char *pPacket, int numPacket ){
 	memset(pPacket, 0, numPacket);
-	return read(gSocket_fd, pPacket, numPacket);
+	printf("hallin\n");
+	return read(fd, pPacket, numPacket);
 }

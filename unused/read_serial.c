@@ -18,7 +18,7 @@ volatile int STOP=FALSE;
 
 main()
 {
-  int fd,c, res;
+  int fd,c,res;
   struct termios oldtio,newtio;
   char buf[255];
 /* 
