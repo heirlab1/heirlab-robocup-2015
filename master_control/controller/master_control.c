@@ -25,8 +25,10 @@ int main(){
           fputs("failure :(\n", stderr);
       }
     }
-    else printf("That ain't a number ya donkus");    
-
+    else {
+      printf("That ain't a number ya donkus");
+      break;    
+    }
   }
 
   return 0;
