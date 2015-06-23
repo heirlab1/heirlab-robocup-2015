@@ -16,11 +16,10 @@ unsigned char gbRcvFlag;
 
 int rx_check(int fd)
 {
+
 	int RcvNum;
 	unsigned char checksum;
 	int i, j;
-
-	printf("got here weirdo");
 
 
 	if(gbRcvFlag == 1)
@@ -33,6 +32,8 @@ int rx_check(int fd)
 		if( RcvNum != -1 )
 			gbRcvPacketNum += RcvNum;
 	}
+
+	printf("got here weirdo\n");
 
 	// Find header
 	if(gbRcvPacketNum >= 2)
@@ -67,6 +68,8 @@ int rx_check(int fd)
 		}
 	}
 
+
+
 	// Verify packet
 	if(gbRcvPacketNum == 6)
 	{
@@ -92,14 +95,13 @@ int rx_check(int fd)
 	return gbRcvFlag;
 }
 
-int rx_data()
-{
+int rx_data(){
 	gbRcvFlag = 0;
 	return (int)gwRcvData;
 }
 
-int hal_rx(int fd, unsigned char *pPacket, int numPacket )
-{
+int hal_rx(int fd, unsigned char *pPacket, int numPacket ){
 	memset(pPacket, 0, numPacket);
+	printf("hallin\n");
 	return read(fd, pPacket, numPacket);
 }

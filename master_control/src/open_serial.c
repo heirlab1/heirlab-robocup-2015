@@ -66,7 +66,8 @@ int open_port(){
  newtio.c_cc[VKILL]    = 0;     /* @ */
  newtio.c_cc[VEOF]     = 4;     /* Ctrl-d */
  newtio.c_cc[VTIME]    = 0;     /* inter-character timer unused */
- newtio.c_cc[VMIN]     = 1;     /* blocking read until 1 character arrives */
+ // newtio.c_cc[VMIN]     = 1;     /* blocking read until 1 character arrives */
+ newtio.c_cc[VMIN]     = 0;     /* non-blocking read until 1 character arrives */
  newtio.c_cc[VSWTC]    = 0;     /* '\0' */
  newtio.c_cc[VSTART]   = 0;     /* Ctrl-q */ 
  newtio.c_cc[VSTOP]    = 0;     /* Ctrl-s */
