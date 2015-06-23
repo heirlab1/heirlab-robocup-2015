@@ -12,24 +12,37 @@
 #include <queue>
 #include <cmath>
 
-
 void HeadModule::scan() {
+	int counterMax = 10;
+	int counter = 0;
 
 	cv::Point moveToPos = cv::Point(0,0);
 	cv::Point currentPos = cv::Point(0,0);
 	while (1) {
-			usleep(50*1000);
-		if(!motorsCheckMoving()) {
-			usleep(1000*100);
-			currentPos = moveToPos;
-			markSeenMotorMatrix(currentPos);
-			std::cout<<"MotorMatrix "<<motorMatrix[upperLimit][rightLimit]<<std::endl;
-			moveToPos = BFSmotorMatrix(currentPos);
-			if(moveToPos.x == -1 && moveToPos.y == -1)
-				break;
-			else
-				motorsMoveTo(moveToPos);
+		float areaSearched = 0;
+		for(int i=0; i<(rightLimit-leftLimit); i++) { //Loop motorMatrix rows
+				for(int j=0; j<(upperLimit-lowerLimit); j++) { //Loop motorMatrix columns
+					if(motorMatrix[i][j]>=.5)
+						areaSearched+=1;
+			}
 		}
+		std::cout<<"%DNE: "<<areaSearched/((rightLimit-leftLimit)*(upperLimit-lowerLimit))<<std::endl;
+
+		//std::cout<<"Try: "<<moveToPos<<std::endl;
+		//std::cout<<"Is: "<<motorsReadPosition()<<std::endl;
+		//usleep(50*1000);
+		motorsWaitForStop();
+
+		//usleep(1000*100);
+		currentPos = moveToPos;
+		markSeenMotorMatrix(currentPos);
+		//std::cout<<"MotorMatrix "<<motorMatrix[upperLimit][rightLimit]<<std::endl;
+		moveToPos = BFSmotorMatrix(currentPos);
+		if(moveToPos.x == -1 && moveToPos.y == -1) {
+			break;
+		}
+		else
+			motorsMoveTo(moveToPos);
 	}
 	std::cout<<"Finished scanning"<<std::endl;
 }
@@ -41,6 +54,19 @@ cv::Point HeadModule::motorsReadPosition() {
 	return cv::Point(panMotor, tiltMotor);
 }
 
+void HeadModule::motorsWaitForStop() {
+	int maxCounter = 5;
+	int count = 0;
+	usleep(1000);
+	while(count<maxCounter) {
+		if(!motorsCheckMoving())
+			count++;
+		else
+			count=0;
+	}
+}
+
+
 //Check if motors are moving
 bool HeadModule::motorsCheckMoving() {
 	if(motorRead(PAN_MOTOR_ID, IS_MOVING) || motorRead(TILT_MOTOR_ID, IS_MOVING))
@@ -51,16 +77,21 @@ bool HeadModule::motorsCheckMoving() {
 
 //Moves selected motor to position
 void HeadModule::motorMoveTo(int id, int pos) {
-	if(id == PAN_MOTOR_ID)
+	if(id == PAN_MOTOR_ID) {
 		motorWrite(id, GOAL_POSITION, pos);
-	else if (id == TILT_MOTOR_ID)
+		motorsPosition = cv::Point(motorsPosition.x, pos);
+	}
+	else if (id == TILT_MOTOR_ID) {
 		motorWrite(id, GOAL_POSITION, pos);
+		motorsPosition = cv::Point(pos, motorsPosition.y);
+	}
 }
 
 //Moves both motors to desired position
 void HeadModule::motorsMoveTo(cv::Point point) {
 	motorWrite(PAN_MOTOR_ID, GOAL_POSITION, point.x+rightLimit);
 	motorWrite(TILT_MOTOR_ID, GOAL_POSITION, point.y+upperLimit);
+	motorsPosition = point;
 	/*}
 	else
 		std::cout<<"Error: motors are moving, cannot change course"<<std::endl;*/
@@ -71,8 +102,8 @@ void HeadModule::motorsMoveTo(cv::Point point) {
 int HeadModule::motorRead(int id, int command) {
 	while(!checkElapsedTime());
 	int returnVal = dxl_read_word(id, command);
-	usleep(1000*10);
-	printCommResult();
+	//printCommResult();
+	//std::cout<<command<<std::endl;
 	return returnVal;
 }
 
@@ -81,14 +112,25 @@ int HeadModule::motorRead(int id, int command) {
 void HeadModule::motorWrite(int id , int command, int value) {
 	while(!checkElapsedTime());
 	dxl_write_word(id, command, value);
-	usleep(1000*10);
-	printCommResult();
+	//printCommResult();
+	//std::cout<<command<<std::endl;
+}
+
+void HeadModule::motorIncrement(int id, int amount) {
+	if(id==PAN_MOTOR_ID) {
+		motorsPosition=cv::Point(motorsPosition.x+amount, motorsPosition.y);
+		motorWrite(PAN_MOTOR_ID, GOAL_POSITION, motorsPosition.x);
+	}
+	else if(id ==TILT_MOTOR_ID) {
+		motorsPosition=cv::Point(motorsPosition.x, motorsPosition.y+amount);
+		motorWrite(TILT_MOTOR_ID, GOAL_POSITION, motorsPosition.y);
+	}
 }
 
 //Checks to see if time since last request has passed
 bool HeadModule::checkElapsedTime() {
 	std::clock_t currentTime = clock();
-	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 5)
+	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 0)
 		return true;
 	else
 		return false;
@@ -185,13 +227,13 @@ void HeadModule::markSeenMotorMatrix(cv::Point centerPoint) {
 			if(distance<.10*cameraTiltLimit) //If in 10% of the center
 				motorMatrix[i][j]=motorMatrix[i][j]+threshold;
 			else if(distance<.25*cameraTiltLimit) //If 25% from center
-				motorMatrix[i][j]=motorMatrix[i][j]+0.50*threshold;
+				motorMatrix[i][j]=motorMatrix[i][j]+1*threshold;
 			else if(distance<.50*cameraTiltLimit) //If 50% from center
-				motorMatrix[i][j]=motorMatrix[i][j]+0.10*threshold;
+				motorMatrix[i][j]=motorMatrix[i][j]+1*threshold;
 			else if(distance<.75*cameraTiltLimit) //If 75% from center
-				motorMatrix[i][j]=motorMatrix[i][j]+0.05*threshold;
+				motorMatrix[i][j]=motorMatrix[i][j]+1*threshold;
 			else if(distance<.90*cameraTiltLimit) //If 90% from center
-				motorMatrix[i][j]=motorMatrix[i][j]+0.02*threshold;
+				motorMatrix[i][j]=motorMatrix[i][j]+1*threshold;
 		}
 	}
 }
@@ -229,7 +271,7 @@ cv::Point HeadModule::BFSmotorMatrix(cv::Point startPoint) {
 			tempPoint = searchQueue.front(); //Take element from queue
 			searchQueue.pop(); //Remove element from queue
 
-			std::cout<<tempPoint<<std::endl;
+			//std::cout<<tempPoint<<std::endl;
 
 			// If within a given threshold, add to final queue
 			if(motorMatrix[tempPoint.y][tempPoint.x]<threshold)
@@ -238,25 +280,25 @@ cv::Point HeadModule::BFSmotorMatrix(cv::Point startPoint) {
 				//Searches adjacent points (up, down, right, left) in graph to see if they have been explored. If not, add to search queue
 				//Outer if statements make sure we are not searching outside our head limitation angles
 				//Inner if statements check to see if the elements we want to add have not previously been searched
-				if(tempPoint.x+motorMatrixAccuracy <= rightLimit-leftLimit) {
+				if(tempPoint.x+motorMatrixAccuracy < rightLimit-leftLimit) {
 					if(!searchedPoints[tempPoint.x+motorMatrixAccuracy][tempPoint.y]) {
 						searchQueue.push(cv::Point(tempPoint.x+motorMatrixAccuracy, tempPoint.y));
 						searchedPoints[tempPoint.x+motorMatrixAccuracy][tempPoint.y]=true;
 					}
 				}
-				if(tempPoint.x-motorMatrixAccuracy >= 0) {
+				if(tempPoint.x-motorMatrixAccuracy > 0) {
 					if(!searchedPoints[tempPoint.x-motorMatrixAccuracy][tempPoint.y]) {
 						searchQueue.push(cv::Point(tempPoint.x-motorMatrixAccuracy, tempPoint.y));
 						searchedPoints[tempPoint.x-motorMatrixAccuracy][tempPoint.y]=true;
 					}
 				}
-				if(tempPoint.y+motorMatrixAccuracy <= upperLimit-lowerLimit) {
+				if(tempPoint.y+motorMatrixAccuracy < upperLimit-lowerLimit) {
 					if(!searchedPoints[tempPoint.x][tempPoint.y+motorMatrixAccuracy]) {
 						searchQueue.push(cv::Point(tempPoint.x, tempPoint.y+motorMatrixAccuracy));
 						searchedPoints[tempPoint.x][tempPoint.y+motorMatrixAccuracy]=true;
 					}
 				}
-				if(tempPoint.y-motorMatrixAccuracy >= 0) {
+				if(tempPoint.y-motorMatrixAccuracy > 0) {
 					if(!searchedPoints[tempPoint.x][tempPoint.y-motorMatrixAccuracy]) {
 						searchQueue.push(cv::Point(tempPoint.x, tempPoint.y-motorMatrixAccuracy));
 						searchedPoints[tempPoint.x][tempPoint.y-motorMatrixAccuracy]=true;
@@ -374,26 +416,36 @@ void HeadModule::initMoters() {
 	else
 		std::cout<<"Failed to open USB2Dynamixel!"<<std::endl;
 
+	//dxl_write_word(24, LED_ENABLE, 1);
+
 	offsetPosHorizontal = 0;
 	offsetPosVertical = 0;
 
 	resetElapsedTime();
+	std::cout<<"Start"<<std::endl;
 
-	motorWrite(PAN_MOTOR_ID, CW_ANGLE_LIMIT, 0);
-	motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
-	motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);
-	motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
+	//motorWrite(PAN_MOTOR_ID, CW_ANGLE_LIMIT, 0);
+	//motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, 4000);
+	//motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);
+	//motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, 4000);
+
+
+	//motorWrite(PAN_MOTOR_ID, CW_ANGLE_LIMIT, 0);
+	//motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
+	//motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);
+	//motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
 
 	motorWrite(PAN_MOTOR_ID, MOVING_SPEED, 50);
 	motorWrite(TILT_MOTOR_ID, MOVING_SPEED, 50);
 
-	motorWrite(PAN_MOTOR_ID, TORQUE_ENABLE, 1);
-	motorWrite(TILT_MOTOR_ID, TORQUE_ENABLE, 1);
+	//motorWrite(PAN_MOTOR_ID, TORQUE_ENABLE, 1);
+	//motorWrite(TILT_MOTOR_ID, TORQUE_ENABLE, 1);
 
-	motorWrite(PAN_MOTOR_ID, GOAL_POSITION, 0);
-	motorWrite(TILT_MOTOR_ID, GOAL_POSITION, 0);
+	motorWrite(PAN_MOTOR_ID, GOAL_POSITION, rightLimit);
+	motorWrite(TILT_MOTOR_ID, GOAL_POSITION, upperLimit);
 
-	usleep(200*1000);
+	std::cout<<"End"<<std::endl;
+
 }
 
 //Constructor

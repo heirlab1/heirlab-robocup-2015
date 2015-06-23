@@ -130,17 +130,15 @@ int main(int argc, char* argv[]) {
 
 	VisionModule vision;
 
-	head.scan();
+	//head.scan();
 
 	/*if(head.motorsCheckMoving()){
 		printf("moving");
 	}
 	else printf("not moving");*/
 
-	int offsetMoveX = 0;
-	int offsetMoveY = 0;
+	int offset = 0;
 	int id = 0;
-	int toMoveTo = 0;
 
 	//head.motorMoveTo(TILT_MOTOR_ID, -100);
 	//std::cout<<head.motorsReadPosition()<<std::endl;
@@ -153,53 +151,38 @@ int main(int argc, char* argv[]) {
 		cv::waitKey(30);
 		cv::Point ballPos = vision.detectBallThreshold();
 
-		head.motorsMoveTo(cv::Point(-400, 0));
+		head.motorsMoveTo(cv::Point(rightLimit, upperLimit));
 
-
+		head.motorsWaitForStop();
 		if (ballPos.y != -1 && ballPos.x != -1) {
 
 			if(vision.FRAME_WIDTH/3 < ballPos.x && ballPos.x < vision.FRAME_WIDTH*2/3 && vision.FRAME_HEIGHT/3 < ballPos.y && ballPos.y < vision.FRAME_HEIGHT*2/3)
 				std::cout<<"Center"<<std::endl;
 			else {
 				if(ballPos.x<vision.FRAME_WIDTH/3) {
-					offsetMoveX = 30;
+					offset = 100;
 					std::cout<<"Right"<<std::endl;
 					id = PAN_MOTOR_ID;
 				}
 				else if (ballPos.x>vision.FRAME_WIDTH*2/3) {
-					offsetMoveX = -30;
+					offset = -100;
 					std::cout<<"Left"<<std::endl;
 					id = PAN_MOTOR_ID;
 				}
 				else if(ballPos.y<vision.FRAME_HEIGHT/3) {
-					offsetMoveY = 30;
+					offset = 100;
 					std::cout<<"Up"<<std::endl;
 					id = TILT_MOTOR_ID;
 				}
 				else if (ballPos.y>vision.FRAME_HEIGHT*2/3) {
-					offsetMoveY = -30;
+					offset = -100;
 					std::cout<<"Down"<<std::endl;
 					id = TILT_MOTOR_ID;
 				}
-			}
-
-			if(!head.motorsCheckMoving()) {
-				cv::Point pos = head.motorsReadPosition();
-				if(pos.x-lastPos.x <0)
-					if(-1*(pos.x-lastPos.x)>40)
-
-
-				if(id == TILT_MOTOR_ID) {
-					head.motorMoveTo(id, pos.y=offsetMoveY);
-					std::cout<<pos<<std::endl;
-				}
-				else
-					head.motorMoveTo(id, pos.x+offsetMoveX);
-				//std::cout<<"Moving"<<std::endl;
-				cv::Point toMoveTo = head.motorsReadPosition();
-				std::cout<<toMoveTo<<std::endl;
-				toMoveTo = cv::Point(toMoveTo.x+offsetMoveX, toMoveTo.y+offsetMoveY);
-				head.motorsMoveTo(toMoveTo);
+				usleep(100*20000);
+				std::cout<<head.motorsReadPosition();
+				//head.motorIncrement(id, offset);
+				usleep(100*20000);
 			}
 		}
 	}
