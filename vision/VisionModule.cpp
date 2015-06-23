@@ -18,7 +18,7 @@
 //#include "features2d.hpp"
 
 void VisionModule::setupFrame() {
-	capture.open(0);//open capture object at location zero (default location for webcam)
+	capture.open(0);
 
 	//set height and width of capture frame
 	capture.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
@@ -27,6 +27,7 @@ void VisionModule::setupFrame() {
 
 	// Detects a ball via the threshold method
 cv::Point VisionModule::detectBallThreshold() {
+	cv::waitKey(30);
 	bool foundBall = false; //Ball assumed not found
 
 	capture.read(imageCameraFeed); //Read from camera feed
@@ -95,7 +96,7 @@ void VisionModule::displayFeed() {
 	//show frames
 	imshow(windowThreshold, imageThreshold); //Show threshold image
 	imshow(windowCameraFeed, imageCameraFeed); //Show camera feed image
-	imshow(windowHSV, imageHSV); //Show HSV image
+	//imshow(windowHSV, imageHSV); //Show HSV image
 }
 
 	/*cv::Rect findField(cv::Mat frame);
@@ -123,7 +124,6 @@ VisionModule::~VisionModule() {
 	capture.release(); // Release the video
 }
 
-
 //Main Method
 int main(int argc, char* argv[]) {
 	HeadModule head;
@@ -144,45 +144,68 @@ int main(int argc, char* argv[]) {
 	//std::cout<<head.motorsReadPosition()<<std::endl;
 	//head.motorMoveTo(PAN_MOTOR_ID, 1000);
 
-	cv::Point lastPos = cv::Point(0,0);
+	std::cout<<"Now"<<std::endl;
+	/*usleep(1000*5000);
+	head.motorIncrement(24, -50);
+	head.motorIncrement(24, 100);
+	usleep(1000*5000);
+	head.motorIncrement(24, -50);
+	std::cout<<"End"<<std::endl;*/
 
-	while(1) {
-		usleep(1000*20);
-		cv::waitKey(30);
-		cv::Point ballPos = vision.detectBallThreshold();
-
-		head.motorsMoveTo(cv::Point(rightLimit, upperLimit));
+	/*while(1) {
+		//usleep(1000*4000);
+		cv::Point currPos = head.motorsReadPosition();
+		std::cout<<currPos<<std::endl;
+		if (currPos.x == rightLimit && currPos.y == upperLimit)
+			head.motorsMoveTo(cv::Point(0,0));
+		else if(currPos.x == 0 && currPos.y == 0)
+			head.motorsMoveTo(cv::Point(rightLimit-leftLimit,upperLimit-lowerLimit));
+		else if(currPos.x == rightLimit-leftLimit && currPos.y == upperLimit-lowerLimit)
+			head.motorsMoveTo(cv::Point(0,0));
 
 		head.motorsWaitForStop();
-		if (ballPos.y != -1 && ballPos.x != -1) {
+	}*/
 
+	//while(1) {
+	//	vision.detectBallThreshold();
+	//}
+
+	while(1) {
+		//usleep(1000*20);
+		//cv::waitKey(30);
+
+		cv::Point ballPos = vision.detectBallThreshold();
+
+		//head.motorsMoveTo(cv::Point(rightLimit, upperLimit));
+
+		if (ballPos.y != -1 && ballPos.x != -1) {
 			if(vision.FRAME_WIDTH/3 < ballPos.x && ballPos.x < vision.FRAME_WIDTH*2/3 && vision.FRAME_HEIGHT/3 < ballPos.y && ballPos.y < vision.FRAME_HEIGHT*2/3)
 				std::cout<<"Center"<<std::endl;
 			else {
 				if(ballPos.x<vision.FRAME_WIDTH/3) {
-					offset = 100;
+					offset = 40;
 					std::cout<<"Right"<<std::endl;
 					id = PAN_MOTOR_ID;
 				}
 				else if (ballPos.x>vision.FRAME_WIDTH*2/3) {
-					offset = -100;
+					offset = -40;
 					std::cout<<"Left"<<std::endl;
 					id = PAN_MOTOR_ID;
 				}
 				else if(ballPos.y<vision.FRAME_HEIGHT/3) {
-					offset = 100;
+					offset = -40;
 					std::cout<<"Up"<<std::endl;
 					id = TILT_MOTOR_ID;
 				}
 				else if (ballPos.y>vision.FRAME_HEIGHT*2/3) {
-					offset = -100;
+					offset = 40;
 					std::cout<<"Down"<<std::endl;
 					id = TILT_MOTOR_ID;
 				}
-				usleep(100*20000);
-				std::cout<<head.motorsReadPosition();
-				//head.motorIncrement(id, offset);
-				usleep(100*20000);
+				std::cout<<" "<< head.motorsReadPosition();
+				head.motorIncrement(id, offset);
+				head.motorsWaitForStop();
+				//usleep(1000*100);
 			}
 		}
 	}

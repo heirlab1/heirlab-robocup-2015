@@ -107,12 +107,14 @@ class HeadModule {
 		cv::Point BFSmotorMatrix(cv::Point);
 		void scan(void);
 		void motorsMoveTo(cv::Point);
-		cv::Point motorsReadPosition(void);
 		bool motorsCheckMoving(void);
 		void motorMoveTo(int, int);
 		void printCommResult(void);
 		void motorIncrement(int, int);
 		void motorsWaitForStop(void);
+
+		cv::Point motorsReadPosition(void);
+		bool checkWithinLimits(cv::Point);
 
 	private:
 		void printErrorCode(void);
