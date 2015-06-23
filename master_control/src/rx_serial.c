@@ -9,6 +9,11 @@
 
 #include "tx_serial.h"
 
+unsigned char gbRcvPacket[6];
+unsigned char gbRcvPacketNum;
+unsigned short gwRcvData;
+unsigned char gbRcvFlag;
+
 int rx_check()
 {
 	int RcvNum;
@@ -90,7 +95,7 @@ int rx_data()
 	return (int)gwRcvData;
 }
 
-int zgb_hal_rx( unsigned char *pPacket, int numPacket )
+int hal_rx( unsigned char *pPacket, int numPacket )
 {
 	memset(pPacket, 0, numPacket);
 	return read(gSocket_fd, pPacket, numPacket);
