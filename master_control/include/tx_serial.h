@@ -15,7 +15,7 @@ int open_port();
 
 int rx_check(int fd);
 int rx_data();
-int hal_rx();
+int hal_rx(int fd, unsigned char *pPacket, int numPacket);
 
 
 /* baudrate settings are defined in <asm/termbits.h>, which is
@@ -31,7 +31,7 @@ included by <termios.h> */
 #define TRUE 1
 
 #define DEFAULT_DEVICEINDEX 0
-#define TIMEOUT_TIME    1000 // msec
+#define TIMEOUT_TIME    10 // msec
 
 
 #define FORWARD		(1)		// RC100 Button: U

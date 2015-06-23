@@ -14,11 +14,14 @@ unsigned char gbRcvPacketNum;
 unsigned short gwRcvData;
 unsigned char gbRcvFlag;
 
-int rx_check()
+int rx_check(int fd)
 {
 	int RcvNum;
 	unsigned char checksum;
 	int i, j;
+
+	printf("got here weirdo");
+
 
 	if(gbRcvFlag == 1)
 		return 1;
@@ -26,7 +29,7 @@ int rx_check()
 	// Fill packet buffer
 	if(gbRcvPacketNum < 6)
 	{
-		RcvNum = hal_rx( &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
+		RcvNum = hal_rx(fd, &gbRcvPacket[gbRcvPacketNum], (6 - gbRcvPacketNum) );
 		if( RcvNum != -1 )
 			gbRcvPacketNum += RcvNum;
 	}
@@ -95,8 +98,8 @@ int rx_data()
 	return (int)gwRcvData;
 }
 
-int hal_rx( unsigned char *pPacket, int numPacket )
+int hal_rx(int fd, unsigned char *pPacket, int numPacket )
 {
 	memset(pPacket, 0, numPacket);
-	return read(gSocket_fd, pPacket, numPacket);
+	return read(fd, pPacket, numPacket);
 }
