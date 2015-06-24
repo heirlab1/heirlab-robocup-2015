@@ -55,7 +55,6 @@ o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:2 rop:then
 o begin
-o load param_dest:var:UseGyro param_src:bool_num:1
 o if param_src:motion:1:50 lop:>= param_src:dec_num:13 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:18 rop:then
 o begin
 o if param_src:motion:1:50 lop:== param_src:dec_num:17 rop:then
