@@ -31,7 +31,7 @@ included by <termios.h> */
 #define TRUE 1
 
 #define DEFAULT_DEVICEINDEX 0
-#define TIMEOUT_TIME    10 // msec
+#define TIMEOUT_TIME    1000 // msec
 
 //  			--- Walking mapping ---
 // 		command				tx#		// RC100 Button
@@ -77,7 +77,7 @@ included by <termios.h> */
 #define BEATCHEST 			(20) 	// 1+L
 #define CHEER 				(24) 	// 1+R
 
-// 				--- reference buttons ---
+// 				--- Reference buttons ---
 #define button1				(16) 	// 1
 #define button2				(32) 	// 2
 #define button3				(64) 	// 3

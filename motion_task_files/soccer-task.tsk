@@ -307,7 +307,6 @@ o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:65 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:var:UseGyro param_src:bool_num:0
 o load param_dest:motion:1:50 param_src:dec_num:47
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:68 rop:then

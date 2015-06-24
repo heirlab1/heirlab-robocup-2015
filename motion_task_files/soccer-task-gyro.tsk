@@ -1,5 +1,6 @@
-ï»¿version 2.05
-platform bioloid2
+ï»¿version 3.00
+cm_version 1.0
+platform CM-700
 o // param_text:Bioloid Premium Soccer Example
 o // param_text:Release: 2010/03/08
 o // param_text:Last Update: 2010/03/08
@@ -7,11 +8,11 @@ o // param_text:Last Update: 2010/03/08
 o main
 o begin
 o load param_dest:var:First param_src:bool_num:1
-o load param_dest:motion:24 param_src:dec_num:1
+o load param_dest:motion:1:50 param_src:dec_num:1
 - 
 o while(1)
 o begin
-o if param_src:cm:30 lop:== param_src:bool_num:1 rop:then
+o if param_src:cm:2 lop:== param_src:bool_num:1 rop:then
 o begin
 o if param_src:var:First lop:== param_src:bool_num:1 rop:then
 o begin
@@ -19,342 +20,342 @@ o call faddr_dest:InitializationGyro
 o load param_dest:var:First param_src:bool_num:0
 o end
 - 
-o load param_dest:var:RxData param_src:cm:28
+o load param_dest:var:RxData param_src:cm:1
 o if param_src:var:RxData lop:== param_src:rc100z_num:1 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:1
-o if param_src:motion:24 lop:>= param_src:dec_num:3 rop:&& param_src:motion:24 lop:<= param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:>= param_src:dec_num:3 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:12 rop:then
 o begin
-o if param_src:motion:24 lop:== param_src:dec_num:9 rop:|| param_src:motion:24 lop:== param_src:dec_num:11 rop:then
-o begin
-o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:6
-o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:10 rop:|| param_src:motion:24 lop:== param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:== param_src:dec_num:9 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:11 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:5
+o load param_dest:motion:1:50 param_src:dec_num:6
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:7 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:10 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:12 rop:then
+o begin
+o call faddr_dest:ExitWithoutExcuteStop
+o load param_dest:motion:1:50 param_src:dec_num:5
+o end
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:7 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:4
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:8 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:8 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o else
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:2 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:1
-o if param_src:motion:24 lop:>= param_src:dec_num:13 rop:&& param_src:motion:24 lop:<= param_src:dec_num:18 rop:then
+o if param_src:motion:1:50 lop:>= param_src:dec_num:13 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:18 rop:then
 o begin
-o if param_src:motion:24 lop:== param_src:dec_num:17 rop:then
+o if param_src:motion:1:50 lop:== param_src:dec_num:17 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:14
+o load param_dest:motion:1:50 param_src:dec_num:14
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:18 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:18 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:13
+o load param_dest:motion:1:50 param_src:dec_num:13
 o end
 o end
 o else
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:13
+o load param_dest:motion:1:50 param_src:dec_num:13
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:4 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:28
+o load param_dest:motion:1:50 param_src:dec_num:28
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:8 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:27
+o load param_dest:motion:1:50 param_src:dec_num:27
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:5 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:1
-o if param_src:motion:24 lop:>= param_src:dec_num:3 rop:&& param_src:motion:24 lop:<= param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:>= param_src:dec_num:3 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:12 rop:then
 o begin
-o if param_src:motion:24 lop:== param_src:dec_num:6 rop:|| param_src:motion:24 lop:== param_src:dec_num:10 rop:then
+o if param_src:motion:1:50 lop:== param_src:dec_num:6 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:10 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:12
+o load param_dest:motion:1:50 param_src:dec_num:12
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:7 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:7 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:4
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:8 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:8 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o else
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:9 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:1
-o if param_src:motion:24 lop:>= param_src:dec_num:3 rop:&& param_src:motion:24 lop:<= param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:>= param_src:dec_num:3 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:12 rop:then
 o begin
-o if param_src:motion:24 lop:== param_src:dec_num:5 rop:|| param_src:motion:24 lop:== param_src:dec_num:9 rop:then
+o if param_src:motion:1:50 lop:== param_src:dec_num:5 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:9 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:11
+o load param_dest:motion:1:50 param_src:dec_num:11
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:7 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:7 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:4
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:8 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:8 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o else
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:513 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:1
-o if param_src:motion:24 lop:>= param_src:dec_num:3 rop:&& param_src:motion:24 lop:<= param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:>= param_src:dec_num:3 rop:&& param_src:motion:1:50 lop:<= param_src:dec_num:12 rop:then
 o begin
-o if param_src:motion:24 lop:== param_src:dec_num:5 rop:|| param_src:motion:24 lop:== param_src:dec_num:11 rop:then
-o begin
-o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:10
-o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:6 rop:|| param_src:motion:24 lop:== param_src:dec_num:12 rop:then
+o if param_src:motion:1:50 lop:== param_src:dec_num:5 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:11 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
-o load param_dest:motion:24 param_src:dec_num:9
+o load param_dest:motion:1:50 param_src:dec_num:10
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:7 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:6 rop:|| param_src:motion:1:50 lop:== param_src:dec_num:12 rop:then
+o begin
+o call faddr_dest:ExitWithoutExcuteStop
+o load param_dest:motion:1:50 param_src:dec_num:9
+o end
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:7 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:4
 o end
-o elseif param_src:motion:24 lop:== param_src:dec_num:8 rop:then
+o elseif param_src:motion:1:50 lop:== param_src:dec_num:8 rop:then
 o begin
 o call faddr_dest:WaitMotion
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o else
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:3
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:264 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:23
+o load param_dest:motion:1:50 param_src:dec_num:23
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:260 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:24
+o load param_dest:motion:1:50 param_src:dec_num:24
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:776 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:25
+o load param_dest:motion:1:50 param_src:dec_num:25
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:772 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:26
+o load param_dest:motion:1:50 param_src:dec_num:26
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:265 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:19
+o load param_dest:motion:1:50 param_src:dec_num:19
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:261 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:20
+o load param_dest:motion:1:50 param_src:dec_num:20
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:266 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:21
+o load param_dest:motion:1:50 param_src:dec_num:21
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:262 rop:then
 o begin
 o load param_dest:var:UseGyro param_src:bool_num:0
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:22
+o load param_dest:motion:1:50 param_src:dec_num:22
 o end
 o // param_text:Stop Walk
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:834 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motor:254:34 param_src:dec_num:0
+o load param_dest:motor:254:108 param_src:dec_num:0
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:785 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motor:254:34 param_src:dec_num:1023
+o load param_dest:motor:254:108 param_src:dec_num:1023
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:17 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:29
+o load param_dest:motion:1:50 param_src:dec_num:29
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:18 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:30
+o load param_dest:motion:1:50 param_src:dec_num:30
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:20 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:53
+o load param_dest:motion:1:50 param_src:dec_num:53
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:24 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:50
+o load param_dest:motion:1:50 param_src:dec_num:50
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:33 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:37
+o load param_dest:motion:1:50 param_src:dec_num:37
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:545 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:34
+o load param_dest:motion:1:50 param_src:dec_num:34
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:34 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:43
+o load param_dest:motion:1:50 param_src:dec_num:43
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:36 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:39
+o load param_dest:motion:1:50 param_src:dec_num:39
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:40 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:41
+o load param_dest:motion:1:50 param_src:dec_num:41
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:64 rop:then
 o begin
-o if param_src:motion:24 lop:!= param_src:dec_num:45 rop:then
+o if param_src:motion:1:50 lop:!= param_src:dec_num:45 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
-o load param_dest:motion:24 param_src:dec_num:45
+o load param_dest:motion:1:50 param_src:dec_num:45
 o end
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:65 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:47
+o load param_dest:motion:1:50 param_src:dec_num:47
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:68 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:48
+o load param_dest:motion:1:50 param_src:dec_num:48
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:72 rop:then
 o begin
 o call faddr_dest:ExitWithoutExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:46
+o load param_dest:motion:1:50 param_src:dec_num:46
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:129 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:36
+o load param_dest:motion:1:50 param_src:dec_num:36
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:641 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:32
+o load param_dest:motion:1:50 param_src:dec_num:32
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:130 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:42
+o load param_dest:motion:1:50 param_src:dec_num:42
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:132 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:40
+o load param_dest:motion:1:50 param_src:dec_num:40
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:136 rop:then
 o begin
 o call faddr_dest:ExitExcuteStop
 o load param_dest:var:UseGyro param_src:bool_num:0
-o load param_dest:motion:24 param_src:dec_num:38
+o load param_dest:motion:1:50 param_src:dec_num:38
 o call faddr_dest:WaitMotion
 o end
 o elseif param_src:var:RxData lop:== param_src:rc100z_num:0 rop:then
@@ -363,32 +364,32 @@ o call faddr_dest:ExitExcuteStop
 o end
 o end
 - 
-o if param_src:motion:25 lop:== param_src:bool_num:0 rop:then
+o if param_src:motion:1:51 lop:== param_src:bool_num:0 rop:then
 o begin
-o load param_dest:motion:24 param_src:dec_num:2
+o load param_dest:motion:1:50 param_src:dec_num:2
 o end
 o end
 o end
 - 
 o function faddr_src:ExitExcuteStop
 o begin
-o load param_dest:motion:24 param_src:dec_num:0
+o load param_dest:motion:1:50 param_src:dec_num:0
 o call faddr_dest:WaitMotion
 o end
 o function faddr_src:ExitWithoutExcuteStop
 o begin
-o load param_dest:motion:24 param_src:dec_num:-1
+o load param_dest:motion:1:50 param_src:dec_num:-1
 o call faddr_dest:WaitMotion
 o end
 - 
 o function faddr_src:WaitMotion
 o begin
-o wait param_src:motion:25 lop:== param_src:bool_num:1 rop:then
+o wait param_src:motion:1:51 lop:== param_src:bool_num:1 rop:then
 o end
 - 
 o function faddr_src:WaitTimer
 o begin
-o wait param_src:cm:33 lop:> param_src:timer_num:0 rop:then
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
 o end
 - 
 o function faddr_src:InitializationGyro
@@ -398,14 +399,14 @@ o load param_dest:var:RLBalCenter param_src:dec_num:0
 - 
 o for param_var:i param_src:dec_num:1 param_src:dec_num:10
 o begin
-o load param_dest:var:FBBalData param_src:aux_custom:3
-o load param_dest:var:RLBalData param_src:aux_custom:4
+o load param_dest:var:FBBalData param_src:aux:3:67
+o load param_dest:var:RLBalData param_src:aux:4:67
 - 
 o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:+ param_src:var:FBBalData
 o compute param_dest:var:RLBalCenter param_src:var:RLBalCenter aop:+ param_src:var:RLBalData
 - 
-o load param_dest:cm:33 param_src:timer_num:1
-o wait param_src:cm:33 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
 o end
 - 
 o compute param_dest:var:FBBalCenter param_src:var:FBBalCenter aop:/ param_src:dec_num:10
@@ -419,8 +420,8 @@ o load param_dest:var:ExistGyro param_src:bool_num:0
 - 
 o if param_src:var:ExistGyro lop:== param_src:bool_num:0 rop:then
 o begin
-o load param_dest:cm:55 param_src:buzzertime_num:255
-o load param_dest:cm:54 param_src:melody_num:7
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:7
 o end
 o load param_dest:var:GyroUse param_src:bool_num:1
 o load param_dest:var:Slip param_src:dec_num:0
@@ -430,8 +431,8 @@ o callback
 o begin
 o if param_src:var:GyroUse lop:== param_src:bool_num:1 rop:&& param_src:var:ExistGyro lop:== param_src:bool_num:1 rop:then
 o begin
-o load param_dest:var:FBBalData param_src:aux_custom:3
-o load param_dest:var:RLBalData param_src:aux_custom:4
+o load param_dest:var:FBBalData param_src:aux:3:67
+o load param_dest:var:RLBalData param_src:aux:4:67
 - 
 o compute param_dest:var:FBBalError param_src:var:FBBalData aop:- param_src:var:FBBalCenter
 o compute param_dest:var:RLBalError param_src:var:RLBalData aop:- param_src:var:RLBalCenter
@@ -450,27 +451,26 @@ o compute param_dest:var:FinalFBBal2 param_src:var:FBBalErrorScaled aop:/ param_
 o compute param_dest:var:FinalRLBal0 param_src:var:RLBalErrorScaled aop:/ param_src:dec_num:20
 o compute param_dest:var:FinalRLBal1 param_src:var:RLBalErrorScaled aop:/ param_src:dec_num:40
 - 
-o compute param_dest:motion:141 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal1
-o compute param_dest:motion:143 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal2
-o compute param_dest:motion:142 param_src:dec_num:0 aop:- param_src:var:FinalFBBal1
-o compute param_dest:motion:144 param_src:dec_num:0 aop:- param_src:var:FinalFBBal2
+o compute param_dest:cm_custom:w:141 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal1
+o compute param_dest:cm_custom:w:143 param_src:dec_num:0 aop:+ param_src:var:FinalFBBal2
+o compute param_dest:cm_custom:w:142 param_src:dec_num:0 aop:- param_src:var:FinalFBBal1
+o compute param_dest:cm_custom:w:144 param_src:dec_num:0 aop:- param_src:var:FinalFBBal2
 - 
-o compute param_dest:motion:137 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
-o compute param_dest:motion:138 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
-o compute param_dest:motion:145 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
-o compute param_dest:motion:146 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
+o compute param_dest:cm_custom:w:137 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
+o compute param_dest:cm_custom:w:138 param_src:dec_num:0 aop:+ param_src:var:FinalRLBal1
+o compute param_dest:cm_custom:w:145 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
+o compute param_dest:cm_custom:w:146 param_src:dec_num:0 aop:- param_src:var:FinalRLBal0
 o end
 o else
 o begin
-o load param_dest:motion:141 param_src:dec_num:0
-o load param_dest:motion:143 param_src:dec_num:0
-o load param_dest:motion:142 param_src:dec_num:0
-o load param_dest:motion:144 param_src:dec_num:0
+o load param_dest:cm_custom:w:141 param_src:dec_num:0
+o load param_dest:cm_custom:w:143 param_src:dec_num:0
+o load param_dest:cm_custom:w:142 param_src:dec_num:0
+o load param_dest:cm_custom:w:144 param_src:dec_num:0
 - 
-o load param_dest:motion:137 param_src:dec_num:0
-o load param_dest:motion:138 param_src:dec_num:0
-o load param_dest:motion:145 param_src:dec_num:0
-o load param_dest:motion:146 param_src:dec_num:0
+o load param_dest:cm_custom:w:137 param_src:dec_num:0
+o load param_dest:cm_custom:w:138 param_src:dec_num:0
+o load param_dest:cm_custom:w:145 param_src:dec_num:0
+o load param_dest:cm_custom:w:146 param_src:dec_num:0
 o end
 o end
-ƒÍ
