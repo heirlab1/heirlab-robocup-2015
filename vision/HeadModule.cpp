@@ -115,7 +115,7 @@ int HeadModule::motorRead(int id, int command) {
 	while(!checkElapsedTime());
 	int returnVal = dxl_read_word(id, command);
 	resetElapsedTime();
-	printCommResult();
+	//printCommResult();
 	//std::cout<<command<<std::endl;
 	return returnVal;
 }
@@ -126,7 +126,7 @@ void HeadModule::motorWrite(int id , int command, int value) {
 	while(!checkElapsedTime());
 	dxl_write_word(id, command, value);
 	resetElapsedTime();
-	printCommResult();
+	//printCommResult();
 	//std::cout<<command<<std::endl;
 }
 
@@ -167,7 +167,7 @@ bool HeadModule::checkWithinLimits(cv::Point point) {
 //Checks to see if time since last request has passed
 bool HeadModule::checkElapsedTime() {
 	std::clock_t currentTime = clock();
-	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 0.1)
+	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 0.05)
 		return true;
 	else
 		return false;

@@ -65,8 +65,8 @@ const int TILT_MOTOR_ID = 24;
 #define NUM_MOTOR_POSITIONS 	4095
 
 //Tracking Limits
-const int upperLimit = 60*(1/DEGREES_PER_POSITION); //How many degrees up from staring straight forward the head is allowed to tilt
-const int lowerLimit = -1*upperLimit; //^In down direction (!!!Must be negative!!!)
+const int upperLimit = 40*(1/DEGREES_PER_POSITION); //How many degrees up from staring straight forward the head is allowed to tilt
+const int lowerLimit = -2*upperLimit; //^In down direction (!!!Must be negative!!!)
 const int rightLimit = 45*(1/DEGREES_PER_POSITION); //How many degrees right from staring straight forward the head is allowed to pan
 const int leftLimit = -1*rightLimit; //^In left direction (!!!Must be negative!!!)
 const int motorMatrixAccuracy = 1; //Is accuracy of search algorithms and resolution of freedom in turning the motors | Notice: 2=50%, 4=25% ...
