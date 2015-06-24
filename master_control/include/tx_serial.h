@@ -78,6 +78,7 @@ included by <termios.h> */
 #define CHEER 				(24) 	// 1+R
 
 // 				--- Reference buttons ---
+// 		command				tx#		// RC100 Button
 #define button1				(16) 	// 1
 #define button2				(32) 	// 2
 #define button3				(64) 	// 3

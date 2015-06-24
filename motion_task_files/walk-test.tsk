@@ -1,0 +1,7 @@
+﻿version 3.00
+cm_version 1.0
+platform CM-700
+o main
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:3
+o end

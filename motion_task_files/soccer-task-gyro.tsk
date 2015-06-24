@@ -420,8 +420,6 @@ o load param_dest:var:ExistGyro param_src:bool_num:0
 - 
 o if param_src:var:ExistGyro lop:== param_src:bool_num:0 rop:then
 o begin
-o load param_dest:cm:18 param_src:buzzertime_num:255
-o load param_dest:cm:17 param_src:melody_num:7
 o end
 o load param_dest:var:GyroUse param_src:bool_num:1
 o load param_dest:var:Slip param_src:dec_num:0
