@@ -60,7 +60,6 @@ class VisionModule
 	cv::Scalar CircleCenterColor = cv::Scalar(0,255,0);
 	cv::Vec4f previous_found = cv::Vec4f(0,0,0,0);
 
-
 	VisionModule();
 	virtual ~VisionModule(void);
 

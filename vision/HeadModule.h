@@ -115,6 +115,7 @@ class HeadModule {
 
 		cv::Point motorsReadPosition(void);
 		bool checkWithinLimits(cv::Point);
+		void stopHead(void);
 
 	private:
 		void printErrorCode(void);

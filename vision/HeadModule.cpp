@@ -51,8 +51,8 @@ void HeadModule::scan() {
 cv::Point HeadModule::motorsReadPosition() {
 	int panMotor = motorRead(PAN_MOTOR_ID, PRESENT_POSITION);
 	int tiltMotor = motorRead(TILT_MOTOR_ID, PRESENT_POSITION);
-	//return cv::Point(panMotor, tiltMotor);
-	return motorsPosition;
+	return cv::Point(panMotor, tiltMotor);
+	//return motorsPosition;
 }
 
 void HeadModule::motorsWaitForStop() {
@@ -130,6 +130,8 @@ void HeadModule::motorWrite(int id , int command, int value) {
 	//std::cout<<command<<std::endl;
 }
 
+
+
 void HeadModule::motorIncrement(int id, int amount) {
 	if(id==PAN_MOTOR_ID) {
 		if(checkWithinLimits(cv::Point(motorsPosition.x+amount, motorsPosition.y))) {
@@ -167,7 +169,7 @@ bool HeadModule::checkWithinLimits(cv::Point point) {
 //Checks to see if time since last request has passed
 bool HeadModule::checkElapsedTime() {
 	std::clock_t currentTime = clock();
-	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 0.05)
+	if (float(currentTime-lastRequest)/CLOCKS_PER_SEC > 0.09)
 		return true;
 	else
 		return false;
@@ -273,6 +275,13 @@ void HeadModule::markSeenMotorMatrix(cv::Point centerPoint) {
 				motorMatrix[i][j]=motorMatrix[i][j]+1*threshold;
 		}
 	}
+}
+
+void HeadModule::stopHead() {
+	int tiltPos = motorRead(TILT_MOTOR_ID, PRESENT_POSITION);
+    int panPos = motorRead(PAN_MOTOR_ID, PRESENT_POSITION);
+    motorWrite(TILT_MOTOR_ID, GOAL_POSITION, tiltPos);
+    motorWrite(PAN_MOTOR_ID, GOAL_POSITION, panPos);
 }
 
 //Scans for nearest point that unsearched enough and returns it
@@ -466,7 +475,8 @@ void HeadModule::initMoters() {
 	//motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);
 	//motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, 4000);
 
-
+	//std::cout<<"Delay Pan: "<<motorRead(PAN_MOTOR_ID, 4)<<std::endl;
+	//std::cout<<"Delay Tilt: "<<motorRead(TILT_MOTOR_ID, 4)<<std::endl;
 	motorWrite(PAN_MOTOR_ID, CW_ANGLE_LIMIT, 0);
 	motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
 	motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);

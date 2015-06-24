@@ -170,7 +170,52 @@ int main(int argc, char* argv[]) {
 	//	vision.detectBallThreshold();
 	//}
 
+
 	while(1) {
+		cv::Point ballPos = vision.detectBallThreshold();
+		if (ballPos.y != -1 && ballPos.x != -1) {
+			if(vision.FRAME_WIDTH/3 < ballPos.x && ballPos.x < vision.FRAME_WIDTH*2/3 && vision.FRAME_HEIGHT/3 < ballPos.y && ballPos.y < vision.FRAME_HEIGHT*2/3)
+				std::cout<<"Center"<<std::endl;
+			else {
+				if(ballPos.x<vision.FRAME_WIDTH/3) {
+					std::cout<<"Right"<<std::endl;
+					head.motorMoveTo(PAN_MOTOR_ID, rightLimit-leftLimit);
+					while(ballPos.x<vision.FRAME_WIDTH/3) {
+						ballPos = vision.detectBallThreshold();
+					}
+					head.stopHead();
+				}
+				else if (ballPos.x>vision.FRAME_WIDTH*2/3) {
+					std::cout<<"Left"<<std::endl;
+					head.motorMoveTo(PAN_MOTOR_ID, 0);
+					while(ballPos.x>vision.FRAME_WIDTH*2/3) {
+						ballPos = vision.detectBallThreshold();
+					}
+					head.stopHead();
+				}
+				else if(ballPos.y<vision.FRAME_HEIGHT/3) {
+					std::cout<<"Up"<<std::endl;
+					head.motorMoveTo(TILT_MOTOR_ID, 0);
+					while(ballPos.y<vision.FRAME_HEIGHT/3) {
+						ballPos = vision.detectBallThreshold();
+					}
+					head.stopHead();
+				}
+				else if (ballPos.y>vision.FRAME_HEIGHT*2/3) {
+					std::cout<<"Down"<<std::endl;
+					head.motorMoveTo(TILT_MOTOR_ID, upperLimit-lowerLimit-1);
+					while(ballPos.y>vision.FRAME_HEIGHT*2/3) {
+						ballPos = vision.detectBallThreshold();
+					}
+					head.stopHead();
+				}
+				usleep(1000*1000);
+			}
+		}
+	}
+
+	// Current Vision method
+	/*while(0) {
 		//usleep(1000*20);
 		//cv::waitKey(30);
 
@@ -208,5 +253,5 @@ int main(int argc, char* argv[]) {
 				//usleep(1000*100);
 			}
 		}
-	}
+	}*/
 }
