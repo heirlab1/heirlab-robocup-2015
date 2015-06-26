@@ -1,17 +1,17 @@
-TARGET		= master_control
+sTARGET		= master_control
 OBJS		= master_control.o
-SRCS		= $(OBJS:.o=.c)
+SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+= -L../lib
 CFLAGS		= $(INCLUDEDIRS) -W -Wall -O2
 LDFLAGS		= $(LIBDIRS) -lm -ltxd
 
-CC			= gcc
+CC			= g++
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 	
-.c.o:
+.cpp.o:
 	$(CC) -c $< $(CFLAGS)
 	
 clean:
@@ -19,4 +19,4 @@ clean:
 	@echo "file deleted."
 
 dep:
-	gccmakedep $(SRCS)
+	g++makedep $(SRCS)

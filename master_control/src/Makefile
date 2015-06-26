@@ -1,11 +1,11 @@
 TARGET		= libtxd.a
-OBJS		= tx_serial.o open_serial.o rx_serial.o
+OBJS		= tx_serial.o open_serial.o
 SRCS		= $(OBJS:.o=.c)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+=
 CFLAGS		= $(INCLUDEDIRS) -W -Wall -O2
 
-CC			= gcc
+CC			= g++
 AR 			= ar
 
 $(TARGET): $(OBJS)
@@ -20,4 +20,4 @@ clean:
 	@echo "file deleted."
 
 dep:
-	gccmakedep $(SRCS)
+	g++makedep $(SRCS)
