@@ -19,6 +19,21 @@ Switch your CM-700 to play mode, and press start. You should get a solid green l
 
 (To quit out of screen use ``ctrl-a+d``)
 
+###Compiling and running Master Control
+Open a terminal, and navigate to the root of the repository. Then use the following commands:
+```
+$ cd master_control/src/
+$ make
+```
+This compiles a library of all the methods we'll use, which will copy into the ``../lib/`` directory (relative to current directory).
+
+Then use the following commands to compile the executable for master_control
+```
+$ cd ../controller/
+$ make
+```
+To run the executable, run ``$ ./master_control``
+
 ###LN-101 Troubleshooting
 
 If you can't connect to the CM-700 with a LN-101 from Windows, follow the steps in [this guide](https://www.dropbox.com/s/84g7pvjwn235afe/FT232R%20USB%20UART%20Recovery%20Instruction.pdf?dl=0) to recover your drivers

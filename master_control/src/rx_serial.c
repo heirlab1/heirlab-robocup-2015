@@ -9,7 +9,8 @@
 
 #include "tx_serial.h"
 
-unsigned char gbRcvPacket[6];
+// was unsigned
+char gbRcvPacket[6];
 unsigned char gbRcvPacketNum;
 unsigned short gwRcvData;
 unsigned char gbRcvFlag;
@@ -17,9 +18,9 @@ unsigned char gbRcvFlag;
 int rx_check(int fd)
 {
 
-	int RcvNum;
+	int i, j, RcvNum, res;
 	unsigned char checksum;
-	int i, j;
+	// char buf[255];
 
 
 	if(gbRcvFlag == 1)
@@ -101,6 +102,8 @@ int rx_data(){
 }
 
 int hal_rx(int fd, unsigned char *pPacket, int numPacket ){
+	printf("%d\n", numPacket);
+	printf("%d\n", fd);
 	memset(pPacket, 0, numPacket);
 	printf("hallin\n");
 	return read(fd, pPacket, numPacket);

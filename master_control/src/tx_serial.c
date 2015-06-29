@@ -11,8 +11,7 @@
 
 volatile int STOP=FALSE; 
 
-int tx_data(int fd, int command_key)
-{
+int tx_data(int fd, int command_key){
   if (encode_data(fd,command_key)){
     /* restore the old port settings */
     // tcsetattr(fd,TCSANOW,&oldtio);
@@ -26,8 +25,7 @@ int tx_data(int fd, int command_key)
 
 }
 
-int encode_data(int fd, int data)
-{
+int encode_data(int fd, int data){
   unsigned char SndPacket[6];
   unsigned short word = (unsigned short)data;
   unsigned char lowbyte = (unsigned char)(word & 0xff);
