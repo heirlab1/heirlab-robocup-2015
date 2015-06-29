@@ -1,4 +1,4 @@
-TARGET		= master_control
+sTARGET		= master_control
 OBJS		= master_control.o
 SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
