@@ -59,6 +59,7 @@ cv::Point VisionModule::detectBallThreshold() {
 			foundCircleIndex = i;
 		}
 	}
+
 	cv::Point ball;
 	if(foundBall) {
 		int circleRadius = cvRound(detectedCircles[foundCircleIndex][2]);

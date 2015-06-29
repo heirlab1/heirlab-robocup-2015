@@ -21,7 +21,6 @@ class VisionModule
 {
 	private:
 
-
 	public:
 	//Video Properties
 	const int FRAME_WIDTH = 640;

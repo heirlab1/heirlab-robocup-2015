@@ -78,20 +78,20 @@ bool HeadModule::motorsCheckMoving() {
 //Moves selected motor to position
 void HeadModule::motorMoveTo(int id, int pos) {
 	if(id == PAN_MOTOR_ID) {
-		if(checkWithinLimits(cv::Point(motorsPosition.x, pos))) {
+		//if(checkWithinLimits(cv::Point(motorsPosition.x, pos))) {
 			motorWrite(id, GOAL_POSITION, pos);
 			motorsPosition = cv::Point(motorsPosition.x, pos);
-		}
-		else
-			std::cout<<"Cannot move PAN motor there!"<<std::endl;
+		//}
+		//else
+			//std::cout<<"Cannot move PAN motor there!"<<std::endl;
 	}
 	else if (id == TILT_MOTOR_ID) {
-		if(checkWithinLimits(cv::Point(pos, motorsPosition.y))) {
+		//if(checkWithinLimits(cv::Point(pos, motorsPosition.y))) {
 			motorWrite(id, GOAL_POSITION, pos);
 			motorsPosition = cv::Point(pos, motorsPosition.y);
-		}
-		else
-			std::cout<<"Cannot move TILT motor there!"<<std::endl;
+		//}
+		//else
+			//std::cout<<"Cannot move TILT motor there!"<<std::endl;
 	}
 }
 
@@ -129,8 +129,6 @@ void HeadModule::motorWrite(int id , int command, int value) {
 	//printCommResult();
 	//std::cout<<command<<std::endl;
 }
-
-
 
 void HeadModule::motorIncrement(int id, int amount) {
 	if(id==PAN_MOTOR_ID) {
@@ -478,9 +476,9 @@ void HeadModule::initMoters() {
 	//std::cout<<"Delay Pan: "<<motorRead(PAN_MOTOR_ID, 4)<<std::endl;
 	//std::cout<<"Delay Tilt: "<<motorRead(TILT_MOTOR_ID, 4)<<std::endl;
 	motorWrite(PAN_MOTOR_ID, CW_ANGLE_LIMIT, 0);
-	motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
+	motorWrite(PAN_MOTOR_ID, CCW_ANGLE_LIMIT, 4095);
 	motorWrite(TILT_MOTOR_ID, CW_ANGLE_LIMIT, 0);
-	motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, rightLimit-leftLimit);
+	motorWrite(TILT_MOTOR_ID, CCW_ANGLE_LIMIT, 4095);
 
 	motorWrite(PAN_MOTOR_ID, MOVING_SPEED, 40);
 	motorWrite(TILT_MOTOR_ID, MOVING_SPEED, 40);
@@ -488,8 +486,8 @@ void HeadModule::initMoters() {
 	//motorWrite(PAN_MOTOR_ID, TORQUE_ENABLE, 1);
 	//motorWrite(TILT_MOTOR_ID, TORQUE_ENABLE, 1);
 
-	motorWrite(PAN_MOTOR_ID, GOAL_POSITION, rightLimit);
-	motorWrite(TILT_MOTOR_ID, GOAL_POSITION, upperLimit);
+	//motorWrite(PAN_MOTOR_ID, GOAL_POSITION, rightLimit);
+	//motorWrite(TILT_MOTOR_ID, GOAL_POSITION, upperLimit);
 	motorsPosition = cv::Point(rightLimit, upperLimit);
 
 	std::cout<<"End"<<std::endl;
@@ -500,6 +498,18 @@ void HeadModule::initMoters() {
 HeadModule::HeadModule() {
 	this->initMoters();
 	//this->scan();
+	usleep(1000*3000);
+	motorWrite(PAN_MOTOR_ID, TORQUE_ENABLE, 0);
+	//motorWrite(PAN_MOTOR_ID, GOAL_POSITION, 4095/2);
+	//motorWrite(TILT_MOTOR_ID, GOAL_POSITION, 4095/2);
+	std::cout<<"End"<<std::endl;
+	usleep(1000*5000);
+	//motorWrite(PAN_MOTOR_ID, GOAL_POSITION, (int)(4095/2));
+
+	while(1){
+		usleep(1000*2000);
+		std::cout<<"Position: "<<motorRead(PAN_MOTOR_ID, PRESENT_POSITION)<<std::endl;
+	}
 }
 
 //Destructor
