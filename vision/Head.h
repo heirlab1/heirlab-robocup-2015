@@ -11,10 +11,17 @@
 #include "USB2AXmotorManager.h"
 
 //Head Directions
-#define MOVE_HEAD_UP		0
-#define MOVE_HEAD_DOWN		1
-#define MOVE_HEAD_RIGHT		2
-#define MOVE_HEAD_LEFT		3
+#define DIRECTION_UP			0
+#define DIRECTION_DOWN			1
+#define DIRECTION_RIGHT			2
+#define DIRECTION_LEFT			3
+
+/*
+#define DIRECTION_UP_RIGHT		4
+#define DIRECTION_UP_LEFT		5
+#define DIRECTION_DOWN_RIGHT	6
+#define DIRECTION_DOWN_LEFT		7
+*/
 
 //Motor IDs
 const int PAN_MOTOR_ID = 23;

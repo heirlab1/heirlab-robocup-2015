@@ -9,59 +9,100 @@
 //#include <opencv/highgui.h>
 #include <opencv/cv.h>
 
-// Detects a ball via the threshold method
-cv::Point Vision::findBallThreshold() {
-	bool foundBall = false; //Ball assumed not found
+ballScreenParameters Vision::getBallScreenParameters() {
+	pthread_mutex_lock(&ballScreenParametersLock);
+	ballScreenParameters tempBall = ball;
+	pthread_mutex_unlock(&ballScreenParametersLock);
+	return tempBall;
+}
 
-	cv::inRange(imageHSV, cv::Scalar(BALL_H_MIN, BALL_S_MIN, BALL_V_MIN), cv::Scalar(BALL_H_MAX, BALL_S_MAX, BALL_V_MAX), imageThreshold); // Filter image according to ball thresholds
-	erodeElement = getStructuringElement(cv::MORPH_RECT, cv::Size(ERODE_KERNAL_SIZE, ERODE_KERNAL_SIZE)); //Dialate and Erode to rid background noise and make clearer
-	dilateElement = getStructuringElement(cv::MORPH_RECT, cv::Size(DIALATE_KERNAL_SIZE, DIALATE_KERNAL_SIZE)); //^Also use rectangles because faster than circles
-	imageThreshold  = fillHoles(imageThreshold);
+goalScreenParameters Vision::getGoalScreenParameters() {
+	pthread_mutex_lock(&goalScreenParametersLock);
+	ballScreenParameters tempGoal = goal;
+	pthread_mutex_unlock(&goalScreenParametersLock);
+	return tempGoal;
+}
 
+void Vision::setBallScreenParameters(ballScreenParameters tempBall) {
+	pthread_mutex_lock(&ballScreenParametersLock);
+	ball = tempBall;
+	pthread_mutex_unlock(&ballScreenParametersLock);
+}
+void Vision::setGoalScreenParameters(goalScreenParameters tempGoal) {
+	pthread_mutex_lock(&goalScreenParametersLock);
+	goal = tempGoal;
+	pthread_mutex_unlock(&goalScreenParametersLock);
+}
 
-	//Erode and dialate set amount of times
-	for(int i = 0; i<THRESH_ERODE_LIMIT; i++) {
-		cv::erode(imageThreshold, imageThreshold, erodeElement);
+void Vision::detectBall(void) {
+
+	field = findField();
+
+	cv::Mat imageBallThreshold = preprocessBall();
+	ballScreenParameters ballCanidate = findBallThreshold(imageBallThreshold);
+	if(ballCanidate.found) {
+		if(field.boundries.x <= ballCanidate.x+ballCanidate.radius && ballCanidate.x-ballCanidate.radius <= field.boundries.x+field.boundries.width && field.boundries.y <= ballCanidate.y+ballCanidate.radius && ballCanidate.y-ballCanidate.radius <= field.boundries.y+field.boundries.height)
+			setBallScreenParameters(ballCanidate);
 	}
-	for(int i = 0; i<THRESH_DIALATE_LIMIT; i++) {
-		cv::dilate(imageThreshold, imageThreshold, dilateElement);
-	}
+}
+
+// Detects a ball via the threshold method (Takes in thresholded image, returns potential circle locations)
+ballScreenParameters Vision::findBallThreshold(cv::Mat imageTemp) {
 
 	cv::vector<cv::Vec3f> detectedCircles;
-	cv::HoughCircles(imageThreshold, detectedCircles, CV_HOUGH_GRADIENT, 2, imageThreshold.rows/8, 100, 50, 0, 150);
+	cv::HoughCircles(imageTemp, detectedCircles, CV_HOUGH_GRADIENT, 2, imageThreshold.rows/8, 256/2, 256/2, 0, 150);
 
 	int foundCircleIndex = 0;
 	for(size_t i = 0; i<detectedCircles.size(); i++) {
-		foundBall=true;
-		cv::Point circleCenter(cvRound(detectedCircles[i][0]), cvRound(detectedCircles[i][1]));
-		int circleRadius = cvRound(detectedCircles[i][2]);
+		cv::Point circleCenter((int)(detectedCircles[i][0]), (int)(detectedCircles[i][1]));
+		int circleRadius = (int)(detectedCircles[i][2]);
 		cv::circle(imageCameraFeed, circleCenter, circleRadius, cv::Scalar(0, 255, 0), 5);
 
-		if(detectedCircles[foundCircleIndex][2]<detectedCircles[i][2]) { //Find circle with largest radius and put that in output
+		if(detectedCircles[foundCircleIndex][2]<detectedCircles[i][2]) //Find circle with largest radius and put that in output
 			foundCircleIndex = i;
-		}
 	}
 
-	cv::Point ball;
-	if(foundBall) {
-		int circleRadius = cvRound(detectedCircles[foundCircleIndex][2]);
-		ball = cv::Point(detectedCircles[foundCircleIndex][0], detectedCircles[foundCircleIndex][1]);
-		//cv::putText(imageCameraFeed, cv::Point(detectedCircles[foundCircleIndex][0], detectedCircles[foundCircleIndex][0]+50),2,1, cv::Scalar(0,255,0),2);
-
-		//std::string output;
-		//output<<ball.x<<" "<<ball.y;
-
-
-		//cv::putText(imageCameraFeed, output, cv::Point(0,50),1,2,cv::Scalar(0,0,255),2);
+	ballScreenParameters ballCanidate;
+	if(0<detectedCircles.size()) {
+		ballCanidate.found = true;
+		ballCanidate.x = (int)(detectedCircles[foundCircleIndex][0]);
+		ballCanidate.y = (int)(detectedCircles[foundCircleIndex][1]);
+		ballCanidate.radius = cvRound(detectedCircles[foundCircleIndex][2]);
 	}
-	else {
-		//cv::putText(imageCameraFeed, "No ball found", cv::Point(0,50),1,2,cv::Scalar(0,0,255),2);
-		ball = cv::Point(-1,-1);
-	}
-	//std::cout<<"Ball location: "<<ball<<std::endl;
-	displayFeed(); //Uncomment to view image processes for this section of code
-	return ball;
+	else
+		ballCanidate.found = false;
+
+	//displayFeed(); //Uncomment to view image processes for this section of code
+	return ballCanidate;
 }
+
+//Preprocesses image for main ball detection methods
+cv::Mat Vision::preprocessBall() {
+	cv::Mat threshold0, threshold1, output;
+	cv::inRange(imageHSV, cv::Scalar(BALL0_H_MIN, BALL0_S_MIN, BALL0_V_MIN), cv::Scalar(BALL0_H_MAX, BALL0_S_MAX, BALL0_V_MAX), threshold0); // Filter image according to ball thresholds
+	cv::inRange(imageHSV, cv::Scalar(BALL1_H_MIN, BALL1_S_MIN, BALL1_V_MIN), cv::Scalar(BALL1_H_MAX, BALL1_S_MAX, BALL1_V_MAX), threshold1); // Filter image according to ball thresholds
+	cv::bitwise_or(threshold0, threshold1, output, 0); //Merge threshold images
+
+	//Free up memory as soon as possible
+	threshold0.release();
+	threshold1.release();
+
+	erodeElement = getStructuringElement(cv::MORPH_RECT, cv::Size(ERODE_KERNAL_SIZE, ERODE_KERNAL_SIZE)); //Dialate and Erode to rid background noise and make clearer
+	dilateElement = getStructuringElement(cv::MORPH_RECT, cv::Size(DIALATE_KERNAL_SIZE, DIALATE_KERNAL_SIZE)); //^Also use rectangles because faster than circles
+
+	//Erode and dialate set amount of times
+	for(int i = 0; i<THRESH_ERODE_LIMIT; i++) {
+		cv::erode(output, output, erodeElement);
+	}
+	for(int i = 0; i<THRESH_DIALATE_LIMIT; i++) {
+		cv::dilate(output, output, dilateElement);
+	}
+
+	output = fillHoles(output); //Fills black voids
+
+	return output;
+}
+
 
 /*
 void Vision::detectBallArea() {
@@ -97,7 +138,6 @@ void Vision::detectBallArea() {
 						refArea = area;
 					}else objectFound = false;
 
-
 				}
 				//let user know you found an object
 				if(objectFound ==true){
@@ -110,19 +150,18 @@ void Vision::detectBallArea() {
 	}
 */
 
-//Finds area of field on screen
-cv::Rect Vision::findField(void) {
-
+//Finds field boundaries (rectangle)
+fieldScreenParameters Vision::findField(void) {
 	cv::Rect fieldBoundries;
-
-	cv::inRange(imageHSV, cv::Scalar(GRASS_H_MIN, GRASS_S_MIN, GRASS_V_MIN), cv::Scalar(GRASS_H_MAX, GRASS_S_MAX, GRASS_V_MAX), imageThreshold); // Filter image according to grass thresholds
-
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 
+	cv::inRange(imageHSV, cv::Scalar(GRASS_H_MIN, GRASS_S_MIN, GRASS_V_MIN), cv::Scalar(GRASS_H_MAX, GRASS_S_MAX, GRASS_V_MAX), imageThreshold); // Filter image according to grass thresholds
+	imageThreshold = fillHoles(imageThreshold);
+
 	int largest_green_area = 0;
 	cv::findContours(imageThreshold, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-	for ( size_t i=0; i<contours.size(); i++) {
+	for (size_t i=0; i<contours.size(); i++) {
 		cv::Rect brect = cv::boundingRect(contours[i]);
 		if(brect.area() > largest_green_area) {
 			fieldBoundries = cv::boundingRect(contours[i]);
@@ -130,7 +169,15 @@ cv::Rect Vision::findField(void) {
 		}
 	}
 
-	return fieldBoundries;
+	fieldScreenParameters fieldCanidate;
+	if(0<contours.size()) {
+		fieldCanidate.found =true;
+		fieldCanidate.boundries=fieldBoundries;
+	}
+	else
+		fieldCanidate.found = false;
+
+	return fieldCanidate;
 }
 
 // Fills empty holes of binary image (black voids)

@@ -19,18 +19,34 @@ void Head::stopHead() {
 //Moves head in desired direction. Assume users of this method will use stopHead()
 void Head::moveHead(int direction) {
 	switch(direction) {
-		case MOVE_HEAD_UP:
+		case DIRECTION_UP:
 			motorManager.setMotorPosition(TILT_MOTOR_ID, upperLimitPos);
 			break;
-		case MOVE_HEAD_DOWN:
+		case DIRECTION_DOWN:
 			motorManager.setMotorPosition(TILT_MOTOR_ID, lowerLimitPos);
 			break;
-		case MOVE_HEAD_RIGHT:
+		case DIRECTION_RIGHT:
 			motorManager.setMotorPosition(PAN_MOTOR_ID, rightLimitPos);
 			break;
-		case MOVE_HEAD_LEFT:
+		case DIRECTION_LEFT:
 			motorManager.setMotorPosition(PAN_MOTOR_ID, leftLimitPos);
 			break;
+		/*case DIRECTION_UP_LEFT:
+			motorManager.setMotorPosition(TILT_MOTOR_ID, upperLimitPos);
+			motorManager.setMotorPosition(PAN_MOTOR_ID, leftLimitPos);
+			break;
+		case DIRECTION_UP_RIGHT:
+			motorManager.setMotorPosition(TILT_MOTOR_ID, upperLimitPos);
+			motorManager.setMotorPosition(PAN_MOTOR_ID, rightLimitPos);
+			break;
+		case DIRECTION_DOWN_LEFT:
+			motorManager.setMotorPosition(TILT_MOTOR_ID, lowerLimitPos);
+			motorManager.setMotorPosition(PAN_MOTOR_ID, leftLimitPos);
+			break;
+		case DIRECTION_DOWN_RIGHT:
+			motorManager.setMotorPosition(TILT_MOTOR_ID, lowerLimitPos);
+			motorManager.setMotorPosition(PAN_MOTOR_ID, rightLimitPos);
+			break;*/
 		default:
 			std::cout<<direction<<" is not valid direction!"<<std::endl;
 	}

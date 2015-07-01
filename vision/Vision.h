@@ -11,30 +11,71 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include <ctime>
+#include <mutex>
 
-struct ballParameters {
-	bool found = false;
+
+/*
+//Video properties
+#define FRAME_WIDTH 	640
+#define FRAME_HEIGHT	480
+
+//Ball primary color calibration variables
+#define BALL0_H_MIN		0
+#define BALL0_H_MAX		134
+#define BALL0_S_MIN		0
+#define BALL0_S_MAX		69
+#define BALL0_V_MIN		124
+#define BALL0_V_MAX		249
+
+//Ball secondary color calibration variables
+#define BALL1_H_MIN		0
+#define BALL1_H_MAX		189
+#define BALL1_S_MIN		0
+#define BALL1_S_MAX		141
+#define BALL1_V_MIN		0
+#define BALL1_V_MAX		95
+
+//Grass calibration variables
+#define GRASS_H_MIN		34
+#define GRASS_H_MAX		86
+#define GRASS_S_MIN		125
+#define GRASS_S_MAX		256
+#define GRASS_V_MIN		37
+#define GRASS_V_MAX		256
+*/
+
+struct ballScreenParameters {
+	bool found;
 	int x, y, radius;
 };
 
-struct goalParameters {
-	bool found = false;
+struct goalScreenParameters {
+	bool found;
 	int x, y;
 };
 
-struct FieldParameters {
-	bool found = false;
-	cv::Rect fieldBoundries;
+struct fieldScreenParameters {
+	bool found;
+	cv::Rect boundries;
 };
 
 class Vision {
+	public:
+		const int FRAME_WIDTH = 640;
+		const int FRAME_HEIGHT = 480;
+
 	private:
+		pthread_mutex_t ballScreenParametersLock;
+		pthread_mutex_t goalScreenParametersLock;
+
+		ballScreenParameters ball;
+		fieldScreenParameters field;
+		goalScreenParameters goal;
+
 		float minTime = 0.2; //Min time between capturing new image from capturing new image and processing (1 = 1s, 0.5 = 500ms)
 		std::clock_t lastRequest;
 
 		//Video Properties
-		const int FRAME_WIDTH = 640;
-		const int FRAME_HEIGHT = 480;
 		cv::Mat imageCameraFeed; //Direct Camera Image
 		cv::Mat imageHSV; //HSV Image
 		cv::Mat imageThreshold; //Threshold Image
@@ -58,20 +99,20 @@ class Vision {
 		const cv::string windowThreshold = "Thresholded Image";
 
 		//Ball primary color calibration variables
-		int BALL_H_MIN = 141;
-		int BALL_H_MAX = 178;
-		int BALL_S_MIN = 48;
-		int BALL_S_MAX = 256;
-		int BALL_V_MIN = 115;
-		int BALL_V_MAX = 256;
+		int BALL0_H_MIN = 0;
+		int BALL0_H_MAX = 134;
+		int BALL0_S_MIN = 0;
+		int BALL0_S_MAX = 69;
+		int BALL0_V_MIN = 124;
+		int BALL0_V_MAX = 249;
 
 		//Ball secondary color calibration variables
-		int BALL2_H_MIN = 141;
-		int BALL2_H_MAX = 178;
-		int BALL2_S_MIN = 48;
-		int BALL2_S_MAX = 256;
-		int BALL2_V_MIN = 115;
-		int BALL2_V_MAX = 256;
+		int BALL1_H_MIN = 0;
+		int BALL1_H_MAX = 189;
+		int BALL1_S_MIN = 0;
+		int BALL1_S_MAX = 141;
+		int BALL1_V_MIN = 0;
+		int BALL1_V_MAX = 95;
 
 		//Grass calibration variables
 		int GRASS_H_MIN = 34;
@@ -87,36 +128,36 @@ class Vision {
 		cv::Scalar GridColor = cv::Scalar(0,0,255);
 		cv::Scalar CircleColor = cv::Scalar(255,0,0);
 		cv::Scalar CircleCenterColor = cv::Scalar(0,255,0);
+
 		cv::Vec4f previous_found = cv::Vec4f(0,0,0,0);
 
 
-
 		void setupFrame(void);
-
-
 		void captureFrame(void);
 		void preprocessFrame(void);
 
 		bool checkElapsedTime(void);
 		void resetElapsedTime(void);
 
-		cv::Point findBallThreshold(void);
-		cv::Point findBallArea(void);
-		cv::Rect findField(void);
+		cv::Mat preprocessBall(void);
+		ballScreenParameters findBallThreshold(cv::Mat);
+		ballScreenParameters findBallCountour(cv::Mat);
+		//cv::vector<cv::Vec3f> findBallArea(cv::Mat);
 
-
-
+		fieldScreenParameters findField(void);
 		cv::Mat fillHoles(cv::Mat);
 
 		void displayFeed(void);
-
-
 		void detectGoal(void);
+		void detectBall(void);
 
 	public:
 		void processFrame(void);
-		ballParameters getBallLocation(int);
-		goalParameters getGoalLocation(int);
+
+		ballScreenParameters getBallScreenParameters();
+		goalScreenParameters getGoalScreenParameters();
+		void setBallScreenParameters(ballScreenParameters);
+		void setGoalScreenParameters(goalScreenParameters);
 
 		Vision();
 		virtual ~Vision(void);
