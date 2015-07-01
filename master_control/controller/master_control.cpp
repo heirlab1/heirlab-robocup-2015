@@ -11,17 +11,16 @@ int main(){
   int port = open_port();
   int i;
   int RxData;
-  int Tx_Data;
+  int TX_command;
 
 	while (1) {
 
-    int  number;
     printf("Type in a number \n");
     
-    if(scanf("%d", &number)){
-      printf("Wrote: %d\n", number);
+    if(scanf("%d", &TX_command)){
+      printf("Wrote: %d\n", TX_command);
 
-      if(number == 1){
+      if(TX_command == 1){
         if (tx_data(port, GOFORWARD))
           fputs("success!\n", stderr);   
         else
@@ -29,7 +28,7 @@ int main(){
 
       }
 
-      if(number == 2){
+      if(TX_command == 2){
         if (tx_data(port, GOBACKWARD))
           fputs("success!\n", stderr);
         else
@@ -42,9 +41,9 @@ int main(){
       break;    
     }
 
-    // if (scanf("%d", &Tx_Data)){}
+    // if (scanf("%d", &TX_command)){}
 
-    // if (tx_data(port,Tx_Data)){}
+    // if (tx_data(port,TX_command)){}
 
     // for(i=0; i<TIMEOUT_TIME; i++){
     //   // Verify data recieved

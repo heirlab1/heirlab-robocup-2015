@@ -1,35 +1,38 @@
-/*
-
- * BallObject.h
- *
- *  Created on: Jul 1, 2015
- *      Author: ryan
 
 
-#ifndef BALLOBJECT_H_
-#define BALLOBJECT_H_
+// /* 
+// * BallObject.h
+//  *
+//  *  Created on: Jul 1, 2015
+//  *      Author: ryan
+// */
 
-#include "pthread.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <ctime>
+// #ifndef BALLOBJECT_H_
+// #define BALLOBJECT_H_
 
-struct physicalParameters {
-	std::clock_t lastSeen;
-	float distance;
-	float angle;
-};
+// #include "pthread.h"
+// #include <opencv/cv.h>
+// #include <opencv/highgui.h>
+// #include <ctime>
 
-struct screenParameters {
-	bool found;
-	int x, y, radius;
-};
+// struct physicalParameters {
+// 	std::clock_t lastSeen;
+// 	float distance;
+// 	float angle;
+// };
 
-class BallObject {
-public:
-	BallObject();
-	virtual ~BallObject();
-};
 
-#endif  BALLOBJECT_H_
-*/
+
+// struct screenParameters {
+// 	bool found;
+// 	int x, y, radius;
+// };
+
+// class BallObject {
+// public:
+// 	BallObject();
+// 	virtual ~BallObject();
+	
+// };
+
+// #endif  BALLOBJECT_H_
