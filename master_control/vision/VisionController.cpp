@@ -47,7 +47,7 @@ int VisionController::submitTask(int command){
 
 VisionController::VisionController() {
 	// TODO Auto-generated constructor stub
-	printf("Constructed VisionController Object");
+	printf("Constructed VisionController Object\n");
 }
 
 VisionController::~VisionController() {

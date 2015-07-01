@@ -29,19 +29,18 @@ struct screenParameters {
 };
 
 class VisionController {
-public:
-	VisionController();
-	virtual ~VisionController();
+	public:
+		VisionController();
+		virtual ~VisionController();
 
-	float getBallDistance();
-	float getBallAngle();
-	float getBallLastSeen();
+		float getBallDistance();
+		float getBallAngle();
+		float getBallLastSeen();
 
-	int startThread();
-	int killThread();
+		int startThread();
+		int killThread();
 
-	int submitTask(int command);
-
+		int submitTask(int command);
 };
 
 #endif
