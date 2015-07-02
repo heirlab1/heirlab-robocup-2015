@@ -10,6 +10,7 @@
 #ifndef VISIONCONTROLLER_H_
 #define VISIONCONTROLLER_H_
 
+#include "Tracking.h"
 #include "pthread.h"
 #include <ctime>
 #include <stdio.h>
@@ -21,14 +22,16 @@ struct ballParameters {
 	float angle;
 };
 
-
-
 struct screenParameters {
 	bool found;
 	int x, y, radius;
 };
 
 class VisionController {
+private:
+	Tracking tracking;
+
+
 public:
 	VisionController();
 	virtual ~VisionController();

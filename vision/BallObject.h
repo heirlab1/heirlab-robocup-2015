@@ -1,38 +1,86 @@
+#ifndef BALLOBJECT_H_
+#define BALLOBJECT_H_
 
+#include "FieldObject.h"
 
-// /* 
-// * BallObject.h
-//  *
-//  *  Created on: Jul 1, 2015
-//  *      Author: ryan
-// */
+#include "pthread.h"
+#include <opencv/cv.h>
+//#include <opencv/highgui.h>
+#include <ctime>
 
-// #ifndef BALLOBJECT_H_
-// #define BALLOBJECT_H_
+struct ballPhysicalParameters {
+	std::clock_t timeStamp;
+	float distance;
+	float angle;
+};
 
-// #include "pthread.h"
-// #include <opencv/cv.h>
-// #include <opencv/highgui.h>
-// #include <ctime>
+struct ballScreenParameters {
+	std::clock_t timeStamp;
+	bool onScreen;
+	int x, y, radius;
+};
 
-// struct physicalParameters {
-// 	std::clock_t lastSeen;
-// 	float distance;
-// 	float angle;
-// };
+class BallObject {
+	private:
+		//Ball primary color calibration variables
+		const int BALL0_H_MIN = 0;
+		const int BALL0_H_MAX = 134;
+		const int BALL0_S_MIN = 0;
+		const int BALL0_S_MAX = 69;
+		const int BALL0_V_MIN = 124;
+		const int BALL0_V_MAX = 249;
 
+		//Ball secondary color calibration variables
+		const int BALL1_H_MIN = 0;
+		const int BALL1_H_MAX = 189;
+		const int BALL1_S_MIN = 0;
+		const int BALL1_S_MAX = 141;
+		const int BALL1_V_MIN = 0;
+		const int BALL1_V_MAX = 95;
 
+		//Detector Variables
+		const int THRESH_ERODE_LIMIT = 3;
+		const int THRESH_DIALATE_LIMIT = 2;
 
-// struct screenParameters {
-// 	bool found;
-// 	int x, y, radius;
-// };
+		const int ERODE_KERNAL_SIZE = 2;
+		const int DIALATE_KERNAL_SIZE = 2;
+		const int BLUR_KERNAL_SIZE = 9; //Amount of blurring of original image (Notice: must be odd)
 
-// class BallObject {
-// public:
-// 	BallObject();
-// 	virtual ~BallObject();
-	
-// };
+		//Detector Tools
+		cv::Mat erodeElement; //Erodes whitespaces to get rid of background noise
+		cv::Mat dilateElement; //Dialates whitespaces to make bigger and fill voids
 
-// #endif  BALLOBJECT_H_
+		//Locks
+		pthread_mutex_t physicalParametersLock;
+		pthread_mutex_t screenParametersLock;
+
+		//Main Variables
+		FieldObject* field;
+		ballPhysicalParameters physicalBall;
+		ballScreenParameters screenBall;
+
+		//Debug tools
+		cv::Mat imageDebug;
+
+	private:
+		cv::Mat fillHoles(cv::Mat);
+		cv::Mat threshImage(cv::Mat);
+		cv::Mat blurImage(cv::Mat);
+
+		ballScreenParameters findThreshold(cv::Mat);
+		ballScreenParameters findContours(cv::Mat);
+		cv::Rect findField(cv::Mat);
+
+	public:
+		ballPhysicalParameters getPhysicalParameters(void);
+		ballScreenParameters getScreenParameters(void);
+		void setPhysicalParameters(ballPhysicalParameters);
+		void setScreenParameters(ballScreenParameters);
+
+		void detect(void);
+
+		BallObject(FieldObject*);
+		virtual ~BallObject();
+};
+
+#endif /* BALLOBJECT_H_ */

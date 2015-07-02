@@ -7,6 +7,21 @@
 
 #include "Tracking.h"
 
+ballPhysicalParameters Tracking::getBallPhysicalParameters() {
+	pthread_mutex_lock(&ballPhysicalParametersLock);
+	ballPhysicalParameters tempBall = ball;
+	pthread_mutex_unlock(&ballPhysicalParametersLock);
+	return tempBall;
+}
+
+void Tracking::setBallPhysicalParameters(ballPhysicalParameters tempBall) {
+	pthread_mutex_lock(&ballPhysicalParametersLock);
+	ball = tempBall;
+	pthread_mutex_unlock(&ballPhysicalParametersLock);
+}
+
+
+
 void Tracking::centerBall() {
 	ballScreenParameters tempBall = vision.getBallScreenParameters();
 

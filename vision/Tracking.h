@@ -12,13 +12,13 @@
 #include "Head.h"
 
 
-struct ballParameters {
+struct ballPhysicalParameters {
 	std::clock_t lastSeen;
 	float distance;
 	float angle;
 };
 
-struct goalParameters {
+struct goalPhysicalParameters {
 	std::clock_t lastSeen;
 	bool found;
 	int x, y;
@@ -26,11 +26,19 @@ struct goalParameters {
 
 class Tracking {
 private:
+	pthread_mutex_t ballPhysicalParametersLock;
+	pthread_mutex_t goalPhysicalParametersLock;
+
+	ballPhysicalParameters ball;
+
 	Head head;
 	Vision vision;
 
 public:
 	void centerBall(void);
+
+	ballPhysicalParameters getBallPhysicalParameters(void);
+	void setBallPhysicalParameters(ballPhysicalParameters);
 
 	Tracking();
 	virtual ~Tracking();
