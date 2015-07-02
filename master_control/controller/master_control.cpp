@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <VisionController.h>
 
 extern "C"{
   #include <tx_serial.h>
@@ -9,11 +10,16 @@ extern "C"{
 int main(){
 
   int port = open_port();
-  int i;
-  int RxData;
+  // int i;
+  // int RxData;
   int TX_command;
+  VisionController *vc;
+  vc = new VisionController();
 
 	while (1) {
+
+    
+    printf("%f\n", vc->getBallAngle());
 
     printf("Type in a number \n");
     

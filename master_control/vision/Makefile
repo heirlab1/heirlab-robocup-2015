@@ -1,15 +1,16 @@
-TARGET		= master_control
-OBJS		= master_control.o
+TARGET		= libvision.a
+OBJS		= VisionController.o
 SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
-LIBDIRS		+= -L../lib
+LIBDIRS		+=
 CFLAGS		= $(INCLUDEDIRS) -W -Wall -O2
-LDFLAGS		= $(LIBDIRS) -lm -ltxd -lvision
 
 CC			= g++
+AR 			= ar
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(AR) rs $@ $^
+	cp $(TARGET) ../lib
 	
 .cpp.o:
 	$(CC) -c $< $(CFLAGS)
