@@ -25,14 +25,15 @@ class Vision {
 		Tracking tracking;
 		Camera camera;
 
-		pthread_t sight, motion;
-
 		bool shutdown;
 		int task;
 
 		//Locks
 		pthread_mutex_t shutdownLock;
 		pthread_mutex_t taskLock;
+
+	void startThread(void);
+
 
 	private:
 		void* sightLoop(void*);
@@ -49,11 +50,12 @@ class Vision {
 		float getBallAngle(void);
 		float getBallLastSeen(void);
 
-		void startThread(void);
 		void killThread(void);
 
 		Vision(void);
 		virtual ~Vision(void);
 };
+
+
 
 #endif /* VISION_H_ */

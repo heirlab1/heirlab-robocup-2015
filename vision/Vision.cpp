@@ -6,7 +6,7 @@
  */
 
 #include "Vision.h"
-//#include "pthread.h"
+#include "pthread.h"
 
 // Returns distance of the ball from the between the feet in METERS
 float Vision::getBallDistance() {
@@ -24,19 +24,16 @@ float Vision::getBallLastSeen() {
 	return ballObject.getPhysicalParameters().timeStamp;
 }
 
+
 void Vision::startThread( ) {
 	std::cout<<"Started Threads"<<std::endl;
 	setShutdown(false);
-
-	pthread_create(&sight, NULL, sightLoop, NULL);
 	//pthread_create(&motion, NULL, motionLoop, NULL);
 }
 
 void Vision::killThread() {
 	std::cout<<"killing threads"<<std::endl;
 	setShutdown(true);
-	pthread_join(sight, NULL);
-	pthread_join(motion, NULL);
 }
 
 void* Vision::sightLoop(void* arg) {
@@ -92,4 +89,14 @@ Vision::Vision() {
 
 Vision::~Vision() {
 	setShutdown(true);
+}
+
+int main(int argc, char* argv[])
+{
+	pthread_t sight, motion;
+	Vision vision;
+	pthread_create(&sight, NULL, vision.sightLoop, NULL);
+
+	pthread_join(sight, NULL);
+	pthread_join(motion, NULL);
 }
