@@ -24,37 +24,6 @@ float Vision::getBallLastSeen() {
 	return ballObject.getPhysicalParameters().timeStamp;
 }
 
-
-void Vision::startThread( ) {
-	std::cout<<"Started Threads"<<std::endl;
-	setShutdown(false);
-	//pthread_create(&motion, NULL, motionLoop, NULL);
-}
-
-void Vision::killThread() {
-	std::cout<<"killing threads"<<std::endl;
-	setShutdown(true);
-}
-
-void* Vision::sightLoop(void* arg) {
-	while(!getShutdown()) {
-		cv::Mat imageHSV = camera.getHSVImage();
-		ballObject.detect(imageHSV);
-		//goalObject.detect(imageHSV);
-	}
-	pthread_exit(NULL);
-}
-
-void* Vision::motionLoop(void* arg) {
-	while(!getShutdown()) {
-		if(!ballObject.getScreenParameters().onScreen)
-			tracking.searchBall();
-		else
-			tracking.centerBall();
-	}
-	pthread_exit(NULL);
-}
-
 bool Vision::getShutdown() {
 	pthread_mutex_lock(&shutdownLock);
 	bool tempShutdown = shutdown;
@@ -84,19 +53,9 @@ void Vision::setTask(int tempTask) {
 Vision::Vision() {
 	ballObject.setPointers(&fieldObject);
 	tracking.setPointers(&ballObject);
-	startThread();
 }
 
 Vision::~Vision() {
 	setShutdown(true);
-}
 
-int main(int argc, char* argv[])
-{
-	pthread_t sight, motion;
-	Vision vision;
-	pthread_create(&sight, NULL, vision.sightLoop, NULL);
-
-	pthread_join(sight, NULL);
-	pthread_join(motion, NULL);
 }

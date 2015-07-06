@@ -19,11 +19,12 @@
 #define TASK_LOOK_FOR_GOAL
 
 class Vision {
-	private:
+	public:
 		FieldObject fieldObject;
 		BallObject ballObject;
 		Tracking tracking;
 		Camera camera;
+	private:
 
 		bool shutdown;
 		int task;
@@ -32,25 +33,20 @@ class Vision {
 		pthread_mutex_t shutdownLock;
 		pthread_mutex_t taskLock;
 
-	void startThread(void);
-
-
 	private:
 		void* sightLoop(void*);
 		void* motionLoop(void*);
 
+	public:
 		bool getShutdown(void);
 		void setShutdown(bool);
 
-	public:
 		int getTask(void);
 		void setTask(int);
 
 		float getBallDistance(void);
 		float getBallAngle(void);
 		float getBallLastSeen(void);
-
-		void killThread(void);
 
 		Vision(void);
 		virtual ~Vision(void);
