@@ -10,14 +10,14 @@
 fieldScreenParameters FieldObject::getScreenParameters() {
 	pthread_mutex_lock(&screenParametersLock);
 	fieldScreenParameters tempField = screenField;
-	pthread_mutex_unlock(&physicalParametersLock);
+	pthread_mutex_unlock(&screenParametersLock);
 	return tempField;
 }
 
 void FieldObject::setScreenParameters(fieldScreenParameters tempParameters) {
 	pthread_mutex_lock(&screenParametersLock);
 	screenField = tempParameters;
-	pthread_mutex_unlock(&physicalParametersLock);
+	pthread_mutex_unlock(&screenParametersLock);
 }
 
 void FieldObject::detect(cv::Mat imageHSV) {
@@ -45,7 +45,7 @@ cv::Mat FieldObject::fillHoles(cv::Mat imageTemp) {
 
 //Finds field boundaries (rectangle)
 fieldScreenParameters FieldObject::findThreshold(cv::Mat imageHSV) {
-	imageHSV blurImage(imageHSV);
+	imageHSV = blurImage(imageHSV);
 
 	cv::Mat imageThreshold;
 	cv::Rect fieldBoundries;
@@ -79,6 +79,16 @@ fieldScreenParameters FieldObject::findThreshold(cv::Mat imageHSV) {
 	}
 
 	return fieldCanidate;
+}
+
+//Blurs image
+cv::Mat FieldObject::blurImage(cv::Mat tempImage) {
+	// Blur Image
+	if (BLUR_KERNAL_SIZE%2==0)
+		cv::medianBlur(tempImage, tempImage, BLUR_KERNAL_SIZE+1);
+	else
+		cv::medianBlur(tempImage, tempImage, BLUR_KERNAL_SIZE);
+	return tempImage;
 }
 
 FieldObject::FieldObject() {

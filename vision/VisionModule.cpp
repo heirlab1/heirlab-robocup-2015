@@ -11,11 +11,6 @@
 #include <fstream>
 #include <map>
 
-//#include "opencv.hpp"
-//#include <stdio.h>
-//#include <stdlib.h>
-
-//#include "features2d.hpp"
 
 void VisionModule::setupFrame() {
 	capture.open(0);

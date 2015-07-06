@@ -7,6 +7,7 @@
 #include <opencv/cv.h>
 //#include <opencv/highgui.h>
 #include <ctime>
+#include <queue>
 
 struct ballPhysicalParameters {
 	std::clock_t timeStamp;
@@ -49,6 +50,9 @@ class BallObject {
 		//Detector Tools
 		cv::Mat erodeElement; //Erodes whitespaces to get rid of background noise
 		cv::Mat dilateElement; //Dialates whitespaces to make bigger and fill voids
+		std::queue<ballScreenParameters> screenRecord;
+
+		float maxTime = 5; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
 
 		//Locks
 		pthread_mutex_t physicalParametersLock;
@@ -71,15 +75,19 @@ class BallObject {
 		ballScreenParameters findContours(cv::Mat);
 		cv::Rect findField(cv::Mat);
 
+		bool checkElapsedTime(std::clock_t);
+
 	public:
 		ballPhysicalParameters getPhysicalParameters(void);
 		ballScreenParameters getScreenParameters(void);
 		void setPhysicalParameters(ballPhysicalParameters);
 		void setScreenParameters(ballScreenParameters);
 
-		void detect(void);
+		void detect(cv::Mat);
 
-		BallObject(FieldObject*);
+		void setPointers(FieldObject*);
+
+		BallObject(void);
 		virtual ~BallObject();
 };
 

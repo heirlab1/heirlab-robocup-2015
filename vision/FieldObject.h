@@ -46,6 +46,7 @@ class FieldObject {
 
 	private:
 		cv::Mat fillHoles(cv::Mat);
+		cv::Mat blurImage(cv::Mat);
 		fieldScreenParameters findThreshold(cv::Mat);
 
 	public:

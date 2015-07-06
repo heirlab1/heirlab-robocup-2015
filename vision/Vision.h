@@ -8,27 +8,51 @@
 #ifndef VISION_H_
 #define VISION_H_
 
-#include <opencv/cv.h>
+#include "pthread.h"
+
+#include "Tracking.h"
+#include "BallObject.h"
+#include "FieldObject.h"
+#include "Camera.h"
+
+#define TASK_LOOK_FOR_BALL
+#define TASK_LOOK_FOR_GOAL
 
 class Vision {
 	private:
-		const int ERODE_KERNAL_SIZE = 2;
-		const int DIALATE_KERNAL_SIZE = 2;
-		const int BLUR_KERNAL_SIZE = 15; //Amount of blurring of original image (Notice: must be odd)
+		FieldObject fieldObject;
+		BallObject ballObject;
+		Tracking tracking;
+		Camera camera;
 
-		//Detector Variables
-		const int THRESH_ERODE_LIMIT = 3;
-		const int THRESH_DIALATE_LIMIT = 2;
+		pthread_t sight, motion;
+
+		bool shutdown;
+		int task;
+
+		//Locks
+		pthread_mutex_t shutdownLock;
+		pthread_mutex_t taskLock;
 
 	private:
-		bool checkElapsedTime(void);
-		void resetElapsedTime(void);
+		void* sightLoop(void*);
+		void* motionLoop(void*);
+
+		bool getShutdown(void);
+		void setShutdown(bool);
 
 	public:
+		int getTask(void);
+		void setTask(int);
 
-		cv::Mat fillHoles(cv::Mat);
+		float getBallDistance(void);
+		float getBallAngle(void);
+		float getBallLastSeen(void);
 
-		Vision();
+		void startThread(void);
+		void killThread(void);
+
+		Vision(void);
 		virtual ~Vision(void);
 };
 

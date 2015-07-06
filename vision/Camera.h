@@ -10,6 +10,7 @@
 
 #include <ctime>
 #include <opencv/cv.h>
+#include <opencv/highgui.h>
 
 #define FRAME_WIDTH		640
 #define FRAME_HEIGHT	480

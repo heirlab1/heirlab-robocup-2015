@@ -75,19 +75,21 @@ void Vision::detectBallArea() {
 */
 
 
-void BallObject::detect(void) {
+void BallObject::detect(cv::Mat imageHSV) {
 	fieldScreenParameters tempFieldScreen = field->getScreenParameters();
-
-	cv::Mat imageBallThreshold = preprocessBall();
-	ballScreenParameters ballCanidate = findBallThreshold(imageBallThreshold);
-	if(ballCanidate.found) {
-		if(field.boundries.x <= ballCanidate.x+ballCanidate.radius && ballCanidate.x-ballCanidate.radius <= field.boundries.x+field.boundries.width && field.boundries.y <= ballCanidate.y+ballCanidate.radius && ballCanidate.y-ballCanidate.radius <= field.boundries.y+field.boundries.height)
-			setBallScreenParameters(ballCanidate);
+	ballScreenParameters ballCanidate = findThreshold(imageHSV);
+	if(ballCanidate.onScreen) {
+		std::queue<ballScreenParameters> tempQueue;
+		for(unsigned int i = 0; i<screenRecord.size(); i++) {
+			if (!checkElapsedTime(screenRecord.front().timeStamp))
+				tempQueue.push(screenRecord.front());
+			screenRecord.pop();
+		}
 	}
 }
 
 
-//Blurs
+//Blurs image
 cv::Mat BallObject::blurImage(cv::Mat tempImage) {
 	// Blur Image
 	if (BLUR_KERNAL_SIZE%2==0)
@@ -167,11 +169,22 @@ ballScreenParameters BallObject::findThreshold(cv::Mat imageHSV) {
 	return ballCanidate;
 }
 
-BallObject::BallObject(FieldObject* field) {
-	this->field = field;
+//Checks to see if time since last request has passed
+bool BallObject::checkElapsedTime(std::clock_t time) {
+	std::clock_t currentTime = clock();
+	if (float(currentTime-time)/CLOCKS_PER_SEC > maxTime)
+		return true;
+	else
+		return false;
+}
+
+void BallObject::setPointers(FieldObject* tempField) {
+	field = tempField;
+}
+
+BallObject::BallObject() {
 }
 
 BallObject::~BallObject() {
-	// TODO Auto-generated destructor stub
 }
 
