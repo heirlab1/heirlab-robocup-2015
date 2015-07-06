@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <VisionController.h>
+#include <master_control.h>
 
 extern "C"{
   #include <tx_serial.h>
 }
 
+int port;
 
 int main(){
 
-  int port = open_port();
+  port = open_port();
   // int i;
   // int RxData;
   int TX_command;
@@ -17,11 +19,10 @@ int main(){
   vc = new VisionController();
 
 	while (1) {
-
-    
     printf("%f\n", vc->getBallAngle());
 
-    printf("Type in a number \n");
+
+    /*printf("Type in a number \n");
     
     if(scanf("%d", &TX_command)){
       printf("Wrote: %d\n", TX_command);
@@ -45,29 +46,16 @@ int main(){
     else {
       printf("That ain't a number ya donkus");
       break;    
-    }
-
-    // if (scanf("%d", &TX_command)){}
-
-    // if (tx_data(port,TX_command)){}
-
-    // for(i=0; i<TIMEOUT_TIME; i++){
-    //   // Verify data recieved
-    //   if(rx_check(port) == 1){
-    //     // Get data verified
-    //     RxData = rx_data();
-    //     printf( "Recieved: %d\n", RxData );
-    //     break;
-    //   }
-    //   printf("Loopin\n");
-
-    //   sleep(1);
-    // }
-
-    // if(i == TIMEOUT_TIME) printf( "Timeout: Failed to recieve\n" );
-
+    }*/
     
   }
 
   return 0;
+}
+
+int execute_motion(int command){
+  if (tx_data(port, command))
+    fputs("success!\n", stderr);   
+  else
+    fputs("failure :(\n", stderr);
 }
