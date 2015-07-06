@@ -508,7 +508,7 @@ HeadModule::HeadModule() {
 
 	while(1){
 		usleep(1000*2000);
-		std::cout<<"Position: "<<motorRead(PAN_MOTOR_ID, PRESENT_POSITION)<<std::endl;
+		std::cout<<"Position: "<<motorRead(TILT_MOTOR_ID, PRESENT_POSITION)<<std::endl;
 	}
 }
 
