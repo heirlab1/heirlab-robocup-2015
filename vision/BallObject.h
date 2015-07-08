@@ -71,7 +71,7 @@ class BallObject {
 		ballScreenParameters screenBall;
 
 		//Debug tools
-		cv::Mat imageDebug;
+		cv::Mat imageDebug0, imageDebug1, imageDebug2;
 
 	private:
 		void displayDebug(void);
@@ -81,7 +81,8 @@ class BallObject {
 		cv::Mat blurImage(cv::Mat);
 
 		std::vector<cv::Vec3f> filtherOnField(cv::Mat, std::vector<cv::Vec3f>);
-
+		std::vector<cv::Vec3f> filtherGreenNearby(cv::Mat, std::vector<cv::Vec3f>);
+		std::vector<cv::Vec4f> filtherWhiteness(cv::Mat, std::vector<cv::Vec3f>);
 
 		ballScreenParameters findThreshold(cv::Mat);
 		ballScreenParameters findContours(cv::Mat);
