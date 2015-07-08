@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <VisionController.h>
-#include <Master_Control.h>
+#include <MasterControl.h>
+#include <time.h>
 
 extern "C"{
   #include <tx_serial.h>
@@ -22,14 +23,15 @@ bool MUL8_play_start = false;
 bool MUL8_finished = false;
 bool second_half = false;
 
+ /* Boolean used for search function */
+// bool mul8_knows_position = false;
+// struct RoboCupGameControlData myData;
+
+
 int port;
 VisionController *vc;
 MasterControl *mc;
-
-/* Boolean used for search function */
-bool mul8_knows_position = false;
-
-struct RoboCupGameControlData myData;
+int  number;
 
 
 int main(){
@@ -37,30 +39,79 @@ int main(){
   port = open_port();
   // int i;
   // int RxData;
-  vc = new Vision();
+  vc = new VisionController();
   mc = new MasterControl();
 
   while (1) {
-    printf("%f\n", vc->getBallAngle());
+    // printf("%f\n", vc->getBallAngle());
+  
+    printf("Type in a number \n");
+    
+    if(scanf("%d", &number)){
+      printf("Wrote: %d\n", number);
+
+      if(number == 1){
+        if (mc.execute_motion(GOFORWARD))
+          fputs("success!\n", stderr);   
+        else
+          fputs("failure :(\n", stderr);
+
+      }
+
+      if(number == 2){
+        if (mc.execute_motion(GOBACKWARD))
+          fputs("success!\n", stderr);
+        else
+          fputs("failure :(\n", stderr);
+      }
+      
+      if(number == 3){
+        if (mc.execute_motion(STOP))
+          fputs("success!\n", stderr);
+        else
+          fputs("failure :(\n", stderr);
+      }
+
+    }
+
+    else {
+      printf("That ain't a number ya donkus");
+      break;    
+    }
+
+
   }
 
   return 0;
 }
 
-int execute_motion(int command){
-  if (tx_data(port, command))
-    fputs("success!\n", stderr);   
-  else
+int MasterControl::execute_motion(int command){
+  if (tx_data(port, command)) {
+    fputs("success!\n", stderr);  
+    return 1; 
+  } else {
     fputs("failure :(\n", stderr);
+  }
+  return 0;
 }
 
-double MasterControl::getUnixTime(){
+// double getUnixTime(){
+//   struct timespec tv;
 
-}
+//   if (clock_gettime(CLOCK_REALTIME, &tv) != 0) {
+//     return 0;
+//   }
+
+//   return (((double) tv.tv_sec) + (tv.tv_nsec / 1000000000.0));
+// }
 
 // action methods
-void MasterControl::search(){
+void MasterControl::searchForBall(){
+  // vc->setTask(TASK_LOOK_FOR_BALL);
+}
 
+void MasterControl::searchForGoal(){
+  // vc->setTask(TASK_LOOK_FOR_GOAL);
 }
 
 void MasterControl::walkTowardsBall(){
@@ -82,7 +133,7 @@ void MasterControl::init(){
 
 }
 
-void MasterControl::read(){
+void MasterControl::ready(){
 
 }
 

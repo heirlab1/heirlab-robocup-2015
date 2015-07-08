@@ -1,5 +1,5 @@
-TARGET		= Master_Control
-OBJS		= Master_Control.o
+TARGET		= MasterControl
+OBJS		= MasterControl.o
 SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+= -L../lib
