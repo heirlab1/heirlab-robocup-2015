@@ -25,6 +25,12 @@
 #define BALL_ANGLE_THRESHOLD
 
 class MasterControl {
+
+public:
+	int port;
+	VisionController *vc;
+
+	int executeMotion(int command);
 	void searchForBall();
 	void searchForGoal();
 	void walkTowardsBall();
@@ -40,7 +46,7 @@ class MasterControl {
 	void finish();
 	void penalty();
 	// void actionStep();
-public:
+
 	MasterControl();
 	virtual ~MasterControl();
 	// void setAction(int);

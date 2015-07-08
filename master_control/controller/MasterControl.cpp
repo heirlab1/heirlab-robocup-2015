@@ -27,20 +27,15 @@ bool second_half = false;
 // bool mul8_knows_position = false;
 // struct RoboCupGameControlData myData;
 
-
-int port;
-VisionController *vc;
-MasterControl *mc;
+// int port;
+// MasterControl mc;
 int  number;
 
-
 int main(){
-
-  port = open_port();
   // int i;
   // int RxData;
-  vc = new VisionController();
-  mc = new MasterControl();
+  MasterControl mc;
+  // MasterControl mc = new MasterControl();
 
   while (1) {
     // printf("%f\n", vc->getBallAngle());
@@ -51,7 +46,7 @@ int main(){
       printf("Wrote: %d\n", number);
 
       if(number == 1){
-        if (mc.execute_motion(GOFORWARD))
+        if (mc.executeMotion(GOFORWARD))
           fputs("success!\n", stderr);   
         else
           fputs("failure :(\n", stderr);
@@ -59,14 +54,14 @@ int main(){
       }
 
       if(number == 2){
-        if (mc.execute_motion(GOBACKWARD))
+        if (mc.executeMotion(GOBACKWARD))
           fputs("success!\n", stderr);
         else
           fputs("failure :(\n", stderr);
       }
       
       if(number == 3){
-        if (mc.execute_motion(STOP))
+        if (mc.executeMotion(STOP))
           fputs("success!\n", stderr);
         else
           fputs("failure :(\n", stderr);
@@ -85,7 +80,7 @@ int main(){
   return 0;
 }
 
-int MasterControl::execute_motion(int command){
+int MasterControl::executeMotion(int command){
   if (tx_data(port, command)) {
     fputs("success!\n", stderr);  
     return 1; 
@@ -115,7 +110,8 @@ void MasterControl::searchForGoal(){
 }
 
 void MasterControl::walkTowardsBall(){
-  execute_motion(GOFORWARD);
+  int x = executeMotion(GOFORWARD);
+  printf("%d\n", x);
 }
 
 void MasterControl::getBehindBall(){
@@ -149,9 +145,9 @@ void MasterControl::penalty(){
 
 }
 
-
 MasterControl::MasterControl(){
-
+  port = open_port();
+  vc = new VisionController();
 }
 
 MasterControl::~MasterControl(){
