@@ -51,11 +51,12 @@ void Vision::setTask(int tempTask) {
 }
 
 Vision::Vision() {
+	shutdown = false;
+	task = 0;
 	ballObject.setPointers(&fieldObject);
 	tracking.setPointers(&ballObject);
 }
 
 Vision::~Vision() {
 	setShutdown(true);
-
 }

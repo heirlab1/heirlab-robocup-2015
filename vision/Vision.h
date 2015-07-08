@@ -8,15 +8,15 @@
 #ifndef VISION_H_
 #define VISION_H_
 
-#include "pthread.h"
+#include <pthread.h>
 
 #include "Tracking.h"
 #include "BallObject.h"
 #include "FieldObject.h"
 #include "Camera.h"
 
-#define TASK_LOOK_FOR_BALL
-#define TASK_LOOK_FOR_GOAL
+#define TASK_LOOK_FOR_BALL		0
+#define TASK_LOOK_FOR_GOAL		1
 
 class Vision {
 	public:
@@ -25,7 +25,6 @@ class Vision {
 		Tracking tracking;
 		Camera camera;
 	private:
-
 		bool shutdown;
 		int task;
 

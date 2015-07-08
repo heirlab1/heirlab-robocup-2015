@@ -6,8 +6,6 @@
  */
 
 #include "Main.h"
-#include "pthread.h"
-#include "Vision.h"
 
 Main::Main() {
 	// TODO Auto-generated constructor stub

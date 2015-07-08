@@ -8,34 +8,58 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 #include "Vision.h"
-#include "pthread.h"
+#include <pthread.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
 Vision vision;
 
 void* sightLoop(void* arg) {
-	while(!vision.getShutdown()) {
-		cv::Mat imageHSV = vision.camera.getHSVImage();
-		vision.ballObject.detect(imageHSV);
+	vision.tracking.head.setPanAngle(-47);
+	//vision.tracking.head.setTiltAngle(0);
+
+	while(1) {
+		std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
+		//std::cout<<"fdsf"<<std::endl;
+		//Vision vision2;
+		//vision.ballObject.detect(vision.camera.getCameraImage());
+		//cv::Mat imageHSV = vision.camera.getHSVImage();
+		//vision.ballObject.detect(imageHSV);
 		//goalObject.detect(imageHSV);
 	}
 	pthread_exit(NULL);
 }
 
 void* motionLoop(void* arg) {
-	while(!vision.getShutdown()) {
-		if(!vision.ballObject.getScreenParameters().onScreen)
-			vision.tracking.searchBall();
-		else
+	//vision.tracking.head.setPanAngle(0);
+	//vision.tracking.head.setTiltAngle(0);
+	while(1) {
 			vision.tracking.centerBall();
 	}
 	pthread_exit(NULL);
 }
 
 int main(int argc, char* argv[]) {
-	pthread_t sight;
+	while(1) {
+		vision.ballObject.detect(vision.camera.getCameraImage());
+	}
+		//cv::waitKey(30);
+		//cv::imshow("feed", vision.camera.getHSVImage());
+		//std::cout<<vision.getShutdown()<<std::endl;
+		//vision.setShutdown(false);
+			//goalObject.detect(imageHSV);
+	//}
+
+	//while(1) {
+		//cv::waitKey(30);
+		//cv::imshow("feed", vision.camera.getCameraImage());
+	//}
+
+	pthread_t sight, motion;
 	pthread_create(&sight, NULL, sightLoop, NULL);
+	//std::cout<<"Here"<<std::endl;
+	pthread_create(&motion, NULL, motionLoop, NULL);
+	pthread_join(sight, NULL);
 };
 
 class Main {

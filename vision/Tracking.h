@@ -18,8 +18,9 @@ class Tracking {
 private:
 	pthread_mutex_t ballPhysicalParametersLock;
 	pthread_mutex_t goalPhysicalParametersLock;
-
+public:
 	Head head;
+private:
 	BallObject* ball;
 
 public:

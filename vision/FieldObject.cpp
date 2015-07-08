@@ -53,7 +53,7 @@ fieldScreenParameters FieldObject::findThreshold(cv::Mat imageHSV) {
 	std::vector<cv::Vec4i> hierarchy;
 
 	cv::inRange(imageHSV, cv::Scalar(GRASS_H_MIN, GRASS_S_MIN, GRASS_V_MIN), cv::Scalar(GRASS_H_MAX, GRASS_S_MAX, GRASS_V_MAX), imageThreshold); // Filter image according to grass thresholds
-	imageThreshold = fillHoles(imageThreshold);
+	//imageThreshold = fillHoles(imageThreshold);
 
 	imageHSV.release();
 

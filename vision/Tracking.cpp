@@ -11,7 +11,6 @@
 #define FRAME_HEIGHT	480
 
 
-
 void Tracking::searchBall() {
 
 }
@@ -23,16 +22,16 @@ void Tracking::centerBall() {
 		std::cout<<"Center"<<std::endl;
 	else {
 		if(tempBall.x<FRAME_WIDTH/3) {
-			std::cout<<"Right"<<std::endl;
-			head.moveHead(DIRECTION_RIGHT);
+			std::cout<<"Left"<<std::endl;
+			head.moveHead(DIRECTION_LEFT);
 			while(tempBall.x<FRAME_WIDTH/3) {
 				tempBall = ball->getScreenParameters();
 			}
 			head.stopHead();
 		}
 		else if (tempBall.x>FRAME_WIDTH*2/3) {
-			std::cout<<"Left"<<std::endl;
-			head.moveHead(DIRECTION_LEFT);
+			std::cout<<"Right"<<std::endl;
+			head.moveHead(DIRECTION_RIGHT);
 			while(tempBall.x>FRAME_WIDTH*2/3) {
 				tempBall = ball->getScreenParameters();
 			}

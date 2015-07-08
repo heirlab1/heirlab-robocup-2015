@@ -24,20 +24,20 @@
 */
 
 //Motor IDs
-const int PAN_MOTOR_ID = 23;
-const int TILT_MOTOR_ID = 24;
+const int PAN_MOTOR_ID = 24;
+const int TILT_MOTOR_ID = 23;
 
 //Centers of tilt and pan (ADD MOTOR OFFSETS HERE IF ANY) (Offsets are in motor positions from motor position 0)
-const int TILT_CENTER = NUM_MOTOR_POSITIONS/2+100;
-const int PAN_CENTER = NUM_MOTOR_POSITIONS/2;
+const int TILT_CENTER = NUM_MOTOR_POSITIONS/2-598;
+const int PAN_CENTER = NUM_MOTOR_POSITIONS/2-220;
 
 //Reverses the direction of pan/tilt
 const bool TILT_REVERSE = true;
-const bool PAN_REVERSE = false;
+const bool PAN_REVERSE = true;
 
 //Tracking Limits
 const int upperLimitDeg = 10; //How many degrees up from staring straight forward the head is allowed to tilt
-const int lowerLimitDeg = -40; //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
+const int lowerLimitDeg = -42; //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
 const int rightLimitDeg = 48; //How many degrees right from staring straight forward the head is allowed to pan
 const int leftLimitDeg = -48; //^In left direction (!!!Must be negative!!!)
 
@@ -51,7 +51,7 @@ const int cameraPanLimit = 50; //Right & left
 const int acceleration = 100; //acceleration speed of motors
 const int defaultSpeed = 60;
 
-const int TILT_MULTIPLIER = 1;;
+const int TILT_MULTIPLIER = 1;
 const int PAN_MULTIPLIER = 1;
 
 //const int elapsedTimeDelayMills = 18;
@@ -62,7 +62,7 @@ class Head {
 		int lowerLimitPos;
 		int rightLimitPos;
 		int leftLimitPos;
-
+public:
 		USB2AXmotorManager motorManager;
 
 		//float motorMatrix[rightLimitPos][upperLimitPos]; //[X][Y]

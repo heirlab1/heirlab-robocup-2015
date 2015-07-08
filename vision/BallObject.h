@@ -3,9 +3,9 @@
 
 #include "FieldObject.h"
 
-#include "pthread.h"
+#include <pthread.h>
 #include <opencv/cv.h>
-//#include <opencv/highgui.h>
+#include <opencv/highgui.h>
 #include <ctime>
 #include <queue>
 
@@ -39,6 +39,13 @@ class BallObject {
 		const int BALL1_V_MIN = 0;
 		const int BALL1_V_MAX = 95;
 
+		const int GRASS_H_MIN = 34;
+		const int GRASS_H_MAX = 86;
+		const int GRASS_S_MIN = 125;
+		const int GRASS_S_MAX = 256;
+		const int GRASS_V_MIN = 37;
+		const int GRASS_V_MAX = 256;
+
 		//Detector Variables
 		const int THRESH_ERODE_LIMIT = 3;
 		const int THRESH_DIALATE_LIMIT = 2;
@@ -67,9 +74,14 @@ class BallObject {
 		cv::Mat imageDebug;
 
 	private:
+		void displayDebug(void);
+
 		cv::Mat fillHoles(cv::Mat);
 		cv::Mat threshImage(cv::Mat);
 		cv::Mat blurImage(cv::Mat);
+
+		std::vector<cv::Vec3f> filtherOnField(cv::Mat, std::vector<cv::Vec3f>);
+
 
 		ballScreenParameters findThreshold(cv::Mat);
 		ballScreenParameters findContours(cv::Mat);

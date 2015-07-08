@@ -10,6 +10,7 @@
 void Camera::captureFrame() {
 	if(checkElapsedTime()) {
 		capture.read(imageCameraFeed); //Capture new image
+		cv::flip(imageCameraFeed, imageCameraFeed, -1);
 		cv::cvtColor(imageCameraFeed, imageHSV, cv::COLOR_BGR2HSV); //convert BGR(RGB) to HSV
 		resetElapsedTime();
 	}
@@ -41,7 +42,14 @@ void Camera::resetElapsedTime() {
 
 //Setup Frame
 void Camera::setupCamera() {
-	capture.open(0);
+	if(!capture.open(0))
+		if(!capture.open(1))
+			std::cout<<"Error: Open camera failed"<<std::endl;
+		else
+			std::cout<<"Camera Connected on 1"<<std::endl;
+	else
+		std::cout<<"Camera Connected on 0"<<std::endl;
+
 	//set height and width of capture frame
 	capture.set(CV_CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
 	capture.set(CV_CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
