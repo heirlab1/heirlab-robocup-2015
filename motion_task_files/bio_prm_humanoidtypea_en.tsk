@@ -1,6 +1,6 @@
 ﻿version 3.00
 cm_version 1.0
-platform CM-510
+platform CM-700
 o // param_text:Title- Tutorial Premium Kit Robot  A-type
 o // param_text:First Distribution : 2009/10/01
 o // param_text:1st Modify : 2012/07/24 (fixed some bugs in WalkExecute)
