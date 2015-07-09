@@ -44,12 +44,12 @@ const int leftLimitDeg = -48; //^In left direction (!!!Must be negative!!!)
 //const int motorMatrixAccuracy = 1; //Is accuracy of search algorithms and resolution of freedom in turning the motors | Notice: 2=50%, 4=25% ...
 
 //How much of the motor matrix the camera can see in any of the 4 directions when centered in on point
-const int cameraTiltLimit = 70; //Up & down
-const int cameraPanLimit = 50; //Right & left
+#define CAMERA_TILT_SIGHT		70; //Up & down
+#define CAMERA_PAN_SIGHT 	50; //Right & left
 
 
-const int acceleration = 100; //acceleration speed of motors
-const int defaultSpeed = 60;
+const int acceleration = 80; //acceleration speed of motors
+const int defaultSpeed = 30;
 
 const int TILT_MULTIPLIER = 1;
 const int PAN_MULTIPLIER = 1;

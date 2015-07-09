@@ -15,11 +15,12 @@
 Vision vision;
 
 void* sightLoop(void* arg) {
-	vision.tracking.head.setPanAngle(-47);
+	//vision.tracking.head.setPanAngle(-47);
 	//vision.tracking.head.setTiltAngle(0);
 
 	while(1) {
-		std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
+		vision.ballObject.detect(vision.camera.getCameraImage());
+		//std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
 		//std::cout<<"fdsf"<<std::endl;
 		//Vision vision2;
 		//vision.ballObject.detect(vision.camera.getCameraImage());
@@ -34,15 +35,15 @@ void* motionLoop(void* arg) {
 	//vision.tracking.head.setPanAngle(0);
 	//vision.tracking.head.setTiltAngle(0);
 	while(1) {
-			vision.tracking.centerBall();
+			vision.tracking.centerBallExperimental();
 	}
 	pthread_exit(NULL);
 }
 
 int main(int argc, char* argv[]) {
-	while(1) {
-		vision.ballObject.detect(vision.camera.getCameraImage());
-	}
+	//while(1) {
+		//vision.ballObject.detect(vision.camera.getCameraImage());
+	//}
 		//cv::waitKey(30);
 		//cv::imshow("feed", vision.camera.getHSVImage());
 		//std::cout<<vision.getShutdown()<<std::endl;

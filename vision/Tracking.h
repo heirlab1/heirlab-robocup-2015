@@ -10,7 +10,7 @@
 
 #include "Head.h"
 #include "BallObject.h"
-
+#include <ctime>
 
 
 
@@ -22,6 +22,10 @@ public:
 	Head head;
 private:
 	BallObject* ball;
+	float maxTime = 0.2; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+
+private:
+	bool checkElapsedTime(std::clock_t);
 
 public:
 	void setPointers(BallObject*);
@@ -29,8 +33,12 @@ public:
 	void centerBall(void);
 	void searchBall(void);
 
+	void centerBallExperimental(void);
+
 	ballPhysicalParameters getBallPhysicalParameters(void);
 	void setBallPhysicalParameters(ballPhysicalParameters);
+
+
 
 	Tracking();
 	virtual ~Tracking();
