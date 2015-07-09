@@ -77,6 +77,11 @@ int main(){
 
   }
 
+
+  if (mc.executeMotion(STOP))
+    fputs("stopped motion\n", stderr);
+  else
+    fputs("failed to stop motion(\n", stderr);
   return 0;
 }
 
