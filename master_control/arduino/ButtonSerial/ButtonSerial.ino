@@ -64,7 +64,7 @@ void loop() {
     // turn LED on:
     //count = count + 1;
     digitalWrite(ledPin, HIGH);
-    Serial.println("Button was pressed");
+    Serial.println("1");
   }
   else {
     // turn LED off:
