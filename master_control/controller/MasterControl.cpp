@@ -3,6 +3,7 @@
 #include <VisionController.h>
 #include <MasterControl.h>
 #include <time.h>
+#include <pthread.h>
 
 extern "C"{
   #include <tx_serial.h>
@@ -24,67 +25,62 @@ bool MUL8_play_start = false;
 bool MUL8_finished = false;
 bool second_half = false;
 
- /* Boolean used for search function */
-// bool mul8_knows_position = false;
-// struct RoboCupGameControlData myData;
-
-// int port;
-// MasterControl mc;
 int  number;
 
 int main(){
-  // int i;
-  // int RxData;
   MasterControl mc;
-  // MasterControl mc = new MasterControl();
   // Vision vc;
 
-  if (getStartButtonPressed()){
-    while (1) {
-      // printf("%f\n", vc->getBallAngle());
+  // find start button library in ../arduino-serial/ 
+  while(!getStartButtonPressed())
+  
+  usleep(2000000);
+
+  while (1) {
+
+    // printf("Type in a number \n");
     
-      printf("Type in a number \n");
-      
-      if(scanf("%d", &number)){
-        printf("Wrote: %d\n", number);
+    // if(scanf("%d", &number)){
+    //   printf("Wrote: %d\n", number);
 
-        if(number == 1){
-          if (mc.executeMotion(GOFORWARD))
-            fputs("success!\n", stderr);   
-          else
-            fputs("failure :(\n", stderr);
+    //   if(number == 1){
+    //     if (mc.executeMotion(GOFORWARD))
+    //       fputs("success!\n", stderr);   
+    //     else
+    //       fputs("failure :(\n", stderr);
 
-        }
+    //   }
 
-        if(number == 2){
-          if (mc.executeMotion(GOBACKWARD))
-            fputs("success!\n", stderr);
-          else
-            fputs("failure :(\n", stderr);
-        }
-              
-        if(number == 3){
-          if (mc.executeMotion(SCRATCHHEAD))
-            fputs("success!\n", stderr);
-          else
-            fputs("failure :(\n", stderr);
-        }
+    //   if(number == 2){
+    //     if (mc.executeMotion(GOBACKWARD))
+    //       fputs("success!\n", stderr);
+    //     else
+    //       fputs("failure :(\n", stderr);
+    //   }
+            
+    //   if(number == 3){
+    //     if (mc.executeMotion(SCRATCHHEAD))
+    //       fputs("success!\n", stderr);
+    //     else
+    //       fputs("failure :(\n", stderr);
+    //   }
 
-        if(number == 0){
-          if (mc.executeMotion(STOP))
-            fputs("success!\n", stderr);
-          else
-            fputs("failure :(\n", stderr);
-        }
+    //   if(number == 0){
+    //     if (mc.executeMotion(STOP))
+    //       fputs("success!\n", stderr);
+    //     else
+    //       fputs("failure :(\n", stderr);
+    //   }
 
-      }
+    // }
 
-      else {
-        printf("That ain't a number ya donkus");
-        break;    
-      }
+    // else {
+    //   printf("That ain't a number ya donkus");
+    //   break;    
+    // }
 
-    }
+    if (getStartButtonPressed()) break;    
+
   }
 
 
@@ -95,6 +91,7 @@ int main(){
   return 0;
 }
 
+// find command defenitions in ../include/tx_serial.h
 int MasterControl::executeMotion(int command){
   if (tx_data(port, command)) {
     fputs("success!\n", stderr);  
@@ -137,9 +134,7 @@ void MasterControl::alignToKick(){
 
 }
 
-
 // state methods
-
 void MasterControl::init(){
 
 }
@@ -162,7 +157,7 @@ void MasterControl::penalty(){
 
 MasterControl::MasterControl(){
   port = open_port();
-  vc = new VisionController();
+  // vc = new VisionController();
 }
 
 MasterControl::~MasterControl(){
