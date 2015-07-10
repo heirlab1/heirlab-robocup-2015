@@ -4,7 +4,7 @@ SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+= -L../lib
 CFLAGS		= $(INCLUDEDIRS) -W -Wall -O2
-LDFLAGS		= $(LIBDIRS) -lm -ltxd -lvision
+LDFLAGS		= $(LIBDIRS) -lm -ltxd -lvision -larduino
 
 CC			= g++
 

@@ -9,7 +9,7 @@
 
 #include "tx_serial.h"
 
-volatile int STOP=FALSE; 
+// volatile int STOP=FALSE; 
 
 int tx_data(int fd, int command_key){
   if (encode_data(fd,command_key)){

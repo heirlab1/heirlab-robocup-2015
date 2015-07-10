@@ -6,6 +6,7 @@
 
 extern "C"{
   #include <tx_serial.h>
+  #include <arduino-serial.h>
 }
 
 
@@ -36,53 +37,54 @@ int main(){
   // int RxData;
   MasterControl mc;
   // MasterControl mc = new MasterControl();
-  Vision vc;
+  // Vision vc;
 
-  while (1) {
-    printf("%f\n", vc->getBallAngle());
-  
-    printf("Type in a number \n");
+  if (getStartButtonPressed()){
+    while (1) {
+      // printf("%f\n", vc->getBallAngle());
     
-    if(scanf("%d", &number)){
-      printf("Wrote: %d\n", number);
+      printf("Type in a number \n");
+      
+      if(scanf("%d", &number)){
+        printf("Wrote: %d\n", number);
 
-      if(number == 1){
-        if (mc.executeMotion(GOFORWARD))
-          fputs("success!\n", stderr);   
-        else
-          fputs("failure :(\n", stderr);
+        if(number == 1){
+          if (mc.executeMotion(GOFORWARD))
+            fputs("success!\n", stderr);   
+          else
+            fputs("failure :(\n", stderr);
+
+        }
+
+        if(number == 2){
+          if (mc.executeMotion(GOBACKWARD))
+            fputs("success!\n", stderr);
+          else
+            fputs("failure :(\n", stderr);
+        }
+              
+        if(number == 3){
+          if (mc.executeMotion(SCRATCHHEAD))
+            fputs("success!\n", stderr);
+          else
+            fputs("failure :(\n", stderr);
+        }
+
+        if(number == 0){
+          if (mc.executeMotion(STOP))
+            fputs("success!\n", stderr);
+          else
+            fputs("failure :(\n", stderr);
+        }
 
       }
 
-      if(number == 2){
-        if (mc.executeMotion(GOBACKWARD))
-          fputs("success!\n", stderr);
-        else
-          fputs("failure :(\n", stderr);
-      }
-            
-      if(number == 3){
-        if (mc.executeMotion(SCRATCHHEAD))
-          fputs("success!\n", stderr);
-        else
-          fputs("failure :(\n", stderr);
-      }
-
-      if(number == 0){
-        if (mc.executeMotion(STOP))
-          fputs("success!\n", stderr);
-        else
-          fputs("failure :(\n", stderr);
+      else {
+        printf("That ain't a number ya donkus");
+        break;    
       }
 
     }
-
-    else {
-      printf("That ain't a number ya donkus");
-      break;    
-    }
-
-
   }
 
 
