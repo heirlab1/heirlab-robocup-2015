@@ -35,7 +35,7 @@ void* motionLoop(void* arg) {
 	//vision.tracking.head.setPanAngle(0);
 	//vision.tracking.head.setTiltAngle(0);
 	while(1) {
-			vision.tracking.centerBallExperimental();
+			vision.tracking.centerBall();
 	}
 	pthread_exit(NULL);
 }

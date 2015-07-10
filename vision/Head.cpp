@@ -111,20 +111,20 @@ bool Head::checkWithinLimits(int x, int y) {
 //Sets limits for motors, accounts for an offset and a reverse direction
 void Head::setLimits() {
 	if(TILT_REVERSE) {
-		upperLimitPos = -upperLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
-		lowerLimitPos = -lowerLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
+		upperLimitPos = -UPPER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
+		lowerLimitPos = -LOWER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
 	}
 	else {
-		upperLimitPos = upperLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
-		lowerLimitPos = lowerLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
+		upperLimitPos = UPPER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
+		lowerLimitPos = LOWER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
 	}
 	if(PAN_REVERSE) {
-		rightLimitPos = -rightLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
-		leftLimitPos = -leftLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
+		rightLimitPos = -RIGHT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
+		leftLimitPos = -LEFT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
 	}
 	else {
-		rightLimitPos = rightLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
-		leftLimitPos = leftLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
+		rightLimitPos = RIGHT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
+		leftLimitPos = LEFT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
 	}
 }
 

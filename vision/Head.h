@@ -36,16 +36,16 @@ const bool TILT_REVERSE = true;
 const bool PAN_REVERSE = true;
 
 //Tracking Limits
-const int upperLimitDeg = 10; //How many degrees up from staring straight forward the head is allowed to tilt
-const int lowerLimitDeg = -42; //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
-const int rightLimitDeg = 48; //How many degrees right from staring straight forward the head is allowed to pan
-const int leftLimitDeg = -48; //^In left direction (!!!Must be negative!!!)
+#define UPPER_LIMIT_DEG 10 //How many degrees up from staring straight forward the head is allowed to tilt
+#define LOWER_LIMIT_DEG -42 //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
+#define RIGHT_LIMIT_DEG 48 //How many degrees right from staring straight forward the head is allowed to pan
+#define LEFT_LIMIT_DEG	 -48 //^In left direction (!!!Must be negative!!!)
 
 //const int motorMatrixAccuracy = 1; //Is accuracy of search algorithms and resolution of freedom in turning the motors | Notice: 2=50%, 4=25% ...
 
 //How much of the motor matrix the camera can see in any of the 4 directions when centered in on point
-#define CAMERA_TILT_SIGHT		70; //Up & down
-#define CAMERA_PAN_SIGHT 	50; //Right & left
+#define CAMERA_TILT_SIGHT		70 //Up & down
+#define CAMERA_PAN_SIGHT 	50 //Right & left
 
 
 const int acceleration = 80; //acceleration speed of motors
@@ -74,7 +74,7 @@ public:
 
 		void resetMotorMatrix(void);
 		//void markSeenMotorMatrix(cv::Point);
-		//cv::Point BFSmotorMatrix(cv::Point);
+		//cv::Point BFSsearch(cv::Point);
 
 		void scan(void);
 		void stopHead(void);
