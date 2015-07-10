@@ -1,6 +1,6 @@
 #include &lt SerialStream.h &gt
 #include &lt iostream &gt
-#define PORT "/dev/cu.usbmodem1411 " //This is system-specific
+#define PORT "/dev/ttyACM0 " //This is system-specific
 
 SerialStream ardu;
 

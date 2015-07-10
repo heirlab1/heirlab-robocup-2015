@@ -1,8 +1,4 @@
-# include <Arduino.h>
-
-Arduino::Arduino(){
-    serial(dev);
-}
+#include <Arduino.h>
 
 int Arduino::abrir(){
     int estado = 0;
@@ -28,4 +24,8 @@ DataBuffer Arduino::leer(){
     serial.Read(buffer, 10, 1000);
 
     return buffer;
+}
+
+Arduino::Arduino(){
+    serial(dev);
 }

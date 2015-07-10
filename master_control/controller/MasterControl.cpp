@@ -36,9 +36,10 @@ int main(){
   // int RxData;
   MasterControl mc;
   // MasterControl mc = new MasterControl();
+  Vision vc;
 
   while (1) {
-    // printf("%f\n", vc->getBallAngle());
+    printf("%f\n", vc->getBallAngle());
   
     printf("Type in a number \n");
     
@@ -59,8 +60,15 @@ int main(){
         else
           fputs("failure :(\n", stderr);
       }
-      
+            
       if(number == 3){
+        if (mc.executeMotion(SCRATCHHEAD))
+          fputs("success!\n", stderr);
+        else
+          fputs("failure :(\n", stderr);
+      }
+
+      if(number == 0){
         if (mc.executeMotion(STOP))
           fputs("success!\n", stderr);
         else

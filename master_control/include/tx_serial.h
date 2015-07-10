@@ -54,7 +54,7 @@ included by <termios.h> */
 #define RIGHTKICKFORWARD 	  (129)	// 4+U
 #define LEFTKICKHARD		    (545)	// 2+6+U
 #define RIGHTKICKHARD 		  (641)	// 4+6+U
-#define LEFTKICKBACKWARD 	  (34) 	// 2+D
+// #define LEFTKICKBACKWARD 	  (34) 	// 2+D
 #define RIGHTKICKBARDWARD   (130)	// 4+D
 #define LEFTKICKLEFT 		    (36) 	// 2+L
 #define RIGHTKICKLEFT 		  (132) // 4+L
@@ -76,6 +76,7 @@ included by <termios.h> */
 #define STANDUPBACK 	      (18) 	// 1+D
 #define BEATCHEST 		      (20) 	// 1+L
 #define CHEER 				      (24) 	// 1+R
+#define SCRATCHHEAD         (34)  // 2+D
 
 #define STOP                (768) // 5+6
 

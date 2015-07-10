@@ -4,16 +4,18 @@
 #include <SerialStream.h>
 #include <SerialStreamBuf.h>
 #include <SerialPort.h>
-#include <string>
+// #include <string>
+
+using namespace std;
 
 class Arduino{
 public:
     Arduino();
-    int open());
+    int open();
     DataBuffer read();
     void close();
 private:
-    string dev = "/dev/ACM0";
+    string dev = "/dev/ttyACM0";
     SerialPort serial;
 };
 

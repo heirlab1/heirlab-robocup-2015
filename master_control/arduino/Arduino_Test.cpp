@@ -3,6 +3,7 @@
 #include <SerialStreamBuf.h>
 #include <SerialPort.h>
 #include <string>
+#include "Arduino.h"
 
 using namespace std;
 using namespace LibSerial;
