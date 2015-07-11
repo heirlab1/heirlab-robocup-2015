@@ -57,7 +57,7 @@
 
 class USB2AXmotorManager {
 	private:
-		float minTime = 0.18; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+		float minTime = 0; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
 		std::clock_t lastRequest;
 		//std::set<int> motorIDs;
 
@@ -68,7 +68,6 @@ class USB2AXmotorManager {
 		void initMoters(void);
 		void connect(void);
 		void disconnect(void);
-
 
 		//void resetMotorMatrix(void);
 		//void markSeenMotorMatrix(cv::Point);

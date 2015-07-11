@@ -14,7 +14,7 @@ int USB2AXmotorManager::getMotorPosition(int motorID) {
 //Reads position for motor and returns position
 int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 	int accuracy = 15;
-	int sampleSize = 6;
+	int sampleSize = 3;
 	int position[sampleSize];
 	int times[sampleSize];
 	int modeIndex = 0;
@@ -23,7 +23,7 @@ int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 	for(int i=0; i<sampleSize; i++) {
 		position[i] = readMotor(motorID, PRESENT_POSITION);
 		times[i] = 0;
-		usleep(1000*250); //Wait 250ms as motors don't like being read from too often
+		//usleep(1000*250); //Wait 250ms as motors don't like being read from too often
 	}
 
 	//Record how many samples are near given sample
@@ -193,11 +193,11 @@ void USB2AXmotorManager::setLimits(int motorID, int limitCW, int limitCCW) {
 }
 
 void USB2AXmotorManager::connect() {
-	if(dxl_initialize(0, 1)==1)
+	if(dxl_initialize(0, 1))
 		std::cout<<"Succeed to open USB2Dynamixel!"<<std::endl;
 	else {
 		std::cout<<"Failed to open USB2Dynamixel!, Moving to second port."<<std::endl;
-		if (dxl_initialize(1, 1)==1)
+		if (dxl_initialize(1, 1))
 			std::cout<<"Succeed to open USB2Dynamixel!"<<std::endl;
 		else
 			std::cout<<"Failed to open USB2Dynamixel!"<<std::endl;

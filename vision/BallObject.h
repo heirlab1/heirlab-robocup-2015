@@ -60,7 +60,7 @@ class BallObject {
 		cv::Mat dilateElement; //Dialates whitespaces to make bigger and fill voids
 		std::queue<ballScreenParameters> screenRecord;
 
-		float maxTime = 1; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+		float maxTime = 1.2; // (1 = 1s, 0.5 = 500ms)
 
 		//Locks
 		pthread_mutex_t physicalParametersLock;
@@ -69,7 +69,7 @@ class BallObject {
 		//Main Variables
 		FieldObject* field;
 		ballPhysicalParameters physicalBall;
-		int screenBallQueueMaxSize =  10;
+		int screenBallQueueMaxSize =  4;
 		std::queue<ballScreenParameters> screenBallQueue;
 		ballScreenParameters screenBall;
 

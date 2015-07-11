@@ -70,7 +70,7 @@ void Head::setTiltAngle(float angle) {
 }
 
 void Head::setPanAngle(float angle) {
-	std::cout<<"Moving motor to pos: "<<(-angle/DEGREES_PER_POSITION+PAN_CENTER)<<std::endl;
+	//std::cout<<"Moving motor to pos: "<<(-angle/DEGREES_PER_POSITION+PAN_CENTER)<<std::endl;
 	if(PAN_REVERSE)
 		motorManager.setMotorPosition(PAN_MOTOR_ID, (-angle/DEGREES_PER_POSITION+PAN_CENTER));
 	else

@@ -49,7 +49,7 @@ const bool PAN_REVERSE = true;
 
 
 const int acceleration = 80; //acceleration speed of motors
-const int defaultSpeed = 30;
+const int defaultSpeed = 20;
 
 const int TILT_MULTIPLIER = 1;
 const int PAN_MULTIPLIER = 1;
@@ -76,7 +76,6 @@ public:
 		//void markSeenMotorMatrix(cv::Point);
 		//cv::Point BFSsearch(cv::Point);
 
-		void scan(void);
 		void stopHead(void);
 		void moveHead(int);
 		void moveHeadTo(int, int);
