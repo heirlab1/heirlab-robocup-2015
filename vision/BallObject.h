@@ -40,11 +40,11 @@ class BallObject {
 		const int BALL1_V_MAX = 95;
 
 		//Grass color calibration variables
-		const int GRASS_H_MIN = 34;
-		const int GRASS_H_MAX = 86;
-		const int GRASS_S_MIN = 125;
+		const int GRASS_H_MIN = 44;
+		const int GRASS_H_MAX = 91;
+		const int GRASS_S_MIN = 83;
 		const int GRASS_S_MAX = 256;
-		const int GRASS_V_MIN = 37;
+		const int GRASS_V_MIN = 0;
 		const int GRASS_V_MAX = 256;
 
 		//Detector Variables
@@ -60,7 +60,7 @@ class BallObject {
 		cv::Mat dilateElement; //Dialates whitespaces to make bigger and fill voids
 		std::queue<ballScreenParameters> screenRecord;
 
-		float maxTime = 1; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+		float maxTime = 0.9; // (1 = 1s, 0.5 = 500ms)
 
 		//Locks
 		pthread_mutex_t physicalParametersLock;
@@ -69,7 +69,7 @@ class BallObject {
 		//Main Variables
 		FieldObject* field;
 		ballPhysicalParameters physicalBall;
-		int screenBallQueueMaxSize =  10;
+		int screenBallQueueMaxSize =  3;
 		std::queue<ballScreenParameters> screenBallQueue;
 		ballScreenParameters screenBall;
 
@@ -87,7 +87,7 @@ class BallObject {
 
 		std::vector<cv::Vec3f> filtherOnField(cv::Mat, std::vector<cv::Vec3f>);
 		std::vector<cv::Vec4f> filtherColorNearby(cv::Mat, std::vector<cv::Vec4f>);
-		std::vector<cv::Vec4f> filtherColorAmount(cv::Mat, std::vector<cv::Vec3f>);
+		std::vector<cv::Vec4f> filtherColorAmount(cv::Mat, std::vector<cv::Vec4f>, float);
 
 		ballScreenParameters findThreshold(cv::Mat);
 		ballScreenParameters findContours(cv::Mat);
