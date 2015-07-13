@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include <unistd.h>
 
 Vision vision;
 
@@ -32,29 +33,32 @@ void* sightLoop(void* arg) {
 }
 
 void* motionLoop(void* arg) {
-	//vision.tracking.head.setPanAngle(0);
-	//vision.tracking.head.setTiltAngle(0);
-	ballScreenParameters ball;
+	//vision.tracking.head.setPanAngle(-7);
+	//vision.tracking.head.setTiltAngle(-19);
+	//ballScreenParameters ball;
 
 	while(1) {
+		//vision.tracking.centerBallExperimental();
+		//usleep(1000*100);
+		//vision.tracking.searchBall();
 		ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
-		if(tempBall.onScreen) {
-			std::cout<<"OnScreen"<<std::endl;
-			if(FRAME_WIDTH/3<tempBall.x && tempBall.x<FRAME_WIDTH*2/3<tempBall.y &&FRAME_HEIGHT/3<tempBall.x && tempBall.x<FRAME_HEIGHT*2/3<tempBall.x) {
-				ballPhysicalParameters tempBallP;
-				tempBallP.angle =vision.tracking.head.getPanAngle();
-				tempBallP.distance = std::sqrt(std::pow(std::acos(std::abs(vision.tracking.head.getTiltAngle())-10)*.86, 2)-std::pow(.86, 2));
-				tempBallP.timeStamp = clock();
-				vision.ballObject.setPhysicalParameters(tempBallP);
-				std::cout<<"Set physics"<<std::endl;
-			}
-
-			vision.tracking.centerBall();
+		vision.tracking.updatePhysicalParameters(tempBall);
+		vision.tracking.centerBallExperimental(tempBall);
+		//vision.tracking.head.setTiltAngle(0);
+		//std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
+		std::cout<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
+		/*if(tempBall.onScreen) {
+			std::cout<<"Centering"<<std::endl;
+			vision.tracking.head.motorManager.setSpeed(23, 70);
+			vision.tracking.head.motorManager.setSpeed(24, 70);
+			vision.tracking.centerBallExperimental(tempBall);
 		}
 		else {
+			vision.tracking.head.motorManager.setSpeed(23, 20);
+			vision.tracking.head.motorManager.setSpeed(24, 20);
 			std::cout<<"Searching"<<std::endl;
 			vision.tracking.searchBall();
-		}
+		}*/
 	}
 	pthread_exit(NULL);
 }

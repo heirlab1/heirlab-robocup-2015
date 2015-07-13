@@ -79,21 +79,21 @@ void Vision::detectBallArea() {
 
 void BallObject::detect(cv::Mat imageCameraFeed) {
 	//fieldScreenParameters tempFieldScreen = field->getScreenParameters();
-	std::clock_t time = clock();
+	//std::clock_t time = clock();
 
 	ballScreenParameters ballCanidate = findContours(imageCameraFeed);//findThreshold(imageHSV);
-	if(ballCanidate.onScreen) {
+	//if(ballCanidate.onScreen) {
 		//screenBallQueue.push(ballCanidate);
 		//setScreenParameters(ballCanidate);
-	}
-	setScreenParameters(ballCanidate);
-	std::clock_t currentTime = clock();
-
+	//}
 	//setScreenParameters(findBallMode());
-	std::cout<<"Time: "<<(float)(currentTime-time)/CLOCKS_PER_SEC<<std::endl;
+	setScreenParameters(ballCanidate);
+	//std::clock_t currentTime = clock();
+	//std::cout<<"Time: "<<(float)(currentTime-time)/CLOCKS_PER_SEC<<std::endl;
 	//std::cout<<"QueueSize: "<<screenBallQueue.size()<<std::endl;
 	ballScreenParameters ballFound = getScreenParameters();
 		if(ballFound.onScreen) {
+			//std::cout<<"really"<<std::endl;
 			cv::Point circleCenter((int)(ballFound.x), (int)(ballFound.y));
 			int circleRadius = (int)(ballFound.radius);
 			cv::circle(imageDebug0, circleCenter, circleRadius, cv::Scalar(204, 0, 0), 2);
@@ -153,7 +153,7 @@ ballScreenParameters BallObject::findBallMode() {
 			if(ballTimesCounted[modeIndex]<ballTimesCounted[i])
 				modeIndex=i;
 		}
-		if(2<=ballTimesCounted[modeIndex]) {
+		if(1<ballTimesCounted[modeIndex]) {
 			ballFound.onScreen = true;
 			ballFound.x = ballArray[modeIndex].x;
 			ballFound.y = ballArray[modeIndex].y;
@@ -170,7 +170,7 @@ ballScreenParameters BallObject::findBallMode() {
 }
 
 void BallObject::displayDebug() {
-	cv::waitKey(10);
+	cv::waitKey(30);
 	cv::imshow("Origional",imageDebug0);
 	//cv::imshow("Thresh0",imageDebug1);
 	//cv::imshow("Thresh1",imageDebug2);
@@ -253,8 +253,8 @@ std::vector<cv::Vec4f> BallObject::filtherColorNearby(cv::Mat imageThreshold ,st
 	//Filther is really on field (green is outide the detected circle)
 	for(int i=0; i<circles.size(); i++) {
 		cv::Point circleCenter((int)(circles[i][0]), (int)(circles[i][1]));
-		int outerCircleRadius = (int)(circles[i][2]+12);
-		int innerCircleRadius = (int)(circles[i][2]+6);
+		int outerCircleRadius = (int)(circles[i][2]+8);
+		int innerCircleRadius = (int)(circles[i][2]+3);
 
 		cv::Mat cropedImage;
 		cv::Mat mask = cv::Mat::zeros(imageThreshold.rows, imageThreshold.cols, CV_8UC1);
@@ -263,9 +263,9 @@ std::vector<cv::Vec4f> BallObject::filtherColorNearby(cv::Mat imageThreshold ,st
 		cv::circle(cropedImage, circleCenter, innerCircleRadius, cv::Scalar(0,0,0), -1, 8, 0);
 
 		int count = cv::countNonZero(cropedImage);
-		float countCuttoff =  .3*(3.14159*std::pow(outerCircleRadius, 2)-3.14159*std::pow(innerCircleRadius, 2));
+		float countCuttoff =  .35*(3.14159*std::pow(outerCircleRadius, 2)-3.14159*std::pow(innerCircleRadius, 2));
 		//float simularity = std::abs(count-idealCount)/idealCount ;
-		//std::cout<<count<<" | "<<idealCount<<" | "<<simularity<<std::endl;
+		//std::cout<<count<<" | "<<countCuttoff<<std::endl;
 
 		//imageDebug2 = cropedImage;
 
@@ -280,7 +280,7 @@ std::vector<cv::Vec4f> BallObject::filtherColorNearby(cv::Mat imageThreshold ,st
 	return output;
 }
 
-std::vector<cv::Vec4f> BallObject::filtherColorAmount(cv::Mat imageThreshold ,std::vector<cv::Vec3f> circles) {
+std::vector<cv::Vec4f> BallObject::filtherColorAmount(cv::Mat imageThreshold ,std::vector<cv::Vec4f> circles, float percentageDesired) {
 	std::vector<cv::Vec4f> output;
 	imageDebug2 = imageThreshold;
 
@@ -295,12 +295,11 @@ std::vector<cv::Vec4f> BallObject::filtherColorAmount(cv::Mat imageThreshold ,st
 		imageThreshold.copyTo(cropedImage, mask); // copy values of imgThresh to dst if mask is > 0.
 
 		int count = cv::countNonZero(cropedImage);
-		float countCuttoff = .3*3.14159*std::pow(circleRadius, 2);
+		//float countCuttoff = .3*3.14159*std::pow(circleRadius, 2);
 		//float countCuttoff2 = .9*3.14159*std::pow(circleRadius, 2);
-		float idealCount = .75*3.14159*std::pow(circleRadius, 2);
-		float simularity = std::abs(count-idealCount)/idealCount ;
-
-		if(simularity<0.3) {
+		float idealCount = percentageDesired*3.14159*std::pow(circleRadius, 2);
+		float simularity = std::abs(count-idealCount)/idealCount;
+		if(simularity<0.16) {
 			output.resize(i+1);
 			output[i][0] = circles[i][0];
 			output[i][1] = circles[i][1];
@@ -311,8 +310,6 @@ std::vector<cv::Vec4f> BallObject::filtherColorAmount(cv::Mat imageThreshold ,st
 	return output;
 }
 
-
-
 ballScreenParameters BallObject::findContours(cv::Mat imageCameraFeed) {
 	imageDebug0 = imageCameraFeed;
 	//imageCameraFeed = blurImage(imageCameraFeed);
@@ -321,11 +318,18 @@ ballScreenParameters BallObject::findContours(cv::Mat imageCameraFeed) {
 	cvtColor(imageCameraFeed, imageHSV, cv::COLOR_BGR2HSV);
 	cvtColor(imageCameraFeed, imageGray, cv::COLOR_BGR2GRAY);
 	cv::inRange(imageHSV, cv::Scalar(BALL0_H_MIN, BALL0_S_MIN, BALL0_V_MIN), cv::Scalar(BALL0_H_MAX, BALL0_S_MAX, BALL0_V_MAX), imageThresholdBallWhite);
+	//cv::inRange(imageHSV, cv::Scalar(BALL1_H_MIN, BALL1_S_MIN, BALL1_V_MIN), cv::Scalar(BALL1_H_MAX, BALL1_S_MAX, BALL1_V_MAX), imageThresholdBallBlack);
 	cv::inRange(imageHSV, cv::Scalar(GRASS_H_MIN, GRASS_S_MIN, GRASS_V_MIN), cv::Scalar(GRASS_H_MAX, GRASS_S_MAX, GRASS_V_MAX), imageThresholdField);
 
+	//cv::add(imageGray, imageThresholdBallWhite, imageGray);
+	//imageDebug1 = imageThresholdBallBlack;
+
+//cv::subtract(imageGray, imageThresholdField, imageGray);
+	//imageGray = blurImage(imageGray);
+	//cv::equalizeHist(imageGray, imageGray); //equalize the histogram
+	imageDebug0 = imageCameraFeed;
 	imageDebug1 = imageGray;
-	//imageDebug2 = imageHSV;
-	cv::HoughCircles(imageGray, detectedCircles, CV_HOUGH_GRADIENT, 1, imageCameraFeed.rows/3, 180, 1, 18, 80);
+	cv::HoughCircles(imageGray, detectedCircles, CV_HOUGH_GRADIENT, 1, imageCameraFeed.rows/3, 180, 1, 14, 80);
 
 //	imageDebug = imageThreshold;
 
@@ -339,25 +343,34 @@ ballScreenParameters BallObject::findContours(cv::Mat imageCameraFeed) {
 	//Filther is on field (cirlce center is inside main field area)
 	detectedCircles = filtherOnField(imageThresholdField, detectedCircles);
 
-	//Display debug
-	for(size_t i = 0; i<detectedCircles.size(); i++) {
+	/*//Display debug
+	for(int i = 0; i<detectedCircles.size(); i++) {
 		cv::Point circleCenter((int)(detectedCircles[i][0]), (int)(detectedCircles[i][1]));
 		int circleRadius = (int)(detectedCircles[i][2]);
 		cv::circle(imageDebug0, circleCenter, circleRadius, cv::Scalar(102, 255, 255), 2);
-	}
+	}*/
 
+		cv::vector<cv::Vec4f> detectedCirclesFinal;
+		detectedCirclesFinal.resize(detectedCircles.size());
+		for(unsigned  int i=0; i<detectedCircles.size(); i++) {
+			detectedCirclesFinal [i][0] = detectedCircles[i][0];
+			detectedCirclesFinal [i][1] =detectedCircles[i][1];
+			detectedCirclesFinal [i][2] = detectedCircles[i][2];
+		}
+
+		//detectedCirclesFinal = filtherColorAmount(imageThresholdField, detectedCirclesFinal, 0.05);
 		//Filther by how much white is inside the circle
-		cv::vector<cv::Vec4f> detectedCirclesFinal = filtherColorAmount(imageThresholdBallWhite, detectedCircles);
+		detectedCirclesFinal = filtherColorAmount(imageThresholdBallWhite, detectedCirclesFinal, 0.68);
+
+		/*//Display debug
+					for(size_t i = 0; i<detectedCirclesFinal.size(); i++) {
+						cv::Point circleCenter((int)(detectedCirclesFinal[i][0]), (int)(detectedCirclesFinal[i][1]));
+						int circleRadius = (int)(detectedCirclesFinal[i][2]);
+						cv::circle(imageDebug0, circleCenter, circleRadius, cv::Scalar(0, 128, 255), 2);
+					}*/
 
 	//Filther how much green surrosunds the ball
 		detectedCirclesFinal = filtherColorNearby(imageThresholdField ,detectedCirclesFinal);
-
-		//Display debug
-			for(size_t i = 0; i<detectedCircles.size(); i++) {
-				cv::Point circleCenter((int)(detectedCircles[i][0]), (int)(detectedCircles[i][1]));
-				int circleRadius = (int)(detectedCircles[i][2]);
-				cv::circle(imageDebug0, circleCenter, circleRadius, cv::Scalar(0, 128, 255), 2);
-			}
 
 		//Display debug
 		for(size_t i = 0; i<detectedCirclesFinal.size(); i++) {
@@ -370,7 +383,7 @@ ballScreenParameters BallObject::findContours(cv::Mat imageCameraFeed) {
 		int foundCircleIndex = 0;
 
 		if (0<detectedCirclesFinal.size()) {
-			for(int i = 0; i<detectedCirclesFinal.size(); i++)  {
+			for(unsigned int i = 0; i<detectedCirclesFinal.size(); i++)  {
 				if(detectedCirclesFinal[foundCircleIndex][3]<detectedCirclesFinal[i][3])
 					foundCircleIndex = i;
 			}
@@ -379,9 +392,27 @@ ballScreenParameters BallObject::findContours(cv::Mat imageCameraFeed) {
 			int circleRadius = (int)(detectedCircles[foundCircleIndex][2]);
 			cv::circle(imageDebug0, circleCenter, circleRadius, cv::Scalar(0, 0, 255), 2);
 
+
+			//cv::Point circleCenter((int)(detectedCircles[foundCircleIndex][0]), (int)(detectedCircles[foundCircleIndex][1]));
+			//int circleRadius = (int)(detectedCircles[foundCircleIndex][2]);
+
+					/*cv::Mat cropedImage;
+					cv::Mat mask = cv::Mat::zeros(imageHSV.rows, imageHSV.cols, CV_8UC1);
+					cv::circle(mask, circleCenter, circleRadius, cv::Scalar(255,255,255), -1, 8, 0);
+					imageThresholdBallWhite.copyTo(cropedImage, mask); // copy values of imgThresh to dst if mask is > 0.
+
+					int count = cv::countNonZero(cropedImage);
+					//float countCuttoff = .3*3.14159*std::pow(circleRadius, 2);
+					//float countCuttoff2 = .9*3.14159*std::pow(circleRadius, 2);
+					float idealCount = .68*3.14159*std::pow(circleRadius, 2);
+					float simularity = std::abs(count-idealCount)/idealCount;
+			std::cout<<count<<", "<<idealCount<<", "<<simularity<<std::endl;*/
+
 			ballCanidate.onScreen = true;
 			ballCanidate.x = (int)(detectedCircles[foundCircleIndex][0]);
 			ballCanidate.y = (int)(detectedCircles[foundCircleIndex][1]);
+
+			//std::cout<<detectedCirclesFinal.size()<<std::endl;
 			ballCanidate.radius = cvRound(detectedCircles[foundCircleIndex][2]);
 			ballCanidate.timeStamp = clock();
 	}
@@ -412,7 +443,7 @@ ballScreenParameters BallObject::findThreshold(cv::Mat imageHSV) {
 	//imageDebug0 = imageHSV;
 
 	cv::vector<cv::Vec3f> detectedCircles;
-	cv::HoughCircles(imageThreshold, detectedCircles, CV_HOUGH_GRADIENT, 2, imageThreshold.rows/4, 200, 10, 100, 200);
+	cv::HoughCircles(imageThreshold, detectedCircles, CV_HOUGH_GRADIENT, 1, imageThreshold.rows/3, 180, 1, 100, 200);
 
 	int foundCircleIndex = 0;
 	for(size_t i = 0; i<detectedCircles.size(); i++) {

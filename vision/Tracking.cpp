@@ -12,27 +12,57 @@
 #define FRAME_WIDTH		640
 #define FRAME_HEIGHT	480
 
+void Tracking::updatePhysicalParameters(ballScreenParameters tempBallS) {
+	//if(std::abs(tempBallS.x-(FRAME_WIDTH/2))<25&& std::abs(tempBallS.y-(FRAME_HEIGHT/2))<25) {
+		//float tilt = head.getTiltAngle();
+		float pan = head.getPanAngle();
+		ballPhysicalParameters tempBallP;
+		//float ballRadius = 19/2;
+
+		//float distance =  .70*std::tan(std::abs(((tempBallS.x+ballRadius-(FRAME_WIDTH/2))*0.0964-0.1502)-((tempBallS.x-(FRAME_WIDTH/2))*0.0964-0.1502)));
+		//double hypt = tempBallS.radius;
+		//std::cout<<"Hypt: "<<hypt<<std::endl;
+
+		float distance = 40.625*std::pow(tempBallS.radius,-0.973);
+
+
+		pan+= (tempBallS.x-(FRAME_WIDTH/2))*0.0964-0.1502;
+		//tilt+= -(tempBallS.y-(FRAME_HEIGHT/2))*0.0935+0.9247;
+
+		//std::cout<<pan<<", "<<90-std::abs(tilt)<<std::endl;
+
+		tempBallP.distance =	distance; //std::tan(90-std::abs(tilt))*.70;
+		//std::cout<<tempBallP.distance<<std::endl;
+		tempBallP.angle = pan;
+
+		tempBallP.timeStamp = clock();
+		ball->setPhysicalParameters(tempBallP);
+	//}
+}
 
 void Tracking::searchBall() {
 	//int currentPoint = cv::Point(head.getPanAngle(), head.getTiltAngle());
 
-	for(int x=-48; x<=48; x+=12) {
+	ballScreenParameters tempBall = ball->getScreenParameters();
+	for(int x=-48; (x<=48 && !tempBall.onScreen); x+=12) {
 		int y = -0.01172*std::pow(x, 2)-15;
 		head.setTiltAngle(y);
 		head.setPanAngle(x);
 		usleep(1000*2);
 		while(head.motorManager.checkMoving(23) || head.motorManager.checkMoving(24)) {
-			if(ball->getScreenParameters().onScreen) {
+			tempBall = ball->getScreenParameters();
+			if(tempBall.onScreen) {
 				head.stopHead();
-				usleep(1000*200);
-				if(ball->getScreenParameters().onScreen)
-					break;
-				else {
-					head.setTiltAngle(y);
-					head.setPanAngle(x);
-				}
+				std::cout<<"Detected"<<std::endl;
+				break;
 			}
+			else {
+				head.setTiltAngle(y);
+				head.setPanAngle(x);
+			}
+			usleep(1000*100);
 		}
+		usleep(1000*200);
 	}
 }
 
@@ -160,22 +190,26 @@ void Tracking::BFSsearchBall()  {
 	}
 }
 
-void Tracking::centerBallExperimental() {
-	ballScreenParameters tempBall = ball->getScreenParameters();
-		if(tempBall.onScreen && !head.motorManager.checkMoving(23) && !head.motorManager.checkMoving(24)) {
-			float pan = head.getPanAngle();
-			float tilt = head.getTiltAngle();
+void Tracking::centerBallExperimental(ballScreenParameters tempBall) {
+	//ballScreenParameters tempBall = ball->getScreenParameters();
 
-			//pan+= -(tempBall.x-(FRAME_WIDTH/2))*(70/2);
-			//tilt+= (tempBall.y-(FRAME_WIDTH/2))*(50/2);
-			float x = (tempBall.x-(FRAME_WIDTH/2))*16/162;
-			float y =(tempBall.y-(FRAME_HEIGHT/2))*16/162;
-			std::cout<<x<<", "<<y<<std::endl;
-			pan+=x;
-			tilt+=y;
+		if(tempBall.onScreen) {
+			float pan, tilt;
+			if(15<std::abs(tempBall.x-(FRAME_WIDTH/2))) {
+				pan = head.getPanAngle();
+				pan+= (tempBall.x-(FRAME_WIDTH/2))*0.0964-0.1502;
+				head.setPanAngle(pan);
+			}
 
-			head.setPanAngle(x);
-			head.setTiltAngle(y);
+			if(0<std::abs(tempBall.y-(FRAME_HEIGHT/2))) {
+				tilt = head.getTiltAngle();
+				tilt+= -(tempBall.y-(FRAME_HEIGHT/2))*0.0935+0.9247;
+				head.setTiltAngle(tilt);
+			}
+
+			while(head.motorManager.checkMoving(23) || head.motorManager.checkMoving(24)) {
+				usleep(1000*250);
+			}
 		}
 }
 

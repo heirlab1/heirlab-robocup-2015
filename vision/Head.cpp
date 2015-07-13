@@ -92,6 +92,19 @@ float Head::getPanAngle() {
 		return -(motorManager.getMotorPositionAccurate(PAN_MOTOR_ID)-PAN_CENTER)*DEGREES_PER_POSITION;
 	else
 		return (motorManager.getMotorPositionAccurate(PAN_MOTOR_ID)-PAN_CENTER)*DEGREES_PER_POSITION;
+
+	/*int motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+			if(TILT_REVERSE)
+				if(motorPosition<rightLimitPos-20 || leftLimitPos+20<motorPosition) {
+					motorManager.markError();
+					motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+					return -(motorPosition-PAN_CENTER)*DEGREES_PER_POSITION;
+				}
+			else if(motorPosition<rightLimitPos-20 || leftLimitPos+20<motorPosition) {
+				motorManager.markError();
+				motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+				return (motorPosition-PAN_CENTER)*DEGREES_PER_POSITION;
+			}*/
 }
 
 //Returns true if given point is within the movement limits

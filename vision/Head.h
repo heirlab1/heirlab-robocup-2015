@@ -37,9 +37,9 @@ const bool PAN_REVERSE = true;
 
 //Tracking Limits
 #define UPPER_LIMIT_DEG 10 //How many degrees up from staring straight forward the head is allowed to tilt
-#define LOWER_LIMIT_DEG -42 //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
-#define RIGHT_LIMIT_DEG 48 //How many degrees right from staring straight forward the head is allowed to pan
-#define LEFT_LIMIT_DEG	 -48 //^In left direction (!!!Must be negative!!!)
+#define LOWER_LIMIT_DEG -50 //^In down direction (!!!Must be negative!!!) !!!!!DO NOT HAVE LOWER THAN -45 FOR OLD HEAD!!!
+#define RIGHT_LIMIT_DEG 49 //How many degrees right from staring straight forward the head is allowed to pan
+#define LEFT_LIMIT_DEG	 -49 //^In left direction (!!!Must be negative!!!)
 
 //const int motorMatrixAccuracy = 1; //Is accuracy of search algorithms and resolution of freedom in turning the motors | Notice: 2=50%, 4=25% ...
 
@@ -49,7 +49,7 @@ const bool PAN_REVERSE = true;
 
 
 const int acceleration = 80; //acceleration speed of motors
-const int defaultSpeed = 20;
+const int defaultSpeed = 70;
 
 const int TILT_MULTIPLIER = 1;
 const int PAN_MULTIPLIER = 1;

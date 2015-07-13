@@ -42,12 +42,12 @@ public:
 	void searchBall(void);
 	void BFSsearchBall(void);
 
-	void centerBallExperimental(void);
+	void centerBallExperimental(ballScreenParameters);
+
+	void updatePhysicalParameters(ballScreenParameters);
 
 	ballPhysicalParameters getBallPhysicalParameters(void);
 	void setBallPhysicalParameters(ballPhysicalParameters);
-
-
 
 	Tracking();
 	virtual ~Tracking();

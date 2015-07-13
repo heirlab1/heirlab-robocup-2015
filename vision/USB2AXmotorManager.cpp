@@ -1,5 +1,5 @@
 #include "USB2AXmotorManager.h"
-#include "dynamixel.h"
+#include <dynamixel.h>
 #include "unistd.h"
 #include <set>
 #include <cmath>
@@ -14,7 +14,7 @@ int USB2AXmotorManager::getMotorPosition(int motorID) {
 //Reads position for motor and returns position
 int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 	int accuracy = 15;
-	int sampleSize = 3;
+	int sampleSize = 6;
 	int position[sampleSize];
 	int times[sampleSize];
 	int modeIndex = 0;
@@ -22,6 +22,11 @@ int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 	//Take N motor position samples
 	for(int i=0; i<sampleSize; i++) {
 		position[i] = readMotor(motorID, PRESENT_POSITION);
+		if (position[i] == NULL) {
+			i--;
+			resetElapsedTime();
+			while(!checkElapsedTime());
+		}
 		times[i] = 0;
 		//usleep(1000*250); //Wait 250ms as motors don't like being read from too often
 	}
@@ -29,8 +34,8 @@ int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 	//Record how many samples are near given sample
 	for(int i=0; i<sampleSize; i++) {
 		for(int j=0; j<sampleSize; j++) {
-			std::abs(position[i]-position[j]< accuracy);
-			times[i] = times[i]+1;
+			if(std::abs(position[i]-position[j])< accuracy)
+				times[i] = times[i]+1;
 		}
 	}
 
@@ -53,9 +58,24 @@ void USB2AXmotorManager::setMotorPosition(int motorID, int position) {
 int USB2AXmotorManager::readMotor(int motorID, int command) {
 	while(!checkElapsedTime());
 	int returnVal = dxl_read_word(motorID, command);
+	//std::cout<<"ID: "<<motorID<<", CMD: "<<command<<", RTN: "<<returnVal<<std::endl;
+	if (dxl_get_result() == COMM_RXCORRUPT ||
+			(motorID == 23 && (command==36 && (returnVal==0 || returnVal==1536 || returnVal ==1280))) || //BlackList
+			(motorID == 24 && (command==36 && (returnVal==0 || returnVal==1792 || returnVal == 1280))) //BlackList
+			) {
+		resetElapsedTime();
+		while(!checkElapsedTime());
+		disconnect();
+		resetElapsedTime();
+		while(!checkElapsedTime());
+		connect();
+		resetElapsedTime();
+		while(!checkElapsedTime());
+		returnVal = 0;
+	}
 	resetElapsedTime();
 	//printCommResult();
-	//std::cout<<command<<std::endl;
+	//std::cout<<"ID: "<<motorID<<", CMD: "<<command<<", RTN: "<<returnVal<<std::endl;
 	return returnVal;
 }
 
@@ -63,6 +83,7 @@ int USB2AXmotorManager::readMotor(int motorID, int command) {
 //Is private function for error handling
 void USB2AXmotorManager::writeMotor(int motorID , int command, int value) {
 	while(!checkElapsedTime());
+	//std::cout<<"ID: "<<motorID<<", CMD: "<<command<<", SND: "<<value<<std::endl;
 	dxl_write_word(motorID, command, value);
 	resetElapsedTime();
 	//printCommResult();
@@ -179,6 +200,15 @@ void USB2AXmotorManager::printCommStatus(int commStatus) {
 	}
 }
 
+/*void USB2AXmotorManager::markError() {
+	errorCount++;
+	std::cout<<"Motor Read Error"<<std::endl;
+	if(errorLimit<errorCount) {
+		disconnect();
+		connect();
+	}
+}*/
+
 void USB2AXmotorManager::setSpeed(int motorID, int speed) {
 	writeMotor(motorID, MOVING_SPEED, speed);
 }
@@ -190,6 +220,7 @@ void USB2AXmotorManager::setAcceleration(int motorID, int acceleration) {
 void USB2AXmotorManager::setLimits(int motorID, int limitCW, int limitCCW) {
 	writeMotor(motorID, CW_ANGLE_LIMIT, limitCW);
 	writeMotor(motorID, CCW_ANGLE_LIMIT, limitCCW);
+
 }
 
 void USB2AXmotorManager::connect() {
