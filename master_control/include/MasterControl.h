@@ -25,15 +25,15 @@
 #define BALL_ANGLE_THRESHOLD
 
 
-int main(int argc, char* argv[]) {
+// int main(int argc, char* argv[]) {
 
-	pthread_t main, button;
-	pthread_create(&main, NULL, mainLoop, NULL);
-	//std::cout<<"Here"<<std::endl;
-	pthread_create(&button, NULL, buttonLoop, NULL);
-	pthread_join(main, NULL);
+// 	pthread_t main, button;
+// 	pthread_create(&main, NULL, mainLoop, NULL);
+// 	//std::cout<<"Here"<<std::endl;
+// 	pthread_create(&button, NULL, buttonLoop, NULL);
+// 	pthread_join(main, NULL);
 	
-};
+// };
 
 
 class MasterControl {

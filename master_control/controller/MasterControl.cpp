@@ -5,6 +5,11 @@
 #include <time.h>
 #include <pthread.h>
 
+#include <Vision.h>
+// #include <opencv/cv.h>
+// #include <opencv/highgui.h>
+// #include <unistd.h>
+
 extern "C"{
   #include <tx_serial.h>
   #include <arduino-serial.h>
