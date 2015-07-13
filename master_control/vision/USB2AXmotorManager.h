@@ -55,9 +55,11 @@
 //#define RADIANS_PER_DEGREE		0.01745
 #define NUM_MOTOR_POSITIONS 	4096
 
+//Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+#define minTime 0.2 
+
 class USB2AXmotorManager {
 	private:
-		float minTime = 0.2; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
 		std::clock_t lastRequest;
 
 		//std::vector<cv::Vec3i> motorLimits;

@@ -15,13 +15,16 @@
 #define FRAME_WIDTH		640
 #define FRAME_HEIGHT	480
 
+//Min time between capturing new image from capturing new image and processing (1 = 1s, 0.5 = 500ms)
+#define minTime 0 
+
 class Camera {
 	private:
 		cv::Mat imageCameraFeed; //Direct camera image
 		cv::Mat imageHSV; //HSV image
 
 		cv::VideoCapture capture; //Video capture object required for acquiring videocamra feed
-		float minTime = 0; //Min time between capturing new image from capturing new image and processing (1 = 1s, 0.5 = 500ms)
+		
 		std::clock_t lastRequest;
 
 		void setupCamera(void);

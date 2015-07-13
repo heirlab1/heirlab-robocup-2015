@@ -33,16 +33,12 @@
 #define GRASS_S_MAX  256
 #define GRASS_V_MIN  0
 #define GRASS_V_MAX  256
-//Detector Variables
-#define THRESH_ERODE_LIMIT 3
-#define THRESH_DIALATE_LIMIT 2
-
-#define ERODE_KERNAL_SIZE 2
-#define DIALATE_KERNAL_SIZE 2
-#define BLUR_KERNAL_SIZE 9 //Amount of blurring of original image (Notice: must be odd)
 
 
 #define maxTime 0.9 // (1 = 1s, 0.5 = 500ms)
+
+#define screenBallQueueMaxSize 3
+
 
 struct ballPhysicalParameters {
 	std::clock_t timeStamp;
@@ -71,7 +67,6 @@ class BallObject {
 		//Main Variables
 		FieldObject* field;
 		ballPhysicalParameters physicalBall;
-		int screenBallQueueMaxSize =  3;
 		std::queue<ballScreenParameters> screenBallQueue;
 		ballScreenParameters screenBall;
 

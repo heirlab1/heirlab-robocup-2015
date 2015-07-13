@@ -12,6 +12,24 @@
 #include <opencv/cv.h>
 #include <ctime>
 
+//Grass color calibration variables
+#define GRASS_H_MIN  44
+#define GRASS_H_MAX  91
+#define GRASS_S_MIN  83
+#define GRASS_S_MAX  256
+#define GRASS_V_MIN  0
+#define GRASS_V_MAX  256
+
+
+//Detector Variables
+#define THRESH_ERODE_LIMIT 3
+#define THRESH_DIALATE_LIMIT 2
+ 
+#define ERODE_KERNAL_SIZE 2
+#define DIALATE_KERNAL_SIZE 2
+#define BLUR_KERNAL_SIZE 9 //Amount of blurring of original image (Notice: must be odd)
+
+
 struct fieldScreenParameters {
 	std::clock_t timeStamp;
 	bool onScreen;
@@ -20,21 +38,6 @@ struct fieldScreenParameters {
 
 class FieldObject {
 	private:
-
-		//Grass calibration variables
-		const int GRASS_H_MIN = 34;
-		const int GRASS_H_MAX = 86;
-		const int GRASS_S_MIN = 125;
-		const int GRASS_S_MAX = 256;
-		const int GRASS_V_MIN = 37;
-		const int GRASS_V_MAX = 256;
-
-		//Detector Variables
-		const int THRESH_ERODE_LIMIT = 3;
-		const int THRESH_DIALATE_LIMIT = 2;
-		const int ERODE_KERNAL_SIZE = 2;
-		const int DIALATE_KERNAL_SIZE = 2;
-		const int BLUR_KERNAL_SIZE = 9; //Amount of blurring of original image (Notice: must be odd)
 
 		//Locks
 		//pthread_mutex_t physicalParametersLock;
