@@ -1,5 +1,5 @@
-# TARGET		= libvision.a
-TARGET		= Main
+TARGET		= libvision.a
+# TARGET		= Main
 OBJS		= Main.o Vision.o BallObject.o Head.o FieldObject.o Camera.o Tracking.o USB2AXmotorManager.o
 SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include -I/usr/local/include/ 
@@ -12,12 +12,12 @@ LDFLAGS		+= $(LIBDIRS) -ldxl -lopencv_calib3d -lpthread -lopencv_contrib -lopenc
 CC			= g++
 AR 			= ar
 
-# $(TARGET): $(OBJS)
-# 	$(AR) rs $@ $^
-# 	cp $(TARGET) ../lib
-	
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(AR) rs $@ $^
+	cp $(TARGET) ../lib
+	
+# $(TARGET): $(OBJS)
+# 	$(CC) -o $@ $^ $(LDFLAGS)
 
 .cpp.o:
 	$(CC) -c $< $(CFLAGS)

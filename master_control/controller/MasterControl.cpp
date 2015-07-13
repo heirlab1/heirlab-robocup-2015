@@ -32,9 +32,18 @@ bool second_half = false;
 
 int  number;
 
+
+
+
 int main(){
+  Vision vision;
   MasterControl mc;
-  // Vision vc;
+
+  pthread_t sight, motion;
+  pthread_create(&sight, NULL, sightLoop, NULL);
+  //std::cout<<"Here"<<std::endl;
+  pthread_create(&motion, NULL, motionLoop, NULL);
+  pthread_join(sight, NULL);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
@@ -42,50 +51,7 @@ int main(){
   usleep(2000000);
 
   while (1) {
-
-    // printf("Type in a number \n");
-    
-    // if(scanf("%d", &number)){
-    //   printf("Wrote: %d\n", number);
-
-    //   if(number == 1){
-    //     if (mc.executeMotion(GOFORWARD))
-    //       fputs("success!\n", stderr);   
-    //     else
-    //       fputs("failure :(\n", stderr);
-
-    //   }
-
-    //   if(number == 2){
-    //     if (mc.executeMotion(GOBACKWARD))
-    //       fputs("success!\n", stderr);
-    //     else
-    //       fputs("failure :(\n", stderr);
-    //   }
-            
-    //   if(number == 3){
-    //     if (mc.executeMotion(SCRATCHHEAD))
-    //       fputs("success!\n", stderr);
-    //     else
-    //       fputs("failure :(\n", stderr);
-    //   }
-
-    //   if(number == 0){
-    //     if (mc.executeMotion(STOP))
-    //       fputs("success!\n", stderr);
-    //     else
-    //       fputs("failure :(\n", stderr);
-    //   }
-
-    // }
-
-    // else {
-    //   printf("That ain't a number ya donkus");
-    //   break;    
-    // }
-
     if (getStartButtonPressed()) break;    
-
   }
 
 
@@ -94,6 +60,58 @@ int main(){
   else
     fputs("failed to stop motion(\n", stderr);
   return 0;
+
+
+
+}
+
+
+void* sightLoop(void* arg) {
+  //vision.tracking.head.setPanAngle(-47);
+  //vision.tracking.head.setTiltAngle(0);
+
+  while(1) {
+    //vision.ballObject.detect(vision.camera.getCameraImage());
+    //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
+    //std::cout<<"fdsf"<<std::endl;
+    //Vision vision2;
+    vision.ballObject.detect(vision.camera.getCameraImage());
+    //cv::Mat imageHSV = vision.camera.getHSVImage();
+    //vision.ballObject.detect(imageHSV);
+    //goalObject.detect(imageHSV);
+  }
+  pthread_exit(NULL);
+}
+
+void* motionLoop(void* arg) {
+  //vision.tracking.head.setPanAngle(-7);
+  //vision.tracking.head.setTiltAngle(-19);
+  //ballScreenParameters ball;
+
+  while(1) {
+    //vision.tracking.centerBallExperimental();
+    //usleep(1000*100);
+    //vision.tracking.searchBall();
+    ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
+    vision.tracking.updatePhysicalParameters(tempBall);
+    vision.tracking.centerBallExperimental(tempBall);
+    //vision.tracking.head.setTiltAngle(0);
+    //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
+    std::cout<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
+    /*if(tempBall.onScreen) {
+      std::cout<<"Centering"<<std::endl;
+      vision.tracking.head.motorManager.setSpeed(23, 70);
+      vision.tracking.head.motorManager.setSpeed(24, 70);
+      vision.tracking.centerBallExperimental(tempBall);
+    }
+    else {
+      vision.tracking.head.motorManager.setSpeed(23, 20);
+      vision.tracking.head.motorManager.setSpeed(24, 20);
+      std::cout<<"Searching"<<std::endl;
+      vision.tracking.searchBall();
+    }*/
+  }
+  pthread_exit(NULL);
 }
 
 // find command defenitions in ../include/tx_serial.h
