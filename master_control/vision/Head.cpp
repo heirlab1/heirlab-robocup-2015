@@ -64,16 +64,17 @@ void Head::moveHeadTo(int x, int y) {
 
 void Head::setTiltAngle(float angle) {
 	if(TILT_REVERSE)
-		motorManager.setMotorPosition(TILT_MOTOR_ID, angle/DEGREES_PER_POSITION+TILT_CENTER);
-	else
 		motorManager.setMotorPosition(TILT_MOTOR_ID, -angle/DEGREES_PER_POSITION+TILT_CENTER);
+	else
+		motorManager.setMotorPosition(TILT_MOTOR_ID, angle/DEGREES_PER_POSITION+TILT_CENTER);
 }
 
 void Head::setPanAngle(float angle) {
-	if(TILT_REVERSE)
-		motorManager.setMotorPosition(TILT_MOTOR_ID, angle/DEGREES_PER_POSITION+TILT_CENTER);
+	//std::cout<<"Moving motor to pos: "<<(-angle/DEGREES_PER_POSITION+PAN_CENTER)<<std::endl;
+	if(PAN_REVERSE)
+		motorManager.setMotorPosition(PAN_MOTOR_ID, (-angle/DEGREES_PER_POSITION+PAN_CENTER));
 	else
-		motorManager.setMotorPosition(TILT_MOTOR_ID, -angle/DEGREES_PER_POSITION+TILT_CENTER);
+		motorManager.setMotorPosition(PAN_MOTOR_ID, (angle/DEGREES_PER_POSITION+PAN_CENTER));
 }
 
 
@@ -91,6 +92,19 @@ float Head::getPanAngle() {
 		return -(motorManager.getMotorPositionAccurate(PAN_MOTOR_ID)-PAN_CENTER)*DEGREES_PER_POSITION;
 	else
 		return (motorManager.getMotorPositionAccurate(PAN_MOTOR_ID)-PAN_CENTER)*DEGREES_PER_POSITION;
+
+	/*int motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+			if(TILT_REVERSE)
+				if(motorPosition<rightLimitPos-20 || leftLimitPos+20<motorPosition) {
+					motorManager.markError();
+					motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+					return -(motorPosition-PAN_CENTER)*DEGREES_PER_POSITION;
+				}
+			else if(motorPosition<rightLimitPos-20 || leftLimitPos+20<motorPosition) {
+				motorManager.markError();
+				motorPosition = motorManager.getMotorPositionAccurate(PAN_MOTOR_ID);
+				return (motorPosition-PAN_CENTER)*DEGREES_PER_POSITION;
+			}*/
 }
 
 //Returns true if given point is within the movement limits
@@ -110,20 +124,20 @@ bool Head::checkWithinLimits(int x, int y) {
 //Sets limits for motors, accounts for an offset and a reverse direction
 void Head::setLimits() {
 	if(TILT_REVERSE) {
-		upperLimitPos = -upperLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
-		lowerLimitPos = -lowerLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
+		upperLimitPos = -UPPER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
+		lowerLimitPos = -LOWER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
 	}
 	else {
-		upperLimitPos = upperLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
-		lowerLimitPos = lowerLimitDeg/DEGREES_PER_POSITION+TILT_CENTER;
+		upperLimitPos = UPPER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
+		lowerLimitPos = LOWER_LIMIT_DEG/DEGREES_PER_POSITION+TILT_CENTER;
 	}
 	if(PAN_REVERSE) {
-		rightLimitPos = -upperLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
-		leftLimitPos = -leftLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
+		rightLimitPos = -RIGHT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
+		leftLimitPos = -LEFT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
 	}
 	else {
-		rightLimitPos = upperLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
-		leftLimitPos = leftLimitDeg/DEGREES_PER_POSITION+PAN_CENTER;
+		rightLimitPos = RIGHT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
+		leftLimitPos = LEFT_LIMIT_DEG/DEGREES_PER_POSITION+PAN_CENTER;
 	}
 }
 
@@ -134,9 +148,9 @@ void Head::initMoters() {
 	else
 		motorManager.setLimits(TILT_MOTOR_ID, lowerLimitPos, upperLimitPos);
 	if(PAN_REVERSE)
-		motorManager.setLimits(PAN_MOTOR_ID, leftLimitPos, rightLimitPos);
-	else
 		motorManager.setLimits(PAN_MOTOR_ID, rightLimitPos, leftLimitPos);
+	else
+		motorManager.setLimits(PAN_MOTOR_ID, leftLimitPos, rightLimitPos);
 
 	motorManager.setAcceleration(TILT_MOTOR_ID, acceleration);
 	motorManager.setAcceleration(PAN_MOTOR_ID, acceleration);
