@@ -9,6 +9,41 @@
 #include <ctime>
 #include <queue>
 
+
+//Ball primary color calibration variables
+#define BALL0_H_MIN  0
+#define BALL0_H_MAX  134
+#define BALL0_S_MIN  0
+#define BALL0_S_MAX  69
+#define BALL0_V_MIN  124
+#define BALL0_V_MAX  249
+
+//Ball secondary color calibration variables
+#define BALL1_H_MIN  0
+#define BALL1_H_MAX  189
+#define BALL1_S_MIN  0
+#define BALL1_S_MAX  141
+#define BALL1_V_MIN  0
+#define BALL1_V_MAX  95
+
+//Grass color calibration variables
+#define GRASS_H_MIN  44
+#define GRASS_H_MAX  91
+#define GRASS_S_MIN  83
+#define GRASS_S_MAX  256
+#define GRASS_V_MIN  0
+#define GRASS_V_MAX  256
+//Detector Variables
+#define THRESH_ERODE_LIMIT 3
+#define THRESH_DIALATE_LIMIT 2
+
+#define ERODE_KERNAL_SIZE 2
+#define DIALATE_KERNAL_SIZE 2
+#define BLUR_KERNAL_SIZE 9 //Amount of blurring of original image (Notice: must be odd)
+
+
+#define maxTime 0.9 // (1 = 1s, 0.5 = 500ms)
+
 struct ballPhysicalParameters {
 	std::clock_t timeStamp;
 	float distance;
@@ -23,44 +58,11 @@ struct ballScreenParameters {
 
 class BallObject {
 	private:
-		//Ball primary color calibration variables
-		const int BALL0_H_MIN = 0;
-		const int BALL0_H_MAX = 134;
-		const int BALL0_S_MIN = 0;
-		const int BALL0_S_MAX = 69;
-		const int BALL0_V_MIN = 124;
-		const int BALL0_V_MAX = 249;
-
-		//Ball secondary color calibration variables
-		const int BALL1_H_MIN = 0;
-		const int BALL1_H_MAX = 189;
-		const int BALL1_S_MIN = 0;
-		const int BALL1_S_MAX = 141;
-		const int BALL1_V_MIN = 0;
-		const int BALL1_V_MAX = 95;
-
-		//Grass color calibration variables
-		const int GRASS_H_MIN = 44;
-		const int GRASS_H_MAX = 91;
-		const int GRASS_S_MIN = 83;
-		const int GRASS_S_MAX = 256;
-		const int GRASS_V_MIN = 0;
-		const int GRASS_V_MAX = 256;
-
-		//Detector Variables
-		const int THRESH_ERODE_LIMIT = 3;
-		const int THRESH_DIALATE_LIMIT = 2;
-
-		const int ERODE_KERNAL_SIZE = 2;
-		const int DIALATE_KERNAL_SIZE = 2;
-		const int BLUR_KERNAL_SIZE = 9; //Amount of blurring of original image (Notice: must be odd)
 
 		//Detector Tools
 		cv::Mat erodeElement; //Erodes whitespaces to get rid of background noise
 		cv::Mat dilateElement; //Dialates whitespaces to make bigger and fill voids
 		std::queue<ballScreenParameters> screenRecord;
-
-		float maxTime = 0.9; // (1 = 1s, 0.5 = 500ms)
 
 		//Locks
 		pthread_mutex_t physicalParametersLock;

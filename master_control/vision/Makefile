@@ -1,5 +1,5 @@
 TARGET		= libvision.a
-OBJS		= VisionController.o
+OBJS		= Vision.o BallObject.o Head.o FieldObject.o Camera.o Tracking.o USB2AXmotorManager.o
 SRCS		= $(OBJS:.o=.cpp)
 INCLUDEDIRS	+= -I../include
 LIBDIRS		+=
