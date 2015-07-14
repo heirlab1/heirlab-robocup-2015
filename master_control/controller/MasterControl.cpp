@@ -81,8 +81,8 @@ void* motionLoop(void* arg) {
       vision.tracking.searchBall();
     }*/
   }
-  vison.tracking.motorManager.setMotorTorque(23, 0);
-  vison.tracking.motorManager.setMotorTorque(24, 0);
+  vison.tracking.motorManager.setTorque(23, 0);
+  vison.tracking.motorManager.setTorque(24, 0);
   pthread_exit(NULL);
 }
 

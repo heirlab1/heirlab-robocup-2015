@@ -52,14 +52,6 @@ int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 void USB2AXmotorManager::setMotorPosition(int motorID, int position) {
 	writeMotor(motorID, GOAL_POSITION, position);
 }
-
-void USB2AXmotorManager::setMotorTorque(int motorID, bool state) {
-	if(state)
-		writeMotor(motorID, TORQUE_ENABLE, 1);
-	else if(!state)
-		writeMotor(motorID, TORQUE_ENABLE, 0);
-}
-
 //Reads desired command from selected motor
 //Is private function for error handling
 int USB2AXmotorManager::readMotor(int motorID, int command) {
@@ -215,6 +207,13 @@ void USB2AXmotorManager::printCommStatus(int commStatus) {
 		connect();
 	}
 }*/
+
+void USB2AXmotorManager::setTorque(int motorID, bool state) {
+	if(state)
+		writeMotor(motorID, TORQUE_ENABLE, 1);
+	else if(!state)
+		writeMotor(motorID, TORQUE_ENABLE, 0);
+}
 
 void USB2AXmotorManager::setSpeed(int motorID, int speed) {
 	writeMotor(motorID, MOVING_SPEED, speed);
