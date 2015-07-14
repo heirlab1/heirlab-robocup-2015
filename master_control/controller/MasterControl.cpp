@@ -15,7 +15,6 @@ extern "C"{
   #include <arduino-serial.h>
 }
 
-
 int MUL8_action = 0;
 int MUL8_state = -1;
 
