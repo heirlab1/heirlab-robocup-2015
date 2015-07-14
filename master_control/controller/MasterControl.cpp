@@ -32,39 +32,7 @@ bool second_half = false;
 
 int  number;
 
-
-
-
-int main(){
-  Vision vision;
-  MasterControl mc;
-
-  pthread_t sight, motion;
-  pthread_create(&sight, NULL, sightLoop, NULL);
-  //std::cout<<"Here"<<std::endl;
-  pthread_create(&motion, NULL, motionLoop, NULL);
-  pthread_join(sight, NULL);
-
-  // find start button library in ../arduino-serial/ 
-  while(!getStartButtonPressed())
-  
-  usleep(2000000);
-
-  while (1) {
-    if (getStartButtonPressed()) break;    
-  }
-
-
-  if (mc.executeMotion(STOP))
-    fputs("stopped motion\n", stderr);
-  else
-    fputs("failed to stop motion(\n", stderr);
-  return 0;
-
-
-
-}
-
+Vision vision;
 
 void* sightLoop(void* arg) {
   //vision.tracking.head.setPanAngle(-47);
@@ -112,6 +80,35 @@ void* motionLoop(void* arg) {
     }*/
   }
   pthread_exit(NULL);
+}
+
+int main(){
+  MasterControl mc;
+
+  pthread_t sight, motion;
+  pthread_create(&sight, NULL, sightLoop, NULL);
+  //std::cout<<"Here"<<std::endl;
+  pthread_create(&motion, NULL, motionLoop, NULL);
+  pthread_join(sight, NULL);
+
+  // find start button library in ../arduino-serial/ 
+  while(!getStartButtonPressed())
+  
+  usleep(2000000);
+
+  while (1) {
+    if (getStartButtonPressed()) break;    
+  }
+
+
+  if (mc.executeMotion(STOP))
+    fputs("stopped motion\n", stderr);
+  else
+    fputs("failed to stop motion(\n", stderr);
+  return 0;
+
+
+
 }
 
 // find command defenitions in ../include/tx_serial.h
