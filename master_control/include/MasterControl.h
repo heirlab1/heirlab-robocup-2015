@@ -36,6 +36,12 @@
 // };
 
 
+ 
+ 
+ void* sightLoop(void* arg);
+ void* motionLoop(void* arg);
+
+
 class MasterControl {
 
 public:

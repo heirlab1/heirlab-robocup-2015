@@ -30,20 +30,23 @@ bool MUL8_play_start = false;
 bool MUL8_finished = false;
 bool second_half = false;
 
-int  number;
 
-Vision vision;
+Vision vision; //Might need to be here, otherwise you need to pass each class a pointer to one another
+int  number;
 
 void* sightLoop(void* arg) {
   //vision.tracking.head.setPanAngle(-47);
   //vision.tracking.head.setTiltAngle(0);
 
-  while(1) {
+  while(!vision.getShutown()) {
     //vision.ballObject.detect(vision.camera.getCameraImage());
     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
     //std::cout<<"fdsf"<<std::endl;
     //Vision vision2;
-    vision.ballObject.detect(vision.camera.getCameraImage());
+    
+    ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
+    if(tempBall.onScreen)
+      vision.tracking.centerBallExperimental(tempBall);
     //cv::Mat imageHSV = vision.camera.getHSVImage();
     //vision.ballObject.detect(imageHSV);
     //goalObject.detect(imageHSV);
@@ -56,16 +59,15 @@ void* motionLoop(void* arg) {
   //vision.tracking.head.setTiltAngle(-19);
   //ballScreenParameters ball;
 
-  while(1) {
-    //vision.tracking.centerBallExperimental();
+  while(!vision.getShutown()) {
+    vision.tracking.centerBallExperimental();
     //usleep(1000*100);
     //vision.tracking.searchBall();
-    ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
-    vision.tracking.updatePhysicalParameters(tempBall);
-    vision.tracking.centerBallExperimental(tempBall);
+    //ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
+    //vision.tracking.updatePhysicalParameters(tempBall);
     //vision.tracking.head.setTiltAngle(0);
     //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
-    std::cout<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
+    std::cout<<"Distance: "<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
     /*if(tempBall.onScreen) {
       std::cout<<"Centering"<<std::endl;
       vision.tracking.head.motorManager.setSpeed(23, 70);
@@ -79,17 +81,18 @@ void* motionLoop(void* arg) {
       vision.tracking.searchBall();
     }*/
   }
+  vison.tracking.motorManager.setMotorTorque(23, 0);
+  vison.tracking.motorManager.setMotorTorque(24, 0);
   pthread_exit(NULL);
 }
 
-int main(){
-  MasterControl mc;
+int main() {
+  MasterControl mc; //I'm unsure how to handle current errors regarding this
 
   pthread_t sight, motion;
+  vision.setShutdown(false);
   pthread_create(&sight, NULL, sightLoop, NULL);
-  //std::cout<<"Here"<<std::endl;
   pthread_create(&motion, NULL, motionLoop, NULL);
-  pthread_join(sight, NULL);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
@@ -97,7 +100,7 @@ int main(){
   usleep(2000000);
 
   while (1) {
-    if (getStartButtonPressed()) break;    
+    if (getStartButtonPressed()) break;
   }
 
 
@@ -105,14 +108,16 @@ int main(){
     fputs("stopped motion\n", stderr);
   else
     fputs("failed to stop motion(\n", stderr);
+
+
+  vision.setShutdown(true);
+  pthread_join(sight, NULL);
+  pthread_join(motion, NULL);
   return 0;
-
-
-
 }
 
 // find command defenitions in ../include/tx_serial.h
-int MasterControl::executeMotion(int command){
+int MasterControl::executeMotion(int command) {
   if (tx_data(port, command)) {
     fputs("success!\n", stderr);  
     return 1; 
@@ -133,53 +138,53 @@ int MasterControl::executeMotion(int command){
 // }
 
 // action methods
-void MasterControl::searchForBall(){
+void MasterControl::searchForBall() {
   // vc->setTask(TASK_LOOK_FOR_BALL);
 }
 
-void MasterControl::searchForGoal(){
+void MasterControl::searchForGoal() {
   // vc->setTask(TASK_LOOK_FOR_GOAL);
 }
 
-void MasterControl::walkTowardsBall(){
+void MasterControl::walkTowardsBall() {
   int x = executeMotion(GOFORWARD);
   printf("%d\n", x);
 }
 
-void MasterControl::getBehindBall(){
+void MasterControl::getBehindBall() {
 
 }
 
-void MasterControl::alignToKick(){
+void MasterControl::alignToKick() {
 
 }
 
 // state methods
-void MasterControl::init(){
+void MasterControl::init() {
 
 }
 
-void MasterControl::ready(){
+void MasterControl::ready() {
 
 }
 
-void MasterControl::play(){
+void MasterControl::play() {
 
 }
 
-void MasterControl::finish(){
+void MasterControl::finish() {
 
 }
 
-void MasterControl::penalty(){
+void MasterControl::penalty() {
 
 }
 
-MasterControl::MasterControl(){
+MasterControl::MasterControl() {
   port = open_port();
   // vc = new VisionController();
 }
 
-MasterControl::~MasterControl(){
+MasterControl::~MasterControl() {
   
 }
