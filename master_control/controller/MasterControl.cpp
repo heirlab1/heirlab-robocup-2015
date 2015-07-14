@@ -26,21 +26,22 @@ bool second_half = false;
 
 // Vision vision; //Might need to be here, otherwise you need to pass each class a pointer to one another
 int  number;
+Vision vision;
 
-void* sightLoop(void* arg) {
-  Vision* vision = (Vision*) arg;
+void* sightLoop(void*) {
+  //Vision* vision = *(Vision**) arg;
   //vision.tracking.head.setPanAngle(-47);
   //vision.tracking.head.setTiltAngle(0);
 
-  while(!vision->getShutdown()) {
+  while(!vision.getShutdown()) {
     //vision.ballObject.detect(vision.camera.getCameraImage());
     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
     //std::cout<<"fdsf"<<std::endl;
     //Vision vision2;
     
-    ballScreenParameters tempBall = vision->ballObject.detect(vision->camera.getCameraImage());
+    ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
     if(tempBall.onScreen)
-      vision->tracking.centerBallExperimental(tempBall);
+      vision.tracking.centerBallExperimental(tempBall);
     //cv::Mat imageHSV = vision.camera.getHSVImage();
     //vision.ballObject.detect(imageHSV);
     //goalObject.detect(imageHSV);
@@ -48,21 +49,21 @@ void* sightLoop(void* arg) {
   pthread_exit(NULL);
 }
 
-void* motionLoop(void* arg) {
-  Vision* vision = (Vision*) arg;
+void* motionLoop(void*) {
+  //Vision* vision = *(Vision**) arg;
   //vision.tracking.head.setPanAngle(-7);
   //vision.tracking.head.setTiltAngle(-19);
   //ballScreenParameters ball;
 
-  while(!vision->getShutdown()) {
+  while(!vision.getShutdown()) {
     //usleep(1000*100);
     //vision.tracking.searchBall();
-    ballScreenParameters tempBall = vision->ballObject.getScreenParameters();
-    vision->tracking.centerBallExperimental(tempBall);
+    ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
+    vision.tracking.centerBallExperimental(tempBall);
     //vision.tracking.updatePhysicalParameters(tempBall);
     //vision.tracking.head.setTiltAngle(0);
     //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
-    std::cout<<"Distance: "<<vision->ballObject.getPhysicalParameters().distance<<std::endl;
+    std::cout<<"Distance: "<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
     // if(tempBall.onScreen) {
     //   std::cout<<"Centering"<<std::endl;
     //   vision.tracking.head.motorManager.setSpeed(23, 70);
@@ -76,8 +77,8 @@ void* motionLoop(void* arg) {
     //   vision.tracking.searchBall();
     // }
   }
-   vision->tracking.head.motorManager.setTorque(23, 0);
-   vision->tracking.head.motorManager.setTorque(24, 0);
+   vision.tracking.head.motorManager.setTorque(23, 0);
+   vision.tracking.head.motorManager.setTorque(24, 0);
   pthread_exit(NULL);
 }
 
@@ -110,12 +111,12 @@ void* motionLoop(void* arg) {
 int main() {
   MasterControl mc; //I'm unsure how to handle current errors regarding this
 
-  Vision vision;
+  //Vision vision;
 
   pthread_t sight, motion;
   // vision.setShutdown(false);
-  pthread_create(&sight, NULL, sightLoop, &vision);
-  pthread_create(&motion, NULL, motionLoop, &vision);
+  pthread_create(&sight, NULL, sightLoop, NULL);
+  pthread_create(&motion, NULL, motionLoop, NULL);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
