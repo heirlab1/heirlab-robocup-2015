@@ -30,16 +30,16 @@ bool MUL8_play_start = false;
 bool MUL8_finished = false;
 bool second_half = false;
 
+Vision vision; //Might need to be here, otherwise you need to pass each class a pointer to one another
+MasterControl mc; //I'm unsure how to handle current errors regarding this
+
 int  number;
-int main(){
-  Vision vision;
-  MasterControl mc;
+int main() {
 
   pthread_t sight, motion;
+  vision.setShutdown(false);
   pthread_create(&sight, NULL, sightLoop, NULL);
-  //std::cout<<"Here"<<std::endl;
   pthread_create(&motion, NULL, motionLoop, NULL);
-  //pthread_join(sight, NULL);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
@@ -47,7 +47,7 @@ int main(){
   usleep(2000000);
 
   while (1) {
-    if (getStartButtonPressed()) break;    
+    if (getStartButtonPressed()) break;
   }
 
 
@@ -117,7 +117,7 @@ void* motionLoop(void* arg) {
 }
 
 // find command defenitions in ../include/tx_serial.h
-int MasterControl::executeMotion(int command){
+int MasterControl::executeMotion(int command) {
   if (tx_data(port, command)) {
     fputs("success!\n", stderr);  
     return 1; 
@@ -138,53 +138,53 @@ int MasterControl::executeMotion(int command){
 // }
 
 // action methods
-void MasterControl::searchForBall(){
+void MasterControl::searchForBall() {
   // vc->setTask(TASK_LOOK_FOR_BALL);
 }
 
-void MasterControl::searchForGoal(){
+void MasterControl::searchForGoal() {
   // vc->setTask(TASK_LOOK_FOR_GOAL);
 }
 
-void MasterControl::walkTowardsBall(){
+void MasterControl::walkTowardsBall() {
   int x = executeMotion(GOFORWARD);
   printf("%d\n", x);
 }
 
-void MasterControl::getBehindBall(){
+void MasterControl::getBehindBall() {
 
 }
 
-void MasterControl::alignToKick(){
+void MasterControl::alignToKick() {
 
 }
 
 // state methods
-void MasterControl::init(){
+void MasterControl::init() {
 
 }
 
-void MasterControl::ready(){
+void MasterControl::ready() {
 
 }
 
-void MasterControl::play(){
+void MasterControl::play() {
 
 }
 
-void MasterControl::finish(){
+void MasterControl::finish() {
 
 }
 
-void MasterControl::penalty(){
+void MasterControl::penalty() {
 
 }
 
-MasterControl::MasterControl(){
+MasterControl::MasterControl() {
   port = open_port();
   // vc = new VisionController();
 }
 
-MasterControl::~MasterControl(){
+MasterControl::~MasterControl() {
   
 }
