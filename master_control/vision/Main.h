@@ -15,7 +15,8 @@
 
 Vision vision;
 
-void* sightLoop(void* arg) {
+
+/*void* sightLoop(void* arg) {
 	//vision.tracking.head.setPanAngle(-47);
 	//vision.tracking.head.setTiltAngle(0);
 
@@ -30,9 +31,9 @@ void* sightLoop(void* arg) {
 		//goalObject.detect(imageHSV);
 	}
 	pthread_exit(NULL);
-}
+}*/
 
-void* motionLoop(void* arg) {
+/*void* motionLoop(void* arg) {
 	//vision.tracking.head.setPanAngle(-7);
 	//vision.tracking.head.setTiltAngle(-19);
 	//ballScreenParameters ball;
@@ -47,10 +48,9 @@ void* motionLoop(void* arg) {
 		//vision.tracking.head.setTiltAngle(0);
 		//std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
 		std::cout<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
-		/*if(tempBall.onScreen) {
+		if(tempBall.onScreen) {
 			std::cout<<"Centering"<<std::endl;
 			vision.tracking.head.motorManager.setSpeed(23, 70);
-			vision.tracking.head.motorManager.setSpeed(24, 70);
 			vision.tracking.centerBallExperimental(tempBall);
 		}
 		else {
@@ -58,12 +58,12 @@ void* motionLoop(void* arg) {
 			vision.tracking.head.motorManager.setSpeed(24, 20);
 			std::cout<<"Searching"<<std::endl;
 			vision.tracking.searchBall();
-		}*/
+		}
 	}
 	pthread_exit(NULL);
-}
+}*/
 
-int main(int argc, char* argv[]) {
+/*int main(int argc, char* argv[]) {
 	//while(1) {
 		//vision.ballObject.detect(vision.camera.getCameraImage());
 	//}
@@ -84,7 +84,8 @@ int main(int argc, char* argv[]) {
 	//std::cout<<"Here"<<std::endl;
 	pthread_create(&motion, NULL, motionLoop, NULL);
 	pthread_join(sight, NULL);
-};
+};*/
+
 
 class Main {
 public:

@@ -46,7 +46,7 @@ class MasterControl {
 
 public:
 	int port;
-	VisionController *vc;
+	// VisionController *vc;
 
 	int executeMotion(int command);
 	void searchForBall();

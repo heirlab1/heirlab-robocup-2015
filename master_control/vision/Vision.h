@@ -33,8 +33,8 @@ class Vision {
 		pthread_mutex_t taskLock;
 
 	private:
-		void* sightLoop(void*);
-		void* motionLoop(void*);
+		//void* sightLoop(void*);
+		//void* motionLoop(void*);
 
 	public:
 		bool getShutdown(void);

@@ -63,8 +63,8 @@ class USB2AXmotorManager {
 		std::clock_t lastRequest;
 
 		//std::vector<cv::Vec3i> motorLimits;
-		//int errorCount = 0;
-		//int errorLimit = 10;
+		int errorCount;
+		int errorLimit;
 		//std::set<int> motorIDs;
 
 	public:
@@ -92,7 +92,7 @@ class USB2AXmotorManager {
 		void setLimits(int, int, int);
 		void setTorque(int, bool);
 
-		//void markError(void);
+		void markError(void);
 
 		void setMotorPosition(int, int);
 		int getMotorPosition(int);

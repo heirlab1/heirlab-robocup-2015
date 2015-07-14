@@ -28,7 +28,7 @@ bool second_half = false;
 int  number;
 Vision vision;
 
-void* sightLoop(void*) {
+void* sightLoop(void* arg) {
   //Vision* vision = *(Vision**) arg;
   //vision.tracking.head.setPanAngle(-47);
   //vision.tracking.head.setTiltAngle(0);
@@ -40,8 +40,10 @@ void* sightLoop(void*) {
     //Vision vision2;
     
     ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
-    if(tempBall.onScreen)
-      vision.tracking.centerBallExperimental(tempBall);
+    if(tempBall.onScreen) {
+      vision.ballObject.setScreenParameters(tempBall);
+      vision.tracking.updatePhysicalParameters(tempBall);
+    }
     //cv::Mat imageHSV = vision.camera.getHSVImage();
     //vision.ballObject.detect(imageHSV);
     //goalObject.detect(imageHSV);
@@ -49,7 +51,7 @@ void* sightLoop(void*) {
   pthread_exit(NULL);
 }
 
-void* motionLoop(void*) {
+void* motionLoop(void* arg) {
   //Vision* vision = *(Vision**) arg;
   //vision.tracking.head.setPanAngle(-7);
   //vision.tracking.head.setTiltAngle(-19);
@@ -114,11 +116,11 @@ int main() {
   //Vision vision;
 
   pthread_t sight, motion;
-  // vision.setShutdown(false);
+  vision.setShutdown(false);
   pthread_create(&sight, NULL, sightLoop, NULL);
   pthread_create(&motion, NULL, motionLoop, NULL);
 
-  // find start button library in ../arduino-serial/ 
+  /*// find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
   
   usleep(2000000);
@@ -131,12 +133,12 @@ int main() {
   if (mc.executeMotion(STOP))
     fputs("stopped motion\n", stderr);
   else
-    fputs("failed to stop motion(\n", stderr);
+    fputs("failed to stop motion(\n", stderr);*/
 
 
   // vision.setShutdown(true);
   pthread_join(sight, NULL);
-  pthread_join(motion, NULL);
+  //pthread_join(motion, NULL);
   return 0;
 }
 

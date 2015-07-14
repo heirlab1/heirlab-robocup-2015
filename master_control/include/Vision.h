@@ -24,19 +24,7 @@ class Vision {
 		BallObject ballObject;
 		Tracking tracking;
 		Camera camera;
-	private:
-		bool shutdown;
-		int task;
 
-		//Locks
-		pthread_mutex_t shutdownLock;
-		pthread_mutex_t taskLock;
-
-	private:
-		void* sightLoop(void*);
-		void* motionLoop(void*);
-
-	public:
 		bool getShutdown(void);
 		void setShutdown(bool);
 
@@ -49,7 +37,16 @@ class Vision {
 
 		Vision(void);
 		virtual ~Vision(void);
+
+	private:
+		bool shutdown;
+		int task;
+
+		//Locks
+		pthread_mutex_t shutdownLock;
+		pthread_mutex_t taskLock;
 };
+
 
 
 

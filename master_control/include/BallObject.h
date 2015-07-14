@@ -9,7 +9,6 @@
 #include <ctime>
 #include <queue>
 
-
 //Ball primary color calibration variables
 #define BALL0_H_MIN  0
 #define BALL0_H_MAX  134
@@ -98,7 +97,7 @@ class BallObject {
 		void setPhysicalParameters(ballPhysicalParameters);
 		void setScreenParameters(ballScreenParameters);
 
-		void detect(cv::Mat);
+		ballScreenParameters detect(cv::Mat);
 
 		void setPointers(FieldObject*);
 
