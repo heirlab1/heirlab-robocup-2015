@@ -1,14 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <VisionController.h>
 #include <MasterControl.h>
 #include <time.h>
 #include <pthread.h>
-
 #include <Vision.h>
-// #include <opencv/cv.h>
-// #include <opencv/highgui.h>
-// #include <unistd.h>
 
 extern "C"{
   #include <tx_serial.h>
@@ -29,23 +24,23 @@ bool MUL8_play_start = false;
 bool MUL8_finished = false;
 bool second_half = false;
 
-
-Vision vision; //Might need to be here, otherwise you need to pass each class a pointer to one another
+// Vision vision; //Might need to be here, otherwise you need to pass each class a pointer to one another
 int  number;
 
 void* sightLoop(void* arg) {
+  Vision* vision = (Vision*) arg;
   //vision.tracking.head.setPanAngle(-47);
   //vision.tracking.head.setTiltAngle(0);
 
-  while(!vision.getShutown()) {
+  while(!vision->getShutdown()) {
     //vision.ballObject.detect(vision.camera.getCameraImage());
     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
     //std::cout<<"fdsf"<<std::endl;
     //Vision vision2;
     
-    ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
+    ballScreenParameters tempBall = vision->ballObject.detect(vision->camera.getCameraImage());
     if(tempBall.onScreen)
-      vision.tracking.centerBallExperimental(tempBall);
+      vision->tracking.centerBallExperimental(tempBall);
     //cv::Mat imageHSV = vision.camera.getHSVImage();
     //vision.ballObject.detect(imageHSV);
     //goalObject.detect(imageHSV);
@@ -54,44 +49,73 @@ void* sightLoop(void* arg) {
 }
 
 void* motionLoop(void* arg) {
+  Vision* vision = (Vision*) arg;
   //vision.tracking.head.setPanAngle(-7);
   //vision.tracking.head.setTiltAngle(-19);
   //ballScreenParameters ball;
 
-  while(!vision.getShutown()) {
-    vision.tracking.centerBallExperimental();
+  while(!vision->getShutdown()) {
     //usleep(1000*100);
     //vision.tracking.searchBall();
-    //ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
+    ballScreenParameters tempBall = vision->ballObject.getScreenParameters();
+    vision->tracking.centerBallExperimental(tempBall);
     //vision.tracking.updatePhysicalParameters(tempBall);
     //vision.tracking.head.setTiltAngle(0);
     //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
-    std::cout<<"Distance: "<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
-    /*if(tempBall.onScreen) {
-      std::cout<<"Centering"<<std::endl;
-      vision.tracking.head.motorManager.setSpeed(23, 70);
-      vision.tracking.head.motorManager.setSpeed(24, 70);
-      vision.tracking.centerBallExperimental(tempBall);
-    }
-    else {
-      vision.tracking.head.motorManager.setSpeed(23, 20);
-      vision.tracking.head.motorManager.setSpeed(24, 20);
-      std::cout<<"Searching"<<std::endl;
-      vision.tracking.searchBall();
-    }*/
+    std::cout<<"Distance: "<<vision->ballObject.getPhysicalParameters().distance<<std::endl;
+    // if(tempBall.onScreen) {
+    //   std::cout<<"Centering"<<std::endl;
+    //   vision.tracking.head.motorManager.setSpeed(23, 70);
+    //   vision.tracking.head.motorManager.setSpeed(24, 70);
+    //   vision.tracking.centerBallExperimental(tempBall);
+    // }
+    // else {
+    //   vision.tracking.head.motorManager.setSpeed(23, 20);
+    //   vision.tracking.head.motorManager.setSpeed(24, 20);
+    //   std::cout<<"Searching"<<std::endl;
+    //   vision.tracking.searchBall();
+    // }
   }
-  vison.tracking.motorManager.setTorque(23, 0);
-  vison.tracking.motorManager.setTorque(24, 0);
+   vision->tracking.head.motorManager.setTorque(23, 0);
+   vision->tracking.head.motorManager.setTorque(24, 0);
   pthread_exit(NULL);
 }
+
+// void* sightLoop(void* arg) {
+//   //vision.tracking.head.setPanAngle(-47);
+//   //vision.tracking.head.setTiltAngle(0);
+
+//   while(1) {
+//     vision.ballObject.detect(vision.camera.getCameraImage());
+//     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
+//     //std::cout<<"fdsf"<<std::endl;
+//     //Vision vision2;
+//     //vision.ballObject.detect(vision.camera.getCameraImage());
+//     //cv::Mat imageHSV = vision.camera.getHSVImage();
+//     //vision.ballObject.detect(imageHSV);
+//     //goalObject.detect(imageHSV);
+//   }
+//   pthread_exit(NULL);
+// }
+
+// void* motionLoop(void* arg) {
+//   //vision.tracking.head.setPanAngle(0);
+//   //vision.tracking.head.setTiltAngle(0);
+//   while(1) {
+//       vision.tracking.centerBall();
+//   }
+//   pthread_exit(NULL);
+// }
 
 int main() {
   MasterControl mc; //I'm unsure how to handle current errors regarding this
 
+  Vision vision;
+
   pthread_t sight, motion;
-  vision.setShutdown(false);
-  pthread_create(&sight, NULL, sightLoop, NULL);
-  pthread_create(&motion, NULL, motionLoop, NULL);
+  // vision.setShutdown(false);
+  pthread_create(&sight, NULL, sightLoop, &vision);
+  pthread_create(&motion, NULL, motionLoop, &vision);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
@@ -109,7 +133,7 @@ int main() {
     fputs("failed to stop motion(\n", stderr);
 
 
-  vision.setShutdown(true);
+  // vision.setShutdown(true);
   pthread_join(sight, NULL);
   pthread_join(motion, NULL);
   return 0;
