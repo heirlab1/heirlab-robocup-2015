@@ -91,6 +91,8 @@ class USB2AXmotorManager {
 		void setAcceleration(int, int);
 		void setLimits(int, int, int);
 
+		void setMotorTorque(int, bool);
+
 		//void markError(void);
 
 		void setMotorPosition(int, int);

@@ -77,7 +77,7 @@ void Vision::detectBallArea() {
 */
 
 
-void BallObject::detect(cv::Mat imageCameraFeed) {
+ballScreenParameters BallObject::detect(cv::Mat imageCameraFeed) {
 	//fieldScreenParameters tempFieldScreen = field->getScreenParameters();
 	//std::clock_t time = clock();
 
@@ -483,7 +483,6 @@ void BallObject::setPointers(FieldObject* tempField) {
 }
 
 BallObject::BallObject() {
-	std::cout<<"Created ball object"<<std::endl;
 }
 
 BallObject::~BallObject() {

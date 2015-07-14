@@ -31,10 +31,6 @@ bool MUL8_finished = false;
 bool second_half = false;
 
 int  number;
-
-
-
-
 int main(){
   Vision vision;
   MasterControl mc;
@@ -43,7 +39,7 @@ int main(){
   pthread_create(&sight, NULL, sightLoop, NULL);
   //std::cout<<"Here"<<std::endl;
   pthread_create(&motion, NULL, motionLoop, NULL);
-  pthread_join(sight, NULL);
+  //pthread_join(sight, NULL);
 
   // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
@@ -59,10 +55,12 @@ int main(){
     fputs("stopped motion\n", stderr);
   else
     fputs("failed to stop motion(\n", stderr);
+
+
+  vision.setShutdown(true);
+  pthread_join(sight, NULL);
+  pthread_join(motion, NULL);
   return 0;
-
-
-
 }
 
 
@@ -70,12 +68,15 @@ void* sightLoop(void* arg) {
   //vision.tracking.head.setPanAngle(-47);
   //vision.tracking.head.setTiltAngle(0);
 
-  while(1) {
+  while(!vision.getShutown()) {
     //vision.ballObject.detect(vision.camera.getCameraImage());
     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
     //std::cout<<"fdsf"<<std::endl;
     //Vision vision2;
-    vision.ballObject.detect(vision.camera.getCameraImage());
+    
+    ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
+    if(tempBall.onScreen)
+      vision.tracking.centerBallExperimental(tempBall);
     //cv::Mat imageHSV = vision.camera.getHSVImage();
     //vision.ballObject.detect(imageHSV);
     //goalObject.detect(imageHSV);
@@ -88,16 +89,15 @@ void* motionLoop(void* arg) {
   //vision.tracking.head.setTiltAngle(-19);
   //ballScreenParameters ball;
 
-  while(1) {
-    //vision.tracking.centerBallExperimental();
+  while(!vision.getShutown()) {
+    vision.tracking.centerBallExperimental();
     //usleep(1000*100);
     //vision.tracking.searchBall();
-    ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
-    vision.tracking.updatePhysicalParameters(tempBall);
-    vision.tracking.centerBallExperimental(tempBall);
+    //ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
+    //vision.tracking.updatePhysicalParameters(tempBall);
     //vision.tracking.head.setTiltAngle(0);
     //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
-    std::cout<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
+    std::cout<<"Distance: "<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
     /*if(tempBall.onScreen) {
       std::cout<<"Centering"<<std::endl;
       vision.tracking.head.motorManager.setSpeed(23, 70);
@@ -111,6 +111,8 @@ void* motionLoop(void* arg) {
       vision.tracking.searchBall();
     }*/
   }
+  vison.tracking.motorManager.setMotorTorque(23, 0);
+  vison.tracking.motorManager.setMotorTorque(24, 0);
   pthread_exit(NULL);
 }
 
