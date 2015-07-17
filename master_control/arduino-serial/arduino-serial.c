@@ -34,7 +34,7 @@ int getStartButtonPressed(){
     }
 
     fd = serialport_init(serialport, baudrate);
-    if( fd==-1 ) error("couldn't open port");
+    if( fd==-1 ) error("couldn't open arduino port");
     if(!quiet) printf("opened arduino port at: %s\n",serialport);
     serialport_flush(fd);
 

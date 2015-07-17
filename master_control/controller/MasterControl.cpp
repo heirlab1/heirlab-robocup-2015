@@ -120,7 +120,7 @@ int main() {
   pthread_create(&sight, NULL, sightLoop, NULL);
   pthread_create(&motion, NULL, motionLoop, NULL);
 
-  /*// find start button library in ../arduino-serial/ 
+  // find start button library in ../arduino-serial/ 
   while(!getStartButtonPressed())
   
   usleep(2000000);
@@ -133,12 +133,12 @@ int main() {
   if (mc.executeMotion(STOP))
     fputs("stopped motion\n", stderr);
   else
-    fputs("failed to stop motion(\n", stderr);*/
+    fputs("failed to stop motion(\n", stderr);
 
 
-  // vision.setShutdown(true);
+  vision.setShutdown(true);
   pthread_join(sight, NULL);
-  //pthread_join(motion, NULL);
+  pthread_join(motion, NULL);
   return 0;
 }
 
