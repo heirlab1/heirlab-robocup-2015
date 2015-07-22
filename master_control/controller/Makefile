@@ -1,7 +1,7 @@
 TARGET		= MasterControl
 OBJS		= MasterControl.o
 SRCS		= $(OBJS:.o=.cpp)
-INCLUDEDIRS	+= -I../include -I/usr/local/include/ 
+INCLUDEDIRS	+= -I../include -I/usr/local/include/
 LIBDIRS		+= -L../lib -L/usr/lib
 CFLAGS		+= $(INCLUDEDIRS) -W -Wall -O2
 #LDFLAGS		+= $(LIBDIRS) -ldxl -lpthread -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_objdetect
@@ -11,10 +11,10 @@ CC			= g++
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
-	
+
 .cpp.o:
 	$(CC) -c $< $(CFLAGS)
-	
+
 clean:
 	rm -f $(OBJS) $(TARGET)
 	@echo "file deleted."

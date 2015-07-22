@@ -38,7 +38,7 @@ void* sightLoop(void* arg) {
     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
     //std::cout<<"fdsf"<<std::endl;
     //Vision vision2;
-    
+
     ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
     if(tempBall.onScreen) {
       vision.ballObject.setScreenParameters(tempBall);
@@ -111,23 +111,15 @@ void* motionLoop(void* arg) {
 // }
 
 int main() {
-  MasterControl mc; //I'm unsure how to handle current errors regarding this
-
-  //Vision vision;
+  MasterControl mc;
 
   pthread_t sight, motion;
   vision.setShutdown(false);
   pthread_create(&sight, NULL, sightLoop, NULL);
   pthread_create(&motion, NULL, motionLoop, NULL);
 
-  // find start button library in ../arduino-serial/ 
+  // find start button library in ../arduino-serial/
   while(!getStartButtonPressed())
-  
-  usleep(2000000);
-
-  while (1) {
-    if (getStartButtonPressed()) break;
-  }
 
 
   if (mc.executeMotion(STOP))
@@ -145,23 +137,13 @@ int main() {
 // find command defenitions in ../include/tx_serial.h
 int MasterControl::executeMotion(int command) {
   if (tx_data(port, command)) {
-    fputs("success!\n", stderr);  
-    return 1; 
+    fputs("success!\n", stderr);
+    return 1;
   } else {
     fputs("failure :(\n", stderr);
   }
   return 0;
 }
-
-// double getUnixTime(){
-//   struct timespec tv;
-
-//   if (clock_gettime(CLOCK_REALTIME, &tv) != 0) {
-//     return 0;
-//   }
-
-//   return (((double) tv.tv_sec) + (tv.tv_nsec / 1000000000.0));
-// }
 
 // action methods
 void MasterControl::searchForBall() {
@@ -207,10 +189,10 @@ void MasterControl::penalty() {
 }
 
 MasterControl::MasterControl() {
-  port = open_port();
+  port = open_port(); //method from open_serial.c, found in ../txd
   // vc = new VisionController();
 }
 
 MasterControl::~MasterControl() {
-  
+
 }
