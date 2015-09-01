@@ -13,14 +13,9 @@ int write_tx(int fd, unsigned char *pPacket, int numPacket);
 
 int open_port();
 
-// int rx_check(int fd);
-// int rx_data();
-// int hal_rx(int fd, unsigned char *pPacket, int numPacket);
-
-
 /* baudrate settings are defined in <asm/termbits.h>, which is
 included by <termios.h> */
-#define BAUDRATE B57600            
+#define BAUDRATE B57600
 
 /* change this definition for the correct port */
 #define MODEMDEVICE "/dev/ttyUSB0"

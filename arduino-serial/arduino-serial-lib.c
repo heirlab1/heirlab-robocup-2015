@@ -1,21 +1,15 @@
-//
-// arduino-serial-lib -- simple library for reading/writing serial ports
-//
-// 2006-2013, Tod E. Kurt, http://todbot.com/blog/
-//
-
 #include "arduino-serial-lib.h"
 
-#include <stdio.h>    // Standard input/output definitions 
-#include <unistd.h>   // UNIX standard function definitions 
-#include <fcntl.h>    // File control definitions 
-#include <errno.h>    // Error number definitions 
-#include <termios.h>  // POSIX terminal control definitions 
-#include <string.h>   // String function definitions 
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <termios.h>
+#include <string.h>
 #include <sys/ioctl.h>
 
 // uncomment this to debug reads
-//#define SERIALPORTDEBUG 
+//#define SERIALPORTDEBUG
 
 // takes the string name of the serial port (e.g. "/dev/tty.usbserial","COM1")
 // and a baud rate (bps) and connects to that port at that speed and 8N1.
@@ -25,15 +19,15 @@ int serialport_init(const char* serialport, int baud)
 {
     struct termios toptions;
     int fd;
-    
+
     //fd = open(serialport, O_RDWR | O_NOCTTY | O_NDELAY);
     fd = open(serialport, O_RDWR | O_NONBLOCK );
-    
+
     if (fd == -1)  {
         perror("serialport_init: Unable to open port ");
         return -1;
     }
-    
+
     //int iflags = TIOCM_DTR;
     //ioctl(fd, TIOCMBIS, &iflags);     // turn on DTR
     //ioctl(fd, TIOCMBIC, &iflags);    // turn off DTR
@@ -68,19 +62,15 @@ int serialport_init(const char* serialport, int baud)
     // no flow control
     toptions.c_cflag &= ~CRTSCTS;
 
-    //toptions.c_cflag &= ~HUPCL; // disable hang-up-on-close to avoid reset
-
     toptions.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
     toptions.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
 
     toptions.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
     toptions.c_oflag &= ~OPOST; // make raw
 
-    // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
     toptions.c_cc[VMIN]  = 0;
     toptions.c_cc[VTIME] = 0;
-    //toptions.c_cc[VTIME] = 20;
-    
+
     tcsetattr(fd, TCSANOW, &toptions);
     if( tcsetattr(fd, TCSAFLUSH, &toptions) < 0) {
         perror("init_serialport: Couldn't set term attributes");
@@ -122,7 +112,7 @@ int serialport_read_until(int fd, char* buf, char until, int buf_max, int timeou
 {
     char b[1];  // read expects an array, so we give it a 1-byte array
     int i=0;
-    do { 
+    do {
         int n = read(fd, b, 1);  // read a char at a time
         if( n==-1) return -1;    // couldn't read
         if( n==0 ) {
@@ -130,10 +120,10 @@ int serialport_read_until(int fd, char* buf, char until, int buf_max, int timeou
             timeout--;
             continue;
         }
-#ifdef SERIALPORTDEBUG  
+#ifdef SERIALPORTDEBUG
         printf("serialport_read_until: i=%d, n=%d b='%c'\n",i,n,b[0]); // debug
 #endif
-        buf[i] = b[0]; 
+        buf[i] = b[0];
         i++;
     } while( b[0] != until && i < buf_max && timeout>0 );
 
@@ -141,9 +131,8 @@ int serialport_read_until(int fd, char* buf, char until, int buf_max, int timeou
     return 0;
 }
 
-//
 int serialport_flush(int fd)
 {
-    sleep(2); //required to make flush work, for some reason
+    sleep(2);
     return tcflush(fd, TCIOFLUSH);
 }
