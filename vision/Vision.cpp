@@ -51,10 +51,12 @@ void Vision::setTask(int tempTask) {
 }
 
 Vision::Vision() {
-	shutdown = false;
+	std::cout<<"Made it here"<<std::endl;
+	setShutdown(false);
 	task = 0;
 	ballObject.setPointers(&fieldObject);
 	tracking.setPointers(&ballObject);
+	//std::cout<<"Made it here"<<std::endl;
 }
 
 Vision::~Vision() {

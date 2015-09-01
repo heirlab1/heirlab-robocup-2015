@@ -12,6 +12,14 @@
 #include "BallObject.h"
 #include <ctime>
 
+//(1=100% seen, 0.5=50% seen)
+#define searchThreshold 1 
+ 
+//Area that will be marked as seen (Degrees)
+#define searchRadius 60 
+
+//Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
+#define maxTime 0.1 
 
 struct BFSdata {
 	std::clock_t lastUsed;
@@ -20,8 +28,7 @@ struct BFSdata {
 
 class Tracking {
 private:
-	float searchThreshold = 1; //(1=100% seen, 0.5=50% seen)
-	int searchRadius = 60; //Area that will be marked as seen (Degrees)
+
 private:
 	pthread_mutex_t ballPhysicalParametersLock;
 	pthread_mutex_t goalPhysicalParametersLock;
@@ -30,7 +37,6 @@ public:
 private:
 	BFSdata searchData;
 	BallObject* ball;
-	float maxTime = 0.1; //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
 
 private:
 	bool checkElapsedTime(std::clock_t);

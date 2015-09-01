@@ -52,7 +52,6 @@ int USB2AXmotorManager::getMotorPositionAccurate(int motorID) {
 void USB2AXmotorManager::setMotorPosition(int motorID, int position) {
 	writeMotor(motorID, GOAL_POSITION, position);
 }
-
 //Reads desired command from selected motor
 //Is private function for error handling
 int USB2AXmotorManager::readMotor(int motorID, int command) {
@@ -65,12 +64,13 @@ int USB2AXmotorManager::readMotor(int motorID, int command) {
 			) {
 		resetElapsedTime();
 		while(!checkElapsedTime());
-		disconnect();
-		resetElapsedTime();
-		while(!checkElapsedTime());
-		connect();
-		resetElapsedTime();
-		while(!checkElapsedTime());
+		returnVal = dxl_read_word(motorID, command);
+		if (dxl_get_result() == COMM_RXCORRUPT ||
+			(motorID == 23 && (command==36 && (returnVal==0 || returnVal==1536 || returnVal ==1280))) || //BlackList
+			(motorID == 24 && (command==36 && (returnVal==0 || returnVal==1792 || returnVal == 1280))) //BlackList
+			) {
+			markError();
+		}
 		returnVal = 0;
 	}
 	resetElapsedTime();
@@ -200,14 +200,30 @@ void USB2AXmotorManager::printCommStatus(int commStatus) {
 	}
 }
 
-/*void USB2AXmotorManager::markError() {
+void USB2AXmotorManager::markError() {
 	errorCount++;
-	std::cout<<"Motor Read Error"<<std::endl;
+	std::cout<<"Warning: Moror read error detected!"<<std::endl;
 	if(errorLimit<errorCount) {
+		std::cout<<"Error: Max motor errors reached, resetting ..."<<std::endl;
+		setTorque(23, 0);
+		setTorque(24, 0);
+		usleep(1000*500);
 		disconnect();
+		usleep(1000*500);
 		connect();
+		usleep(1000*500);
+		setTorque(23, 1);
+		setTorque(24, 1);
+		errorCount = 0;
 	}
-}*/
+}
+
+void USB2AXmotorManager::setTorque(int motorID, bool state) {
+	if(state)
+		writeMotor(motorID, TORQUE_ENABLE, 1);
+	else if(!state)
+		writeMotor(motorID, TORQUE_ENABLE, 0);
+}
 
 void USB2AXmotorManager::setSpeed(int motorID, int speed) {
 	writeMotor(motorID, MOVING_SPEED, speed);
@@ -220,7 +236,6 @@ void USB2AXmotorManager::setAcceleration(int motorID, int acceleration) {
 void USB2AXmotorManager::setLimits(int motorID, int limitCW, int limitCCW) {
 	writeMotor(motorID, CW_ANGLE_LIMIT, limitCW);
 	writeMotor(motorID, CCW_ANGLE_LIMIT, limitCCW);
-
 }
 
 void USB2AXmotorManager::connect() {
@@ -241,6 +256,8 @@ void USB2AXmotorManager::disconnect() {
 
 //Constructor
 USB2AXmotorManager::USB2AXmotorManager() {
+	errorCount = 0;
+	errorLimit = 10;
 	connect();
 	resetElapsedTime();
 }
