@@ -13,17 +13,12 @@ int write_tx(int fd, unsigned char *pPacket, int numPacket);
 
 int open_port();
 
-/* baudrate settings are defined in <asm/termbits.h>, which is
-included by <termios.h> */
 #define BAUDRATE B57600
 
 /* change this definition for the correct port */
 #define MODEMDEVICE "/dev/ttyUSB0"
 
-#define _POSIX_SOURCE 1 /* POSIX compliant source */
-
-#define FALSE 0
-#define TRUE 1
+#define _POSIX_SOURCE 1
 
 #define DEFAULT_DEVICEINDEX 0
 #define TIMEOUT_TIME    1000 // msec
@@ -49,7 +44,7 @@ included by <termios.h> */
 #define RIGHTKICKFORWARD 	  (129)	// 4+U
 #define LEFTKICKHARD		    (545)	// 2+6+U
 #define RIGHTKICKHARD 		  (641)	// 4+6+U
-// #define LEFTKICKBACKWARD 	  (34) 	// 2+D
+#define LEFTKICKBACKWARD 	  (35) 	// 2+D+U
 #define RIGHTKICKBARDWARD   (130)	// 4+D
 #define LEFTKICKLEFT 		    (36) 	// 2+L
 #define RIGHTKICKLEFT 		  (132) // 4+L

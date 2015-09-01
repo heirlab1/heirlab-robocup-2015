@@ -26,9 +26,9 @@
 
  added Serial communication July 2015
  by A.B. Williams
- Should send serial information when button is pressed to 
+ Should send serial information when button is pressed to
  serial port
- 
+
  */
 
 // constants won't change. They're used here to
@@ -43,14 +43,14 @@ void setup() {
   // setup serial communication
   Serial.end();
   Serial.begin(9600);
-  
+
   // initialize the LED pin as an output:
   pinMode(ledPin, OUTPUT);
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
 
 
-  
+
 }
 
 void loop() {

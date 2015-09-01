@@ -24,7 +24,7 @@
 //Detector Variables
 #define THRESH_ERODE_LIMIT 3
 #define THRESH_DIALATE_LIMIT 2
- 
+
 #define ERODE_KERNAL_SIZE 2
 #define DIALATE_KERNAL_SIZE 2
 #define BLUR_KERNAL_SIZE 9 //Amount of blurring of original image (Notice: must be odd)
