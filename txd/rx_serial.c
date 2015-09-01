@@ -1,3 +1,8 @@
+/*
+These methods were never completed.
+When reading from the CM-700, the main controller was unable to parse the input.
+*/
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -9,7 +14,6 @@
 
 #include "tx_serial.h"
 
-// was unsigned
 char gbRcvPacket[6];
 unsigned char gbRcvPacketNum;
 unsigned short gwRcvData;
@@ -20,7 +24,6 @@ int rx_check(int fd)
 
 	int i, j, RcvNum, res;
 	unsigned char checksum;
-	// char buf[255];
 
 
 	if(gbRcvFlag == 1)

@@ -9,7 +9,9 @@
 
 #include "tx_serial.h"
 
-// opens the serial port specified in tx_serial.h
+/*
+  opens the serial port specified in tx_serial.h
+*/
 int open_port(){
   int fd;
   struct termios oldtio,newtio;
@@ -21,7 +23,6 @@ int open_port(){
   fd = open(MODEMDEVICE, O_RDWR | O_NOCTTY );
   if (fd <0) {
     perror(MODEMDEVICE);
-    // exit(-1);
     return 0;
   }
 
@@ -29,10 +30,9 @@ int open_port(){
  bzero(&newtio, sizeof(newtio)); /* clear struct for new port settings */
 
 /*
-  BAUDRATE: Set bps rate. You could also use cfsetispeed and cfsetospeed.
-  CRTSCTS : output hardware flow control (only used if the cable has
-            all necessary lines. See sect. 7 of Serial-HOWTO)
-  CS8     : 8n1 (8bit,no parity,1 stopbit)
+  BAUDRATE: Set bps rate
+  CRTSCTS : output hardware flow control
+  CS8     : 8n1 (8bit, no parity, 1 stopbit)
   CLOCAL  : local connection, no modem contol
   CREAD   : enable receiving characters
 */
@@ -40,9 +40,7 @@ int open_port(){
 
 /*
   IGNPAR  : ignore bytes with parity errors
-  ICRNL   : map CR to NL (otherwise a CR input on the other computer
-            will not terminate input)
-  otherwise make device raw (no other input processing)
+  ICRNL   : map CR to NL
 */
   newtio.c_iflag = IGNPAR | ICRNL;
 
@@ -87,10 +85,5 @@ int open_port(){
   tcflush(fd, TCIFLUSH);
   tcsetattr(fd,TCSANOW,&newtio);
 
-/*
-  terminal settings done, now handle input
-  In this example, inputting a 'z' at the beginning of a line will
-  exit the program.
-*/
   return fd;
 }

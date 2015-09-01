@@ -9,22 +9,19 @@
 
 #include "tx_serial.h"
 
-// returns true if the data was successfully transmitted
+// Returns true if the data was successfully transmitted
 int tx_data(int fd, int command_key){
-  if (encode_data(fd,command_key)){
-    /* restore the old port settings */
-    // tcsetattr(fd,TCSANOW,&oldtio);
+  if (encode_data(fd, command_key)){
    return 1;
   }
   else {
-    /* restore the old port settings */
-    // tcsetattr(fd,TCSANOW,&oldtio);
     return 0;
   }
 
 }
 
-// encodes data so the CM-700 can understand it (immitates an RC-100 controller)
+// Encodes data so the CM-700 can understand it
+// Immitates an RC-100 controller
 int encode_data(int fd, int data){
   unsigned char SndPacket[6];
   unsigned short word = (unsigned short)data;
@@ -44,8 +41,8 @@ int encode_data(int fd, int data){
   return 1;
 }
 
-// writes the encoded data over the serial port
-int write_tx(int fd, unsigned char *pPacket, int numPacket )
+// Writes the encoded data over the serial port
+int write_tx(int fd, unsigned char *pPacket, int numPacket)
 {
   return write(fd, pPacket, numPacket);
 }
