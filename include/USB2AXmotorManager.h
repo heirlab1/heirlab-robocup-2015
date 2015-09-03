@@ -1,5 +1,3 @@
-
-
 #ifndef USB2AXMOTORMANAGER_H_
 #define USB2AXMOTORMANAGER_H_
 
@@ -56,7 +54,7 @@
 #define NUM_MOTOR_POSITIONS 	4096
 
 //Min time between dynamixel communication bursts (1 = 1s, 0.5 = 500ms)
-#define minTime 0.2 
+#define minTime 0.2
 
 class USB2AXmotorManager {
 	private:

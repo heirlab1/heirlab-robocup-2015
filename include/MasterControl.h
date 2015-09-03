@@ -1,9 +1,4 @@
-/*
- * MUL8.h
- *
- *  Created on: Jul 2, 2014
- *      Author: unicorn
- */
+
 
 #ifndef MASTER_CONTROL_H_
 #define MASTER_CONTROL_H_
@@ -21,23 +16,10 @@
 #define MUL8_ACTION_GET_BEHIND_BALL			4
 #define MUL8_ACTION_CHECK_LOCATION			5
 
-#define BALL_DISTANCE_THRESHOLD
-#define BALL_ANGLE_THRESHOLD
+// #define BALL_DISTANCE_THRESHOLD
+#define BALL_ANGLE_THRESHOLD            70
 
 
-// int main(int argc, char* argv[]) {
-
-// 	pthread_t main, button;
-// 	pthread_create(&main, NULL, mainLoop, NULL);
-// 	//std::cout<<"Here"<<std::endl;
-// 	pthread_create(&button, NULL, buttonLoop, NULL);
-// 	pthread_join(main, NULL);
-	
-// };
-
-
- 
- 
  void* sightLoop(void* arg);
  void* motionLoop(void* arg);
 
@@ -46,30 +28,27 @@ class MasterControl {
 
 public:
 	int port;
-	// VisionController *vc;
 
 	int executeMotion(int command);
 	void searchForBall();
 	void searchForGoal();
 	void walkTowardsBall();
-	// void turn(int);
-	// void doMotion();
 	double getUnixTime();
 	void getBehindBall();
 	void alignToKick();
 	void init();
 	void ready();
-	// void set();
+	void set();
 	void play();
 	void finish();
 	void penalty();
-	// void actionStep();
+	void actionStep();
 
 	MasterControl();
 	virtual ~MasterControl();
-	// void setAction(int);
-	// void setState(int);
-	// void step();
+	void setAction(int);
+	void setState(int);
+	void step();
 };
 
 #endif /* MASTER_CONTROL_H_ */
