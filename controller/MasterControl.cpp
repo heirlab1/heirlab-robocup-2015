@@ -29,86 +29,85 @@ int  number;
 Vision vision;
 
 void* sightLoop(void* arg) {
-  //Vision* vision = *(Vision**) arg;
-  //vision.tracking.head.setPanAngle(-47);
-  //vision.tracking.head.setTiltAngle(0);
+  Vision* vision = *(Vision**) arg;
+  vision.tracking.head.setPanAngle(-47);
+  vision.tracking.head.setTiltAngle(0);
 
   while(!vision.getShutdown()) {
-    //vision.ballObject.detect(vision.camera.getCameraImage());
-    //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
-    //std::cout<<"fdsf"<<std::endl;
-    //Vision vision2;
+    vision.ballObject.detect(vision.camera.getCameraImage());
+    Vision vision2;
 
     ballScreenParameters tempBall = vision.ballObject.detect(vision.camera.getCameraImage());
+
     if(tempBall.onScreen) {
       vision.ballObject.setScreenParameters(tempBall);
       vision.tracking.updatePhysicalParameters(tempBall);
     }
-    //cv::Mat imageHSV = vision.camera.getHSVImage();
-    //vision.ballObject.detect(imageHSV);
-    //goalObject.detect(imageHSV);
+    cv::Mat imageHSV = vision.camera.getHSVImage();
+    vision.ballObject.detect(imageHSV);
+    goalObject.detect(imageHSV);
   }
   pthread_exit(NULL);
 }
 
 void* motionLoop(void* arg) {
-  //Vision* vision = *(Vision**) arg;
-  //vision.tracking.head.setPanAngle(-7);
-  //vision.tracking.head.setTiltAngle(-19);
-  //ballScreenParameters ball;
+  Vision* vision = *(Vision**) arg;
+  vision.tracking.head.setPanAngle(-7);
+  vision.tracking.head.setTiltAngle(-19);
+  ballScreenParameters ball;
 
   while(!vision.getShutdown()) {
-    //usleep(1000*100);
-    //vision.tracking.searchBall();
+    usleep(100000);
+    vision.tracking.searchBall();
     ballScreenParameters tempBall = vision.ballObject.getScreenParameters();
     vision.tracking.centerBallExperimental(tempBall);
-    //vision.tracking.updatePhysicalParameters(tempBall);
-    //vision.tracking.head.setTiltAngle(0);
-    //std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
+    vision.tracking.updatePhysicalParameters(tempBall);
+    vision.tracking.head.setTiltAngle(0);
+    std::cout<<vision.tracking.head.getTiltAngle()<<std::endl;
     std::cout<<"Distance: "<<vision.ballObject.getPhysicalParameters().distance<<std::endl;
-    // if(tempBall.onScreen) {
-    //   std::cout<<"Centering"<<std::endl;
-    //   vision.tracking.head.motorManager.setSpeed(23, 70);
-    //   vision.tracking.head.motorManager.setSpeed(24, 70);
-    //   vision.tracking.centerBallExperimental(tempBall);
-    // }
-    // else {
-    //   vision.tracking.head.motorManager.setSpeed(23, 20);
-    //   vision.tracking.head.motorManager.setSpeed(24, 20);
-    //   std::cout<<"Searching"<<std::endl;
-    //   vision.tracking.searchBall();
-    // }
+    if(tempBall.onScreen) {
+      std::cout<<"Centering"<<std::endl;
+      vision.tracking.head.motorManager.setSpeed(23, 70);
+      vision.tracking.head.motorManager.setSpeed(24, 70);
+      vision.tracking.centerBallExperimental(tempBall);
+    }
+    else {
+      vision.tracking.head.motorManager.setSpeed(23, 20);
+      vision.tracking.head.motorManager.setSpeed(24, 20);
+      std::cout<<"Searching"<<std::endl;
+      vision.tracking.searchBall();
+    }
   }
    vision.tracking.head.motorManager.setTorque(23, 0);
    vision.tracking.head.motorManager.setTorque(24, 0);
   pthread_exit(NULL);
 }
 
-// void* sightLoop(void* arg) {
-//   //vision.tracking.head.setPanAngle(-47);
-//   //vision.tracking.head.setTiltAngle(0);
+void* sightLoop(void* arg) {
+  vision.tracking.head.setPanAngle(-47);
+  vision.tracking.head.setTiltAngle(0);
 
-//   while(1) {
-//     vision.ballObject.detect(vision.camera.getCameraImage());
-//     //std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
-//     //std::cout<<"fdsf"<<std::endl;
-//     //Vision vision2;
-//     //vision.ballObject.detect(vision.camera.getCameraImage());
-//     //cv::Mat imageHSV = vision.camera.getHSVImage();
-//     //vision.ballObject.detect(imageHSV);
-//     //goalObject.detect(imageHSV);
-//   }
-//   pthread_exit(NULL);
-// }
+  while(1) {
+    vision.ballObject.detect(vision.camera.getCameraImage());
+    std::cout<<"Pan: "<<vision.tracking.head.motorManager.getMotorPosition(24)<<std::endl;
+    std::cout<<"fdsf"<<std::endl;
+    Vision vision2;
+    vision.ballObject.detect(vision.camera.getCameraImage());
+    cv::Mat imageHSV = vision.camera.getHSVImage();
+    vision.ballObject.detect(imageHSV);
+    goalObject.detect(imageHSV);
+  }
+  pthread_exit(NULL);
+}
 
-// void* motionLoop(void* arg) {
-//   //vision.tracking.head.setPanAngle(0);
-//   //vision.tracking.head.setTiltAngle(0);
-//   while(1) {
-//       vision.tracking.centerBall();
-//   }
-//   pthread_exit(NULL);
-// }
+void* motionLoop(void* arg) {
+  vision.tracking.head.setPanAngle(0);
+  vision.tracking.head.setTiltAngle(0);
+  while(1) {
+      vision.tracking.centerBall();
+  }
+  pthread_exit(NULL);
+}
 
 int main() {
   MasterControl mc;
@@ -118,9 +117,8 @@ int main() {
   pthread_create(&sight, NULL, sightLoop, NULL);
   pthread_create(&motion, NULL, motionLoop, NULL);
 
-  // find start button library in ../arduino-serial/
+  // waits until start button pressed
   while(!getStartButtonPressed())
-
 
   if (mc.executeMotion(STOP))
     fputs("stopped motion\n", stderr);
@@ -147,11 +145,11 @@ int MasterControl::executeMotion(int command) {
 
 // action methods
 void MasterControl::searchForBall() {
-  // vc->setTask(TASK_LOOK_FOR_BALL);
+  vc->setTask(TASK_LOOK_FOR_BALL);
 }
 
 void MasterControl::searchForGoal() {
-  // vc->setTask(TASK_LOOK_FOR_GOAL);
+  vc->setTask(TASK_LOOK_FOR_GOAL);
 }
 
 void MasterControl::walkTowardsBall() {
@@ -159,15 +157,17 @@ void MasterControl::walkTowardsBall() {
   printf("%d\n", x);
 }
 
+// incomplete
 void MasterControl::getBehindBall() {
 
 }
 
+// incomplete
 void MasterControl::alignToKick() {
 
 }
 
-// state methods
+// state methods, incomplete
 void MasterControl::init() {
 
 }
@@ -190,7 +190,6 @@ void MasterControl::penalty() {
 
 MasterControl::MasterControl() {
   port = open_port(); //method from open_serial.c, found in ../txd
-  // vc = new VisionController();
 }
 
 MasterControl::~MasterControl() {

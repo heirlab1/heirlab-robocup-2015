@@ -107,7 +107,6 @@ int serialport_write(int fd, const char* str)
     return 0;
 }
 
-//
 int serialport_read_until(int fd, char* buf, char until, int buf_max, int timeout)
 {
     char b[1];  // read expects an array, so we give it a 1-byte array
